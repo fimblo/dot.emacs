@@ -1,0 +1,14 @@
+* Initial setup
+
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t)
+#+END_SRC
+
+  
+
+#+BEGIN_SRC emacs-lisp
+(defvar home (getenv "HOME") "Home directory, sourced from Environment variable HOME")
+(defvar hostname (getenv "HOSTNAME") "This machine's hostname")
+#+END_SRC
+
+
