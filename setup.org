@@ -118,6 +118,7 @@
    The emacs server is useful if you use emacs for many things, and
    you want each session to share buffers and state. Startup time is
    minimal too.
+
 #+BEGIN_SRC emacs-lisp
 (require 'server)
 (defadvice server-create-window-system-frame
@@ -132,36 +133,69 @@
   This is the first round of setting up the UI.
 ** Basic look and feel
 #+BEGIN_SRC emacs-lisp
-(setq default-major-mode 'org-mode)   ; default mode is org-mode
+(setq default-major-mode 'org-mode)     ; default mode is org-mode
 
-(setq fci-rule-column 80)             ; fill column
-(setq inhibit-startup-message t)      ; no startup message
-(setq line-number-mode t)             ; show line number
-(setq column-number-mode t)           ; show current column
-(setq indicate-buffer-boundaries t)   ; visually show end of buffer
-(global-font-lock-mode 1)             ; syntax highlightning ON
-(setq transient-mark-mode t)          ; turn on transient-mark-mode
-(setq next-line-add-newlines t)       ; C-n at eob opens new lines.
-(setq-default indicate-empty-lines t) ; be even more obvious about it
+(setq fci-rule-column 80)               ; fill column
+(setq inhibit-startup-message t)        ; no startup message
+(setq line-number-mode t)               ; show line number
+(setq column-number-mode t)             ; show current column
+(global-font-lock-mode 1)               ; syntax highlightning ON
+(setq transient-mark-mode t)            ; turn on transient-mark-mode
+(setq indicate-buffer-boundaries t)     ; visually show end of buffer
+(setq-default indicate-empty-lines t)   ; be even more obvious about it
+(setq remove-help-window t)             ; kill completion-window when
+                                        ; leaving minibuffer
+(setq insert-default-directory t)       ; get default dir in commands
+(setq enable-local-variables t)         ; enables local variables
+(setq compilation-window-height 10)     ; height of compilation window.
+(setq default-cursor-type 'bar)         ; make cursor thin
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(if (boundp 'fringe-mode) (fringe-mode -1))
+(if (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
+#+END_SRC
 
-(setq compilation-ask-about-save 0)   ; dont ask to save when compiling
-(setq remove-help-window t)           ; kill completion-window when leaving minibuffer
-(setq insert-default-directory t)     ; get default dir in commands
-(setq enable-local-variables t)       ; enables local variables...
-(setq compilation-window-height 10)   ; height of compilation window.
-(setq default-cursor-type 'bar)       ; make cursor thin
-(setq case-fold-search t)             ; ignore case in searches
-(setq apropos-do-all t)               ; show all funcs/vars
+** Changes in default behaviour upon user action
 
+#+BEGIN_SRC emacs-lisp
+(setq case-fold-search t)			; ignore case in searches
+(setq compilation-ask-about-save 0)		; dont ask to save when compiling
+(setq apropos-do-all t)				; show all funcs/vars in help
+(put 'downcase-region 'disabled nil)		; allow downcase-region commands
+(put 'upcase-region 'disabled nil)		; allow downcase-region commands
+
+(setq next-line-add-newlines t)			; C-n at eob opens new lines.
+(setq scroll-step 1)				; Moving cursor down at bottom
+						; scrolls only a single line
+
+(defun my-dummy-ring-bell-function () nil)	; replace beep with visible bell
+(setq ring-bell-function `my-dummy-ring-bell-function)
+
+(fset 'yes-or-no-p 'y-or-n-p)                   ; y or n instead of yes or no
+(setq confirm-nonexistent-file-or-buffer nil)	; just open new buffers
+(setq kill-buffer-query-functions               ; dont ask to kill live buffers
+  (remq 'process-kill-buffer-query-function
+         kill-buffer-query-functions))
+(put 'eval-expression 'disabled nil)            ; no confirm on eval-expression
+
+#+END_SRC
+
+** Mouse support
+#+BEGIN_SRC emacs-lisp
 (xterm-mouse-mode t)                  ; Support mouse in xterms
 (setq mouse-wheel-mode t)             ; support mouse wheel
 (setq mouse-wheel-follow-mouse t)     ; scrolls mouse pointer position, not pointer
+#+END_SRC
+   
+** Time display
+#+BEGIN_SRC emacs-lisp
+(display-time)
+(setq display-time-day-and-date t)
+(setq display-time-24hr-format t)
+#+END_SRC
 
-
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(if (boundp 'fringe-mode)     (fringe-mode -1))
-(if (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
+** Colors, fonts and stuff
+#+BEGIN_SRC emacs-lisp
 
 ;; text-modes can use Iosevka. fix later.
 ;;(set-face-attribute 'default nil :family "Iosevka" :height 130)
@@ -202,6 +236,16 @@ is inserted at the global mark rather than at the current position.
 (setq cua-read-only-cursor-color "purple1")  ; R/O, then cursor is purple
 (setq cua-overwrite-cursor-color "red")      ; in Overwrite mode, cursor is red
 (setq cua-global-mark-cursor-color "yellow") ; in Global mark mode, cursor is yellow
+
+#+END_SRC
+
+** Other UI things
+   Things don't really fit anywhere else at the moment.
+
+#+BEGIN_SRC emacs-lisp
+;; make scripts executable if they aren't already
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
 
 #+END_SRC
 * Org-mode
