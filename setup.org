@@ -106,15 +106,31 @@
 
 ** Auto-customization
 
-   Move all customization stuff to another file
+   Move all customization stuff to another file. I don't want it
+   cluttering my stuff.
 
 #+BEGIN_SRC emacs-lisp
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 #+END_SRC
+** Emacs server
+
+   The emacs server is useful if you use emacs for many things, and
+   you want each session to share buffers and state. Startup time is
+   minimal too.
+#+BEGIN_SRC emacs-lisp
+(require 'server)
+(defadvice server-create-window-system-frame
+  (after set-window-system-frame-colours ())
+  "Set custom frame colours when creating the first frame on a display"
+  (message "Running after frame-initialize")
+  (setup-window-system-frame-colours))
+(ad-activate 'server-create-window-system-frame)
+(add-hook 'after-make-frame-functions 'setup-window-system-frame-colours t)
+#+END_SRC
 * UI
   This is the first round of setting up the UI.
-
+** Basic look and feel
 #+BEGIN_SRC emacs-lisp
 (setq default-major-mode 'org-mode)   ; default mode is org-mode
 
@@ -155,13 +171,39 @@
 (set-face-foreground 'default "grey90")
 (set-face-background 'default "grey20")
 (set-face-background 'region "grey30")
-
-
-
 #+END_SRC
 
-#+RESULTS:
+** CUA-mode
+   Cua-mode is normally used to make emacs act more like Windows
+   (control-c to copy, etc). I use a subset so that I can use
+   Cua-mode's nice rectangle functions in addition to the normal ones.
 
+   Cua's global-mark is really cool. This is what it says in the manual:
+
+#+begin_quote
+CUA mode also has a global mark feature which allows easy moving and
+copying of text between buffers. Use C-S-<SPC> to toggle the global
+mark on and off. When the global mark is on, all text that you kill or
+copy is automatically inserted at the global mark, and text you type
+is inserted at the global mark rather than at the current position.
+#+end_quote
+
+   Really useful for copying text from one doc to another.
+
+#+BEGIN_SRC emacs-lisp
+(cua-mode t)
+(setq cua-enable-cua-keys nil)               ; go with cua, but without c-x/v/c et al
+(setq shift-select-mode nil)                 ; do not select text when moving with shift.
+(setq cua-delete-selection nil)              ; dont kill selections on keypress
+(setq cua-enable-cursor-indications t)       ; customize cursor color
+
+;; if Buffer is...
+(setq cua-normal-cursor-color "#15FF00")     ; R/W, then cursor is green
+(setq cua-read-only-cursor-color "purple1")  ; R/O, then cursor is purple
+(setq cua-overwrite-cursor-color "red")      ; in Overwrite mode, cursor is red
+(setq cua-global-mark-cursor-color "yellow") ; in Global mark mode, cursor is yellow
+
+#+END_SRC
 * Org-mode
 ** Org-babel 
   I'll put the org-babel configuration here at the top until I have a section for org-mode.
