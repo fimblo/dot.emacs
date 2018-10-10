@@ -239,6 +239,29 @@ is inserted at the global mark rather than at the current position.
 
 #+END_SRC
 
+** Indentation
+#+BEGIN_SRC emacs-lisp
+(setq standard-indent 2)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq tab-width 4)
+(setq-default tab-stop-list
+  (mapcar '(lambda (x) (* x 4))
+	(cdr (reverse 
+	      (let (value)
+		(dotimes (number 32 value)
+		  (setq value (cons number value))))))))
+
+
+(setq perl-continued-brace-offset -2)
+(setq perl-continued-statement-offset 2)
+(setq perl-indent-level 2)
+(setq perl-label-offset -1)
+(setq sh-basic-offset 2)
+(setq sh-indentation 2)
+#+END_SRC
+
+
 ** Other UI things
    Things don't really fit anywhere else at the moment.
 
