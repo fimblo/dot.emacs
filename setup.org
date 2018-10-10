@@ -261,7 +261,43 @@ is inserted at the global mark rather than at the current position.
 (setq sh-indentation 2)
 #+END_SRC
 
+** External stuff
+#+BEGIN_SRC emacs-lisp
+(setq tramp-default-method "ssh")    ; we use ssh when tramping
 
+;; What browser to use?
+(if (eq system-type 'darwin)
+    (setq browse-url-browser-function 'browse-url-default-macosx-browser)
+  (setq browse-url-browser-function 'browse-url-chromium)
+  )
+#+END_SRC
+** Map Suffixes with modes
+#+BEGIN_SRC emacs-lisp
+(setq auto-mode-alist
+      (append
+       (list
+        '("\\.xml"                . xml-mode             )
+        '("\\.pp"                 . puppet-mode          )
+        '("\\.html"               . html-mode            )
+        '("\\.xsl"                . xml-mode             )
+        '("\\.cmd"                . cmd-mode             )
+        '("\\.bat"                . cmd-mode             )
+        '("\\.wiki"               . wikipedia-mode       )
+        '("\\.org.txt"            . org-mode             )
+        '("\\.txt"                . indented-text-mode   )
+        '("\\.php"                . php-html-helper-mode )
+        '("\\.fvwm2rc"            . shell-script-mode    )
+        '("tmp/mutt-"             . message-mode         )
+        '("\\.org"                . org-mode             )
+        '("\\.asciidoc"           . adoc-mode            )
+        '("\\.pm"                 . cperl-mode           )
+        '("\\.pl"                 . cperl-mode           ))
+       auto-mode-alist))
+
+;; and ignore these suffixes when expanding
+(setq completion-ignored-extensions
+      '(".o" ".elc" ".class" "java~" ".ps" ".abs" ".mx" ".~jv" ))
+#+END_SRC
 ** Other UI things
    Things don't really fit anywhere else at the moment.
 
