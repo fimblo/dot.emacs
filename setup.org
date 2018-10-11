@@ -137,6 +137,7 @@
 
 (setq fci-rule-column 80)               ; fill column
 (setq inhibit-startup-message t)        ; no startup message
+(setq initial-scratch-message nil)      ; no *scratch* message
 (setq line-number-mode t)               ; show line number
 (setq column-number-mode t)             ; show current column
 (global-font-lock-mode 1)               ; syntax highlightning ON
@@ -158,25 +159,25 @@
 ** Changes in default behaviour upon user action
 
 #+BEGIN_SRC emacs-lisp
-(setq case-fold-search t)			; ignore case in searches
-(setq compilation-ask-about-save 0)		; dont ask to save when compiling
-(setq apropos-do-all t)				; show all funcs/vars in help
-(put 'downcase-region 'disabled nil)		; allow downcase-region commands
-(put 'upcase-region 'disabled nil)		; allow downcase-region commands
+(setq case-fold-search t)              ; ignore case in searches
+(setq compilation-ask-about-save 0)    ; dont ask to save when compiling
+(setq apropos-do-all t)                ; show all funcs/vars in help
+(put 'downcase-region 'disabled nil)   ; allow downcase-region commands
+(put 'upcase-region 'disabled nil)     ; allow downcase-region commands
 
-(setq next-line-add-newlines t)			; C-n at eob opens new lines.
-(setq scroll-step 1)				; Moving cursor down at bottom
-						; scrolls only a single line
+(setq next-line-add-newlines t)        ; C-n at eob opens new lines.
+(setq scroll-step 1)                   ; Moving cursor down at bottom
+                                       ; scrolls only a single line
 
-(defun my-dummy-ring-bell-function () nil)	; replace beep with visible bell
+(defun my-dummy-ring-bell-function () nil)    ; replace beep with visible bell
 (setq ring-bell-function `my-dummy-ring-bell-function)
 
-(fset 'yes-or-no-p 'y-or-n-p)                   ; y or n instead of yes or no
-(setq confirm-nonexistent-file-or-buffer nil)	; just open new buffers
-(setq kill-buffer-query-functions               ; dont ask to kill live buffers
-  (remq 'process-kill-buffer-query-function
-         kill-buffer-query-functions))
-(put 'eval-expression 'disabled nil)            ; no confirm on eval-expression
+(fset 'yes-or-no-p 'y-or-n-p)                 ; y or n instead of yes or no
+(setq confirm-nonexistent-file-or-buffer nil) ; just open new buffers
+(setq kill-buffer-query-functions             ; dont ask to kill live buffers
+      (remq 'process-kill-buffer-query-function
+            kill-buffer-query-functions))
+(put 'eval-expression 'disabled nil)          ; no confirm on eval-expression
 
 #+END_SRC
 
@@ -202,9 +203,47 @@
 ;;(set-face-attribute 'fixed-pitch nil :family "Iosevka")
 ;;(set-face-attribute 'variable-pitch nil :family "Baskerville")
 
-(set-face-foreground 'default "grey90")
-(set-face-background 'default "grey20")
-(set-face-background 'region "grey30")
+;;(set-face-foreground 'default "grey90")
+;;(set-face-background 'default "grey20")
+;;(set-face-background 'region "grey30")
+
+(defun my-proportional-font ()
+  (face-remap-add-relative 'default
+                           '(:family "Noto Serif")))
+
+(add-hook 'text-mode-hook #'my-proportional-font)
+(add-hook 'text-mode-hook
+          (lambda () (variable-pitch-mode 1)))
+(add-hook 'prog-mode-hook 'linum-mode)
+(add-hook 'prog-mode-hook
+          (lambda () (variable-pitch-mode 0)))
+
+
+(defadvice load-theme (before clear-previous-themes activate)
+  "Clear existing theme settings instead of layering them"
+  (mapc #'disable-theme custom-enabled-themes))
+
+
+; for text modes:
+; - font with serifs
+; - Fatter cursor 
+; - olivetti mode
+; - lighter background
+
+;;(defmacro help/on-gui (statement &rest statements)
+;;  "Evaluate the enclosed body only when run on GUI."
+;;  `(when (display-graphic-p)
+;;     ,statement
+;;     ,@statements))
+
+;; or
+;;
+;;(when (display-graphic-p)
+;;  (set-frame-font "...")
+;;  (require '...)
+;;  (...-mode))
+;;
+
 #+END_SRC
 
 ** CUA-mode
@@ -313,5 +352,11 @@ is inserted at the global mark rather than at the current position.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
+(setq org-edit-src-content-indentation 0)
+(setq org-fontify-whole-heading-line t)
+(defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
+  (font-lock-fontify-buffer))
+
 #+END_SRC
 
