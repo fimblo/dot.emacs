@@ -32,12 +32,13 @@
    This needs to be in place before any configurations of installed packages.
 
    Most of this was shamelessly copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/master/emacs.d/emacs.org][emacs setup]]. Thanks @jeekl!
+
 #+BEGIN_SRC emacs-lisp
 
 ;; mkdir these and add them to load path
 (dolist (path '(  "~/.emacs.d/elpa/"
-		  "~/.emacs.d/el-get/"
-		  "~/.emacs.d/vendor/"))
+          "~/.emacs.d/el-get/"
+          "~/.emacs.d/vendor/"))
   (make-directory path t)
   (let ((default-directory path))
     (normal-top-level-add-subdirs-to-load-path)))
@@ -47,37 +48,61 @@
 ;; add these sources
 (eval-after-load "package"
   '(progn
-     (add-to-list 'package-archives '("org"	  . "http://orgmode.org/elpa/"))
-     (add-to-list 'package-archives '("melpa"	  . "http://melpa.milkbox.net/packages/"))
-     (add-to-list 'package-archives '("elpa"	  . "http://elpa.gnu.org/packages/"))
+     (add-to-list 'package-archives '("org"   . "http://orgmode.org/elpa/"))
+     (add-to-list 'package-archives '("melpa"     . "http://melpa.milkbox.net/packages/"))
+     (add-to-list 'package-archives '("elpa"      . "http://elpa.gnu.org/packages/"))
      (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-     (add-to-list 'package-archives '("tromey"	  . "http://tromey.com/elpa/"))
+     (add-to-list 'package-archives '("tromey"    . "http://tromey.com/elpa/"))
 ))
 
-(setq url-http-attempt-keepalives nil)	; A package.el bug. Apparently.
+(setq url-http-attempt-keepalives nil)  ; A package.el bug. Apparently.
+#+END_SRC
 
+** Packages to install
+#+BEGIN_SRC emacs-lisp
 (defvar elpa-packages
   '(
-    adoc-mode
-    apache-mode
+
+    ;; Some themes first
+    abyss-theme
+    ample-theme
+    arjen-grey-theme
+    atom-dark-theme
+    badger-theme
+    birds-of-paradise-plus-theme
     color-theme
     color-theme-approximate
+    color-theme-cobalt
+    color-theme-twilight
+    darkburn-theme
+    darkmine-theme
+    darkokai-theme
+    darktooth-theme
+    dracula-theme  
+    gruvbox-theme
+    poet-theme
+
+    ;; Other packages
+    adoc-mode
+    apache-mode
     column-marker
     edit-server
     gmail-message-mode
     graphviz-dot-mode
     highlight-tail
     htmlize
+    json-mode
+    load-theme-buffer-local
     mediawiki
     mpg123
     muttrc-mode
+    olivetti
     org-bullets
     puppet-mode
     rainbow-mode
     ssh-config-mode
     twittering-mode
     yaml-mode
-    json-mode
     )
   "These packages are installed if necessary."
   )
@@ -98,8 +123,8 @@
   (interactive)
   (package-show-package-list
    (remove-if-not (lambda (x) (and (not (memq x elpa-packages))
-				   (not (package-built-in-p x))
-				   (package-installed-p x)))
+                   (not (package-built-in-p x))
+                   (package-installed-p x)))
                   (mapcar 'car package-archive-contents))))
 
 #+END_SRC
@@ -113,6 +138,7 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 #+END_SRC
+
 ** Emacs server
 
    The emacs server is useful if you use emacs for many things, and
@@ -149,7 +175,7 @@
 (setq insert-default-directory t)       ; get default dir in commands
 (setq enable-local-variables t)         ; enables local variables
 (setq compilation-window-height 10)     ; height of compilation window.
-(setq default-cursor-type 'bar)         ; make cursor thin
+(setq cursor-type 'bar)                 ; make cursor thin
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (if (boundp 'fringe-mode) (fringe-mode -1))
@@ -198,51 +224,7 @@
 ** Colors, fonts and stuff
 #+BEGIN_SRC emacs-lisp
 
-;; text-modes can use Iosevka. fix later.
-;;(set-face-attribute 'default nil :family "Iosevka" :height 130)
-;;(set-face-attribute 'fixed-pitch nil :family "Iosevka")
-;;(set-face-attribute 'variable-pitch nil :family "Baskerville")
-
-;;(set-face-foreground 'default "grey90")
-;;(set-face-background 'default "grey20")
-;;(set-face-background 'region "grey30")
-
-(defun my-proportional-font ()
-  (face-remap-add-relative 'default
-                           '(:family "Noto Serif")))
-
-(add-hook 'text-mode-hook #'my-proportional-font)
-(add-hook 'text-mode-hook
-          (lambda () (variable-pitch-mode 1)))
-(add-hook 'prog-mode-hook 'linum-mode)
-(add-hook 'prog-mode-hook
-          (lambda () (variable-pitch-mode 0)))
-
-
-(defadvice load-theme (before clear-previous-themes activate)
-  "Clear existing theme settings instead of layering them"
-  (mapc #'disable-theme custom-enabled-themes))
-
-
-; for text modes:
-; - font with serifs
-; - Fatter cursor 
-; - olivetti mode
-; - lighter background
-
-;;(defmacro help/on-gui (statement &rest statements)
-;;  "Evaluate the enclosed body only when run on GUI."
-;;  `(when (display-graphic-p)
-;;     ,statement
-;;     ,@statements))
-
-;; or
-;;
-;;(when (display-graphic-p)
-;;  (set-frame-font "...")
-;;  (require '...)
-;;  (...-mode))
-;;
+;; test
 
 #+END_SRC
 
@@ -270,11 +252,12 @@ is inserted at the global mark rather than at the current position.
 (setq cua-delete-selection nil)              ; dont kill selections on keypress
 (setq cua-enable-cursor-indications t)       ; customize cursor color
 
+(setq cua-normal-cursor-color "white")
 ;; if Buffer is...
-(setq cua-normal-cursor-color "#15FF00")     ; R/W, then cursor is green
-(setq cua-read-only-cursor-color "purple1")  ; R/O, then cursor is purple
-(setq cua-overwrite-cursor-color "red")      ; in Overwrite mode, cursor is red
-(setq cua-global-mark-cursor-color "yellow") ; in Global mark mode, cursor is yellow
+;;(setq cua-normal-cursor-color "#15FF00")     ; R/W, then cursor is green
+;;(setq cua-read-only-cursor-color "purple1")  ; R/O, then cursor is purple
+;;(setq cua-overwrite-cursor-color "red")      ; in Overwrite mode, cursor is red
+;;(setq cua-global-mark-cursor-color "yellow") ; in Global mark mode, cursor is yellow
 
 #+END_SRC
 
@@ -285,11 +268,11 @@ is inserted at the global mark rather than at the current position.
 (setq-default tab-width 4)
 (setq tab-width 4)
 (setq-default tab-stop-list
-  (mapcar '(lambda (x) (* x 4))
-	(cdr (reverse 
-	      (let (value)
-		(dotimes (number 32 value)
-		  (setq value (cons number value))))))))
+              (mapcar '(lambda (x) (* x 4))
+                      (cdr (reverse 
+                            (let (value)
+                              (dotimes (number 32 value)
+                                (setq value (cons number value))))))))
 
 
 (setq perl-continued-brace-offset -2)
@@ -302,7 +285,9 @@ is inserted at the global mark rather than at the current position.
 
 ** External stuff
 #+BEGIN_SRC emacs-lisp
-(setq tramp-default-method "ssh")    ; we use ssh when tramping
+
+; default to ssh when tramping
+(setq tramp-default-method "ssh")
 
 ;; What browser to use?
 (if (eq system-type 'darwin)
@@ -352,11 +337,79 @@ is inserted at the global mark rather than at the current position.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
+(setq org-hide-leading-stars t)       ; remove leading stars in org-mode
 (setq org-src-tab-acts-natively t)
 (setq org-edit-src-content-indentation 0)
 (setq org-fontify-whole-heading-line t)
 (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
   (font-lock-fontify-buffer))
 
+(setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
+(setq org-bullets 1)                  ; activate said pretty bullets
+
 #+END_SRC
 
+* Hooks for coding and writing prose
+  Here are some themes I like:
+  1. gruvbox
+  2. darktooth
+  3. ample-zen
+  4. badger
+  5. zenburn
+  6. birds-of-paradise-plus-theme
+  7. ample-flat
+  8. ample
+  9. atom-dark
+
+  Here are some which are interesting:
+  - dracula
+  - darkmine
+
+#+BEGIN_SRC emacs-lisp
+(defadvice load-theme (before clear-previous-themes activate)
+  "Clear existing theme settings instead of layering them"
+  (mapc #'disable-theme custom-enabled-themes))
+
+(load-theme 'gruvbox)
+
+(defun write-setup ()
+  ""
+  (interactive)
+  (progn
+    (setq cursor-type '(hbar . 2))
+    (variable-pitch-mode 1)
+    (face-remap-add-relative 'default '(:family "Noto Serif"))
+    (hl-line-mode -1)
+    (olivetti-mode 1)
+    )
+  )
+
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (fringe-mode 1)
+            (linum-mode 1)              ; show line number in margin
+            (hl-line-mode 1)            ; highlight the current line
+            (show-paren-mode t)                   ; show matching parens
+            )
+          )
+
+#+END_SRC
+
+* lint
+#+BEGIN_SRC emacs-lisp
+
+;;(defmacro help/on-gui (statement &rest statements)
+;;  "Evaluate the enclosed body only when run on GUI."
+;;  `(when (display-graphic-p)
+;;     ,statement
+;;     ,@statements))
+
+;; or
+;;
+;;(when (display-graphic-p)
+;;  (set-frame-font "...")
+;;  (require '...)
+;;  (...-mode)) 
+;;
+
+#+END_SRC
