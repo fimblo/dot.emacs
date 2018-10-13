@@ -526,16 +526,34 @@ is inserted at the global mark rather than at the current position.
  )
 
 #+END_SRC
-** Iswitchb-mode
+** Icomplete-mode   
+   Icomplete attempts to complete any command which prompts for a list
+   of choices.
+#+BEGIN_SRC emacs-lisp
+(icomplete-mode 1)
+#+END_SRC
+** Ido-mode
 
-   Makes switching between buffers easier, but not as cluttered as the
-   other buffer-switching replacements.
+   Ido helps with the find-file and switch-to-buffer prompts (will
+   override icomplete for these functions)
 
 #+BEGIN_SRC emacs-lisp
-(require 'iswitchb)
-(iswitchb-mode 1)
-(setq read-buffer-function 'iswitchb-read-buffer)
-(setq iswitchb-default-method 'samewindow)
+(ido-mode 1)
+(if (version< emacs-version "25") ; make separator a newl
+    (progn
+      (make-local-variable 'ido-separator)
+      (setq ido-separator "\n"))
+  (progn
+    (make-local-variable 'ido-decorations)
+    (setf (nth 2 ido-decorations) "\n")))
+
+(setq ido-enable-flex-matching t) ; match substrings
+(setq ido-default-file-method     ; open file in current window
+      'selected-window)                   
+(setq ido-default-buffer-method   ; open buffer in current window
+      'selected-window)                   
+(setq max-mini-window-height 0.5) ; allow ido to show alternatives
+                                  ; vertically
 #+END_SRC
 
 ** DNS-mode
