@@ -158,6 +158,9 @@
 * UI
   This is the first round of setting up the UI.
 ** Basic look and feel
+
+   Configuration basics.
+
 #+BEGIN_SRC emacs-lisp
 (setq default-major-mode 'org-mode)     ; default mode is org-mode
 
@@ -199,6 +202,8 @@
 
 ** Changes in default behaviour upon user action
 
+   Change some basic ways in which emacs does things.
+
 #+BEGIN_SRC emacs-lisp
 (setq case-fold-search t)              ; ignore case in searches
 (setq compilation-ask-about-save 0)    ; dont ask to save when compiling
@@ -209,7 +214,13 @@
 (setq next-line-add-newlines t)        ; C-n at eob opens new lines.
 (setq scroll-step 1)                   ; Moving cursor down at bottom
                                        ; scrolls only a single line
+#+END_SRC
 
+   Generally, I don't like programs asking me if I /really/ want to do
+   something I just told it to do. And if it must, I want that
+   interaction to be as non-intrusive as possible.
+
+#+BEGIN_SRC emacs-lisp
 (defun my-dummy-ring-bell-function () nil)    ; replace beep with visible bell
 (setq ring-bell-function `my-dummy-ring-bell-function)
 
@@ -221,8 +232,7 @@
 (put 'eval-expression 'disabled nil)          ; no confirm on eval-expression
 
 #+END_SRC
-
-** Mouse support
+** Mouse behaviour
 #+BEGIN_SRC emacs-lisp
 (xterm-mouse-mode t)                  ; Support mouse in xterms
 (setq mouse-wheel-mode t)             ; support mouse wheel
@@ -234,6 +244,28 @@
 (display-time)
 (setq display-time-day-and-date t)
 (setq display-time-24hr-format t)
+#+END_SRC
+
+** Indentation
+#+BEGIN_SRC emacs-lisp
+(setq standard-indent 2)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq tab-width 4)
+(setq-default tab-stop-list
+              (mapcar '(lambda (x) (* x 4))
+                      (cdr (reverse 
+                            (let (value)
+                              (dotimes (number 32 value)
+                                (setq value (cons number value))))))))
+
+
+(setq perl-continued-brace-offset -2)
+(setq perl-continued-statement-offset 2)
+(setq perl-indent-level 2)
+(setq perl-label-offset -1)
+(setq sh-basic-offset 2)
+(setq sh-indentation 2)
 #+END_SRC
 
 ** Colours, fonts and stuff
@@ -302,6 +334,76 @@
 
 #+END_SRC
 
+** External stuff
+
+   How emacs interacts with the world outside of it.
+#+BEGIN_SRC emacs-lisp
+; default to ssh when tramping
+(setq tramp-default-method "ssh")
+
+;; What browser to use?
+(if (eq system-type 'darwin)
+    (setq browse-url-browser-function 'browse-url-default-macosx-browser)
+  (setq browse-url-browser-function 'browse-url-chromium)
+  )
+
+;; make scripts executable if they aren't already
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+#+END_SRC
+** Map Suffixes with modes
+#+BEGIN_SRC emacs-lisp
+(setq auto-mode-alist
+      (append
+       (list
+        '("\\.xml"                . xml-mode             )
+        '("\\.pp"                 . puppet-mode          )
+        '("\\.html"               . html-mode            )
+        '("\\.xsl"                . xml-mode             )
+        '("\\.cmd"                . cmd-mode             )
+        '("\\.bat"                . cmd-mode             )
+        '("\\.wiki"               . wikipedia-mode       )
+        '("\\.org.txt"            . org-mode             )
+        '("\\.txt"                . indented-text-mode   )
+        '("\\.php"                . php-html-helper-mode )
+        '("\\.fvwm2rc"            . shell-script-mode    )
+        '("tmp/mutt-"             . message-mode         )
+        '("\\.org"                . org-mode             )
+        '("\\.asciidoc"           . adoc-mode            )
+        '("\\.pm"                 . cperl-mode           )
+        '("\\.pl"                 . cperl-mode           ))
+       auto-mode-alist))
+
+;; and ignore these suffixes when expanding
+(setq completion-ignored-extensions
+      '(".o" ".elc" ".class" "java~" ".ps" ".abs" ".mx" ".~jv" ))
+#+END_SRC
+
+** Display lambda symbol
+
+   Not only is this pretty, it saves some space on the screen :)
+
+#+BEGIN_SRC emacs-lisp
+;; courtesy of stefan monnier on c.l.l
+(defun sm-lambda-mode-hook ()
+  (font-lock-add-keywords
+   nil `(("\\<lambda\\>"
+          (0 (progn (compose-region (match-beginning 0) (match-end 0)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
+(add-hook 'python-mode-hook 'sm-lambda-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'sm-lambda-mode-hook)
+(add-hook 'org-mode-hook 'sm-lambda-mode-hook)
+
+#+END_SRC
+** Other UI things
+   Things don't really fit anywhere else at the moment.
+
+#+BEGIN_SRC emacs-lisp
+; empty right now
+#+END_SRC
+* Modes
 ** CUA-mode
    Cua-mode is normally used to make emacs act more like Windows
    (control-c to copy, etc). I use a subset so that I can use
@@ -335,80 +437,23 @@ is inserted at the global mark rather than at the current position.
 
 #+END_SRC
 
-** Indentation
+** Org-mode
+   I love org-mode, even if I only use a fraction of its capabilities.
 #+BEGIN_SRC emacs-lisp
-(setq standard-indent 2)
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-(setq tab-width 4)
-(setq-default tab-stop-list
-              (mapcar '(lambda (x) (* x 4))
-                      (cdr (reverse 
-                            (let (value)
-                              (dotimes (number 32 value)
-                                (setq value (cons number value))))))))
-
-
-(setq perl-continued-brace-offset -2)
-(setq perl-continued-statement-offset 2)
-(setq perl-indent-level 2)
-(setq perl-label-offset -1)
-(setq sh-basic-offset 2)
-(setq sh-indentation 2)
+(require 'org-install)
+(setq org-log-done 'time)
+(setq org-directory (concat home "/notes/"))
+(make-directory org-directory 1)
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+(add-hook 'org-mode-hook
+          (lambda ()
+            (visual-line-mode)
+            (flyspell-mode)
+            (auto-fill-mode -1)))
 #+END_SRC
 
-** External stuff
-#+BEGIN_SRC emacs-lisp
 
-; default to ssh when tramping
-(setq tramp-default-method "ssh")
-
-;; What browser to use?
-(if (eq system-type 'darwin)
-    (setq browse-url-browser-function 'browse-url-default-macosx-browser)
-  (setq browse-url-browser-function 'browse-url-chromium)
-  )
-#+END_SRC
-** Map Suffixes with modes
-#+BEGIN_SRC emacs-lisp
-(setq auto-mode-alist
-      (append
-       (list
-        '("\\.xml"                . xml-mode             )
-        '("\\.pp"                 . puppet-mode          )
-        '("\\.html"               . html-mode            )
-        '("\\.xsl"                . xml-mode             )
-        '("\\.cmd"                . cmd-mode             )
-        '("\\.bat"                . cmd-mode             )
-        '("\\.wiki"               . wikipedia-mode       )
-        '("\\.org.txt"            . org-mode             )
-        '("\\.txt"                . indented-text-mode   )
-        '("\\.php"                . php-html-helper-mode )
-        '("\\.fvwm2rc"            . shell-script-mode    )
-        '("tmp/mutt-"             . message-mode         )
-        '("\\.org"                . org-mode             )
-        '("\\.asciidoc"           . adoc-mode            )
-        '("\\.pm"                 . cperl-mode           )
-        '("\\.pl"                 . cperl-mode           ))
-       auto-mode-alist))
-
-;; and ignore these suffixes when expanding
-(setq completion-ignored-extensions
-      '(".o" ".elc" ".class" "java~" ".ps" ".abs" ".mx" ".~jv" ))
-#+END_SRC
-** Other UI things
-   Things don't really fit anywhere else at the moment.
-
-#+BEGIN_SRC emacs-lisp
-;; make scripts executable if they aren't already
-(add-hook 'after-save-hook
-          'executable-make-buffer-file-executable-if-script-p)
-
-#+END_SRC
-* Org-mode
-** Org-babel 
-  I'll put the org-babel configuration here at the top until I have a section for org-mode.
-
+*** Org-babel 
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
 (setq org-hide-leading-stars t)       ; remove leading stars in org-mode
@@ -423,6 +468,236 @@ is inserted at the global mark rather than at the current position.
 
 #+END_SRC
 
+** Visual-line-mode
+
+   Make it easy to set margin on visual-line-mode regardless of frame
+   size.
+
+#+BEGIN_SRC emacs-lisp
+(defvar visual-wrap-column nil)
+(defun set-visual-wrap-column (new-wrap-column &optional buffer)
+  "Force visual line wrap at NEW-WRAP-COLUMN in BUFFER (defaults
+    to current buffer) by setting the right-hand margin on every
+    window that displays BUFFER.  A value of NIL or 0 for
+    NEW-WRAP-COLUMN disables this behavior."
+  (interactive (list (read-number "New visual wrap column, 0 to disable: " (or visual-wrap-column fill-column 0))))
+  (if (and (numberp new-wrap-column)
+           (zerop new-wrap-column))
+      (setq new-wrap-column nil))
+  (with-current-buffer (or buffer (current-buffer))
+    (visual-line-mode t)
+    (set (make-local-variable 'visual-wrap-column) new-wrap-column)
+    (add-hook 'window-configuration-change-hook 'update-visual-wrap-column nil t)
+    (let ((windows (get-buffer-window-list)))
+      (while windows
+        (when (window-live-p (car windows))
+          (with-selected-window (car windows)
+            (update-visual-wrap-column)))
+        (setq windows (cdr windows))))))
+(defun update-visual-wrap-column ()
+  (if (not visual-wrap-column)
+      (set-window-margins nil nil)
+    (let* ((current-margins (window-margins))
+           (right-margin (or (cdr current-margins) 0))
+           (current-width (window-width))
+           (current-available (+ current-width right-margin)))
+      (if (<= current-available visual-wrap-column)
+          (set-window-margins nil (car current-margins))
+        (set-window-margins nil (car current-margins)
+                            (- current-available visual-wrap-column))))))
+#+END_SRC
+
+** Flyspell-mode
+#+BEGIN_SRC emacs-lisp
+(setq ispell-program-name "aspell")
+(setq flyspell-mark-duplications-flag nil)
+(setq flyspell-consider-dash-as-word-delimiter-flag t)
+#+END_SRC
+** Comint-mode
+#+BEGIN_SRC emacs-lisp
+(ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes in shell output windows
+(custom-set-variables
+ '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
+ '(comint-scroll-to-bottom-on-output t) ; always add output at the bottom
+ '(comint-scroll-show-maximum-output t) ; scroll to show max possible output
+ '(comint-completion-autolist t)        ; show completion list when ambiguous
+ '(comint-input-ignoredups t)           ; no duplicates in command history
+ '(comint-completion-addsuffix t)       ; insert space/slash after file completion
+ )
+
+#+END_SRC
+** Iswitchb-mode
+
+   Makes switching between buffers easier, but not as cluttered as the
+   other buffer-switching replacements.
+
+#+BEGIN_SRC emacs-lisp
+(require 'iswitchb)
+(iswitchb-mode 1)
+(setq read-buffer-function 'iswitchb-read-buffer)
+(setq iswitchb-default-method 'samewindow)
+#+END_SRC
+
+** DNS-mode
+
+   A decade or so ago, I manually edited dns zone files a lot, and I
+   made frequent use of the $INCLUDE directive - meaning most dns zone
+   files didn't have a SOA post to increment. This resulted in an
+   error when saving. 
+
+   I wrote this piece of advice to avoid this problem.
+
+#+BEGIN_SRC emacs-lisp
+(defadvice dns-mode-soa-maybe-increment-serial (before maybe-set-increment)
+  "if there is a dns soa post, increment it. Otherwise, just save"
+  (save-excursion
+    (beginning-of-buffer)
+    (message "dns-mode-soa-auto-increment-serial %s"
+             (setq dns-mode-soa-auto-increment-serial
+                   (and (search-forward-regexp "IN[ ''\t'']+SOA" nil t)
+                        (not (search-forward-regexp "@SERIAL@" nil t)))
+                   )
+             )
+    )
+  )
+
+(ad-activate 'dns-mode-soa-maybe-increment-serial)
+#+END_SRC
+
+** Ibuffer-mode
+#+BEGIN_SRC emacs-lisp
+(require 'ibuffer)
+
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("Org" ;; all org-related buffers
+                (mode . org-mode))
+               ("Recruitment"
+                (filename . "candidates"))
+               ("Minutes"
+                (filename . "meeting-minutes"))
+               ("Remote machines"
+                (name . "^\\*tramp"))
+               ("Personal WC"
+                (filename . "wc/"))
+               ("Erc"
+                (mode . erc-mode))
+               ("Mail"
+                (or  ;; mail-related buffers
+                 (mode . message-mode)
+                 (mode . mail-mode)
+                 (mode . mutt-mode)
+                 ))
+               ("Version Control" (or (mode . svn-status-mode)
+                                      (mode . svn-log-edit-mode)
+                                      (name . "^\\*svn-")
+                                      (name . "^\\*vc\\*$")
+                                      (name . "^\\*Annotate")
+                                      (name . "^\\*git-")
+                                      (name . "^\\*vc-")))
+               ("Emacs lisp"
+                (mode . emacs-lisp-mode))
+               ("Emacs auto"
+                (or (name . "^\\*scratch\\*$")
+                    (name . "^\\*Messages\\*$")
+                    (name . "^\\*Help\\*$")
+                    (name . "^\\*info\\*$")
+                    (name . "^\\*Occur\\*$")
+                    (name . "^\\*grep\\*$")
+                    (name . "^\\*Compile-Log\\*$")
+                    (name . "^\\*Backtrace\\*$")
+                    (name . "^\\*Process List\\*$")
+                    (name . "^\\*gud\\*$")
+                    (name . "^\\*Man")
+                    (name . "^\\*Kill Ring\\*$")
+                    (name . "^\\*Calendar\\*$")
+                    (name . "^\\*Completions\\*$")
+                    (name . "^\\*shell\\*$")
+                    (name . "^\\*compilation\\*$")))
+               )
+              )
+             )
+      )
+
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")))
+(setq ibuffer-default-sorting-mode 'major-mode)
+#+END_SRC
+** Erc-mode
+
+   I don't use IRC as much nowadays, but used this config when I did.
+#+BEGIN_SRC emacs-lisp
+;; set a max-size to a irc buffer...
+(setq erc-max-buffer-size 20000)
+
+;; Make erc prompt show channelname.
+(setq erc-prompt
+      (lambda ()
+        (if (and (boundp 'erc-default-recipients) (erc-default-target))
+            (erc-propertize (concat (erc-default-target) ">") 'read-only t 'rear-nonsticky t 'front-nonsticky t)
+          (erc-propertize (concat "ERC>") 'read-only t 'rear-nonsticky t 'front-nonsticky t))))
+#+END_SRC
+** Longlines-mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'longlines-mode-hook
+          (lambda()
+            (auto-fill-mode -1)
+            (longlines-show-hard-newlines)))
+#+END_SRC
+** Adoc-mode-hook
+   For asciidoc mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'adoc-mode-hook
+          (lambda()
+            (auto-fill-mode -1)
+            (visual-line-mode)))
+#+END_SRC
+** Python-mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'python-mode-hook
+          (lambda()
+            (cond ((eq buffer-file-number nil)
+                   (progn (interactive)
+                          (goto-line 1)
+                          (insert "#!/usr/bin/env python\n")
+                          (insert "# -*- tab-width: 4 -*-\n")
+                          )))))
+
+#+END_SRC
+** Java-mode
+#+BEGIN_SRC emacs-lisp
+(defun my-java-mode-hook ()
+  (c-add-style
+   "my-java"
+   '("java"
+     (c-basic-offset . 2)))
+  (c-set-style "my-java"))
+(add-hook 'java-mode-hook 'my-java-mode-hook)
+#+END_SRC
+** Mutt-mode
+#+BEGIN_SRC emacs-lisp
+(defun my-mutt-mode-hook ()
+  (visual-line-mode)
+  (orgstruct-mode)
+  )
+(add-hook 'message-mode-hook 'my-mutt-mode-hook)
+
+(add-hook 'mail-mode-hook
+          '(lambda ()
+             (define-key mail-mode-map "\C-c\C-w" 'message-replace-sig)
+             ))
+#+END_SRC
+** Assorted hooks
+   Finally, a bunch of small hooks for various modes.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
+(add-hook 'html-helper-mode-hook 'hexcolour-add-to-font-lock)
+(add-hook 'html-mode-hook 'hexcolour-add-to-font-lock)
+(add-hook 'html-mode-hook 'set-html-mode-end-paragraph)
+(add-hook 'text-mode-hook 'visual-line-mode)
+#+END_SRC
 * lint
 #+BEGIN_SRC emacs-lisp
 
