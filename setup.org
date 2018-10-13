@@ -180,6 +180,21 @@
 (menu-bar-mode -1)
 (if (boundp 'fringe-mode) (fringe-mode -1))
 (if (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
+
+;; Look and feel for all programming modes
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (fringe-mode 1)
+            (linum-mode 1)              ; show line number in margin
+            (hl-line-mode 1)            ; highlight the current line
+            (show-paren-mode t)         ; show matching parens
+            )
+          )
+
+
+
+
 #+END_SRC
 
 ** Changes in default behaviour upon user action
@@ -221,10 +236,69 @@
 (setq display-time-24hr-format t)
 #+END_SRC
 
-** Colors, fonts and stuff
+** Colours, fonts and stuff
+
+   Apparently loading a theme using (load-theme) overlays the new
+   theme onto whatever was there before. This might be useful at
+   times, but I find it easier when I get exactly the theme I select.
+
+   Anyway, the advice function below makes load-theme behave the way I
+   like.
+#+BEGIN_SRC emacs-lisp
+(defadvice load-theme (before clear-previous-themes activate)
+  "Clear existing theme settings instead of layering them"
+  (mapc #'disable-theme custom-enabled-themes))
+
+(load-theme 'gruvbox)
+#+END_SRC
+
+   For the longest time, I've for some reason enjoyed writing more in
+   traditional word processors like Google Docs, Openoffice, MSWord
+   even if I've been an emacs user for decades. I never really
+   understood why until I realised that it had to do with the UI. By
+   changing the font into something with serifs, and writing in the
+   "middle" of the buffer window, I discovered that writing became
+   more enjoyable for me.
+
+   The code block below toggles between prose and code mode.
+   
 #+BEGIN_SRC emacs-lisp
 
-;; test
+(setq f/write-state "nowrite")
+(setq f/face-cookie nil)
+(defun write-toggle ()
+  "Toggles write-state of current buffer.
+
+   Write-state defaults to nil, but when activated, does the following:
+   - Changes the cursor to a short horizontal line
+   - Changes the font to Noto Serif
+   - Removes hl-line-mode
+   - Activates Olivetti-mode
+
+   Toggling again reverts the changes."
+
+  (interactive)
+  (if (string= f/write-state "write")
+      (progn 
+        (message "write-state")
+        (setq cursor-type 'bar)
+        (variable-pitch-mode 0)
+        (face-remap-remove-relative f/face-cookie) ; revert to old face
+        (hl-line-mode 1)
+        (olivetti-mode -1)
+        (setq f/write-state "nowrite"))
+    (progn
+      (message "not write-state")
+      (setq cursor-type '(hbar . 2))
+      (variable-pitch-mode 1)       
+      (setq f/face-cookie              ; when changing face, save old
+            (face-remap-add-relative   ; face in a cookie.
+             'default 
+             '(:family "Noto Serif")))
+      (hl-line-mode -1)
+      (olivetti-mode 1)
+      (setq f/write-state "write"))))
+
 
 #+END_SRC
 
@@ -346,52 +420,6 @@ is inserted at the global mark rather than at the current position.
 
 (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
 (setq org-bullets 1)                  ; activate said pretty bullets
-
-#+END_SRC
-
-* Hooks for coding and writing prose
-  Here are some themes I like:
-  1. gruvbox
-  2. darktooth
-  3. ample-zen
-  4. badger
-  5. zenburn
-  6. birds-of-paradise-plus-theme
-  7. ample-flat
-  8. ample
-  9. atom-dark
-
-  Here are some which are interesting:
-  - dracula
-  - darkmine
-
-#+BEGIN_SRC emacs-lisp
-(defadvice load-theme (before clear-previous-themes activate)
-  "Clear existing theme settings instead of layering them"
-  (mapc #'disable-theme custom-enabled-themes))
-
-(load-theme 'gruvbox)
-
-(defun write-setup ()
-  ""
-  (interactive)
-  (progn
-    (setq cursor-type '(hbar . 2))
-    (variable-pitch-mode 1)
-    (face-remap-add-relative 'default '(:family "Noto Serif"))
-    (hl-line-mode -1)
-    (olivetti-mode 1)
-    )
-  )
-
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (fringe-mode 1)
-            (linum-mode 1)              ; show line number in margin
-            (hl-line-mode 1)            ; highlight the current line
-            (show-paren-mode t)                   ; show matching parens
-            )
-          )
 
 #+END_SRC
 
