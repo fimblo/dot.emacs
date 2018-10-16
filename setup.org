@@ -9,26 +9,41 @@
    set up some basics.
 
 #+BEGIN_SRC emacs-lisp
-(require 'cl)
-(setq message-log-max (- (expt 2 15) 1))
+(require 'cl)                 ; Get access to some more functionality
+(setq message-log-max
+      (- (expt 2 15) 1))      ; Make message log big
+#+END_SRC
 
+   Set some useful variables for later use
+
+#+BEGIN_SRC emacs-lisp
 (defvar home (getenv "HOME") "Home directory, sourced from Environment variable HOME")
 (setq default-directory (concat home "/"))
+(setq me (or load-file-name (buffer-file-name)))
+(defvar emacs-root
+  (file-name-directory (or (file-symlink-p me)
+               me
+               )))
 
 (defvar hostname (getenv "HOSTNAME") "This machine's hostname")
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
+#+END_SRC
 
-(setq locale-coding-system	'utf-8)
-(set-terminal-coding-system	'utf-8)
-(set-keyboard-coding-system	'utf-8)
-(set-selection-coding-system	'utf-8)
-(prefer-coding-system		'utf-8)
+   Make _really_ sure that we're using utf-8.
+
+#+BEGIN_SRC emacs-lisp
+(setq locale-coding-system      'utf-8)
+(set-terminal-coding-system     'utf-8)
+(set-keyboard-coding-system     'utf-8)
+(set-selection-coding-system    'utf-8)
+(prefer-coding-system           'utf-8)
 (set-language-environment       "UTF-8")
 #+END_SRC
 
 ** Package.el configuration
+
    This needs to be in place before any configurations of installed packages.
 
    Most of this was shamelessly copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/master/emacs.d/emacs.org][emacs setup]]. Thanks @jeekl!
@@ -48,7 +63,7 @@
 ;; add these sources
 (eval-after-load "package"
   '(progn
-     (add-to-list 'package-archives '("org"   . "http://orgmode.org/elpa/"))
+     (add-to-list 'package-archives '("org"       . "http://orgmode.org/elpa/"))
      (add-to-list 'package-archives '("melpa"     . "http://melpa.milkbox.net/packages/"))
      (add-to-list 'package-archives '("elpa"      . "http://elpa.gnu.org/packages/"))
      (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -539,13 +554,13 @@ is inserted at the global mark rather than at the current position.
 
 #+BEGIN_SRC emacs-lisp
 (ido-mode 1)
-(if (version< emacs-version "25") ; make separator a newl
-    (progn
-      (make-local-variable 'ido-separator)
-      (setq ido-separator "\n"))
-  (progn
-    (make-local-variable 'ido-decorations)
-    (setf (nth 2 ido-decorations) "\n")))
+;; (if (version< emacs-version "25") ; make separator a newl
+;;     (progn
+;;       (make-local-variable 'ido-separator)
+;;       (setq ido-separator "\n"))
+;;   (progn
+;;     (make-local-variable 'ido-decorations)
+;;     (setf (nth 2 ido-decorations) "\n")))
 
 (setq ido-enable-flex-matching t) ; match substrings
 (setq ido-default-file-method     ; open file in current window
@@ -759,7 +774,7 @@ is inserted at the global mark rather than at the current position.
     (unless previous (emacs-lisp-mode))))
 
 (defun open-dot-emacs ()
-  "opening-dot-emacs"
+  "Opens the  "
   (interactive)
   (find-file emacs-root)
   )
@@ -963,7 +978,7 @@ Todo someday: support the GENERATE directive"
 
 #+END_SRC
 
-** Perl helper functions
+** Perl helper
 #+BEGIN_SRC emacs-lisp
 
 ;; when in cperl-mode, set META-, to fat comma
@@ -1102,7 +1117,7 @@ point to the end of the buffer."
                     (:background ,colour)))))))))
 
 #+END_SRC
-** Org todo functions
+** Org functions
 
    For a couple of years I put all my todos into an org-file called
    ~/todo.org. These functions helped me with this.
@@ -1132,7 +1147,26 @@ point to the end of the buffer."
     (save-buffer)
     )
 )
+#+END_SRC
 
+   I use this following function when I use plain org-mode for
+   presentations.
+#+BEGIN_SRC emacs-lisp
+;; http://stackoverflow.com/questions/12915528/easier-outline-navigation-in-emacs
+(defun org-show-next-heading-tidily ()
+  "Show next entry, keeping other entries closed."
+  (interactive)
+  (if (save-excursion (end-of-line) (outline-invisible-p))
+      (progn (org-show-entry) (show-children))
+    (outline-next-heading)
+    (unless (and (bolp) (org-on-heading-p))
+      (org-up-heading-safe)
+      (hide-subtree)
+      (error "Boundary reached"))
+    (org-overview)
+    (org-reveal t)
+    (org-show-entry)
+    (show-children)))
 #+END_SRC
 
 ** Other functions
