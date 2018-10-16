@@ -716,6 +716,529 @@ is inserted at the global mark rather than at the current position.
 (add-hook 'html-mode-hook 'set-html-mode-end-paragraph)
 (add-hook 'text-mode-hook 'visual-line-mode)
 #+END_SRC
+* Helper functions
+
+  Here's a bunch of functions, some of them written by me, most by
+  other people.
+
+** Set frame title bar
+
+   Create a reasonable titlebar for emacs, which works on both windows
+   and unix. Note: assumes HOSTNAME is exported.
+
+#+BEGIN_SRC emacs-lisp
+
+(defun create_title_format (user host)
+  "Creates a window title string which works for both win and unix"
+  (interactive)
+  (list (getenv user) "@" (getenv host) ":"
+        '(:eval
+          (if buffer-file-name
+              (replace-regexp-in-string
+               home
+               "~"
+               (buffer-file-name))
+            (buffer-name))))
+  )
+
+;; Set window and icon title.
+(if (eq system-type 'windows-nt)
+    (setq frame-title-format (create_title_format "USERNAME" "COMPUTERNAME"))
+  (setq frame-title-format (create_title_format "USER" "HOSTNAME")))
+#+END_SRC
+
+** Buffer navigation functions
+#+BEGIN_SRC emacs-lisp
+
+(defun switch-to-scratch ()
+  "Switch to scratch buffer. Create one in `emacs-lisp-mode' if not exists."
+  (interactive)
+  (let ((previous (get-buffer "*scratch*")))
+    (switch-to-buffer "*scratch*")
+    ;; don't change current mode
+    (unless previous (emacs-lisp-mode))))
+
+(defun open-dot-emacs ()
+  "opening-dot-emacs"
+  (interactive)
+  (find-file emacs-root)
+  )
+
+#+END_SRC
+
+** DNS-related functions
+
+   generate-ptr-records and sort-A-records were really useful for me
+   back when I managed Spotify's DNS manually in the bad-old-days.
+
+#+BEGIN_SRC emacs-lisp
+
+(defun generate-ptr-records (start-pos end-pos)
+  "Finds DNS A-records in region, and for each one, creates a PTR
+record in a temporary buffer.
+
+The PTR posts are sorted into sections by domainname.
+
+If no region was set, finds all A-records from point to end of buffer."
+
+  (interactive "r")
+  (let (origin            ; to make the hostname a fqdn
+        rgx               ; ugly regex matching an A-record
+
+        hostname          ; one hostname
+        ip                ; one IPv4 address
+        oct-list          ; each IPv4 octet in a list
+        first-octets      ; 'aaa.bbb.ccc'
+        last-octet        ; 'ddd'
+        comment           ; optional comment, if any
+
+        ptr-rec           ; one generated PTR record
+        list-of-ptr-recs  ; PTR records with first 3 octets in common
+        ptr-hash          ; key first 3 octets, value list-of-ptr-recs
+        )
+
+
+    ;; if no region was set, work from point to end-of-buffer.
+    (setq end-pos (if (= (point) (mark)) (end-of-buffer)))
+
+    ;; Bring point to beginning of region if selection was made from
+    ;; upper part of the buffer to the end.
+    (if (> (point) (mark)) (exchange-point-and-mark))
+
+    ;; Pads string to three chars
+    (defun pad-octet (octet)
+      (if (= (length octet) 3)
+          octet
+        (pad-octet (concat octet " "))))
+
+
+    ;; Read Origin from minibuffer
+    (setq origin
+          (read-from-minibuffer
+           "Enter $ORIGIN: "
+           (chomp (shell-command-to-string (concat "hostname -d")))))
+    (setq origin (if (string= (substring origin -1) ".") ; make fqdn
+                     origin                              ; if not fqdn
+                   (concat origin ".")))
+
+    ;; Regexp matching an A-record with optional comment
+    (setq rgx
+          (concat
+           ;; hostname part
+           "^\\([[:alnum:]\.-]+\\)"
+           ".*?"
+
+           ;; followed by A
+           "[ ''\t'']A[ ''\t'']+"
+           ".*?"
+
+           ;; followed by (very) loose definition of an ip address
+           "\\([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\\)"
+
+           ;; followed by an optional comment
+           ".*?\\(;.*?\\)?$"))
+
+    ;; Walk through region, picking up all A-records and putting them
+    ;; into a hash, using first three octets as key
+    (setq ptr-hash (make-hash-table :test 'equal))
+    (while (search-forward-regexp rgx end-pos 1)
+      (setq hostname (match-string 1))
+      (setq ip (match-string 2))
+      (setq comment (if (null (match-string 3)) "" (match-string 3)))
+
+      (setq oct-list (split-string ip "\\."))
+      (setq first-octets (mapconcat
+                          (lambda (x) x)
+                          (nreverse (cons "IN-ADDR.ARPA." (butlast oct-list 1)))
+                          "."))
+      (setq last-octet (nth 3 oct-list))
+
+      ;; create a PTR record
+      (setq ptr-rec (concat (pad-octet last-octet)
+                            "  IN  PTR  "
+                            hostname "." origin
+                            " " comment))
+
+      ;; put the PTR record into the correct list
+      (setq list-of-ptr-recs (gethash first-octets ptr-hash))
+      (setq list-of-ptr-recs
+            (if (null list-of-ptr-recs)
+                (list ptr-rec)
+              (cons ptr-rec list-of-ptr-recs)))
+
+      ;; put the list
+      (puthash first-octets list-of-ptr-recs ptr-hash)
+      )
+
+    (with-output-to-temp-buffer "ptr-records"
+      (maphash
+       (lambda (k v)
+         (princ (format "\n$ORIGIN %s\n" k))
+         (setq v (sort v (lambda (a b)
+                           (< (string-to-number (car (split-string a " ")))
+                              (string-to-number (car (split-string b " ")))))))
+         (while (not (null v))
+           (princ (format "%s\n" (pop v)))
+           )
+         )
+       ptr-hash)
+      )
+    )
+  )
+
+(defun sort-A-records (start-pos end-pos)
+  "Given a DNS buffer containing a bunch of A-records, this
+function finds all records inside a region and sorts them by ip
+address. The output is placed in a temporary buffer called
+'sorted-ips'.
+
+Todo someday: support the GENERATE directive"
+  (interactive "r")
+
+  ;; --------------------------------------------------
+  ;; Helper functions
+  (defun eq-octet (a b index)
+    (= (string-to-number (nth index a))
+       (string-to-number (nth index b))))
+
+  (defun lt-octet (a b index)
+    (< (string-to-number (nth index a))
+       (string-to-number (nth index b))))
+
+
+  (defun sort-hash-by-ip (hashtable)
+    (let (mylist)
+      (setq mylist         ;; Create a list of ip-hostname pairs
+            (let (mylist)
+              (maphash
+               (lambda (kk vv)
+                 (setq mylist (cons (list kk vv) mylist))) hashtable)
+              mylist
+              ))
+      (sort mylist         ;; sort them by ip
+            (lambda (y z)
+              (setq y (split-string  (car y) "\\."))
+              (setq z (split-string  (car z) "\\."))
+
+              (if (eq-octet y z 0)
+                  (if (eq-octet y z 1)
+                      (if (eq-octet y z 2)
+                          (lt-octet y z 3)
+                        (lt-octet y z 2))
+                    (lt-octet y z 1))
+                (lt-octet y z 0))
+              )
+            )
+      )
+    )
+
+
+
+  ;; --------------------------------------------------
+  ;; Main body starts here
+  (let (iphash)
+    ;; create hash
+    (setq iphash (make-hash-table :test 'equal))
+
+    ;; if no region selected, just grab all A-records from point.
+    (setq end-pos (if (= (point) (mark)) (end-of-buffer)))
+    (if (> (point) (mark)) (exchange-point-and-mark))
+
+    (while (search-forward-regexp
+            "^\\([[:alnum:]\.-]+\\).*?[ ''\t'']A[ ''\t'']+.*?\\([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\\)" end-pos 1)
+      (puthash (match-string 2) (match-string 1) iphash)
+      )
+
+    (with-output-to-temp-buffer "sorted-ips"
+      (let (item mylist)
+        (setq mylist (sort-hash-by-ip iphash))
+        (while (setq item (pop mylist))
+          (princ (format "%s\t%s\n" (car item) (cadr item)))
+          )
+        )
+      )
+    )
+  )
+
+
+#+END_SRC
+
+** Perl helper functions
+#+BEGIN_SRC emacs-lisp
+
+;; when in cperl-mode, set META-, to fat comma
+(defun cperl-mode-set-fat-comma ()
+  "Set M-, to fat comma (=>)"
+  (interactive)
+  (global-set-key "\M-," (lambda () (interactive) (insert " => ")))
+  )
+
+#+END_SRC
+
+** Simple text manipulation
+#+BEGIN_SRC emacs-lisp
+
+(defun merge-lines ()
+  "Make paragraph I am in right now into one line."
+  (interactive)
+  (let (p)
+    (forward-paragraph)
+    (setq p (point))
+    (backward-paragraph)
+    (next-line)
+    (while (re-search-forward "\n +"  p t)
+      (replace-match " ")
+      )
+    )
+)
+;; inserts a separator
+(fset 'add_separator
+      [?\C-a return up ?\C-5 ?\C-0 ?- ?\C-  ?\C-a ?\M-x ?c ?o ?m ?m ?e ?n ?t ?  ?r ?e ?g ?i ?o ?n return down])
+
+
+(defun insert-time ()
+  "Insert date/time at point"
+  (interactive)
+  (insert (format-time-string "%Y/%m/%d-%R")))
+
+
+(defun insert-date ()
+  "Insert date at point"
+  (interactive)
+  (insert (format-time-string "%Y%m%d")))
+
+
+(defun iwb ()
+  "indent whole buffer"
+  (interactive)
+  (delete-trailing-whitespace)
+  (indent-region (point-min) (point-max) nil)
+  (untabify (point-min) (point-max)))
+
+
+(defun wrap-text (start end)
+  "Asks for two strings, which will be placed before and after a
+   selected region"
+  (interactive "r")
+  (let (prefix suffix)
+    (setq prefix (read-from-minibuffer "Prefix: "))
+    (setq suffix (read-from-minibuffer "Suffix: "))
+    (save-restriction
+      (narrow-to-region start end)
+      (goto-char (point-min))
+      (insert prefix)
+      (goto-char (point-max))
+      (insert suffix)
+      )))
+(defun wrap-region (start end)
+  "Given a prefix and a suffix, this function will wrap each line
+in the region such that they are prefixed with the prefix and
+suffixed with the suffix.
+
+If no region is selected, it will do the above for all lines from
+point to the end of the buffer."
+
+
+  (interactive "r")
+  (let (prefix suffix linecount str-len end-pos)
+    (setq prefix (read-from-minibuffer "Prefix: "))
+    (setq suffix (read-from-minibuffer "Suffix: "))
+
+    ;; if no region was set, work from point to end-of-buffer.
+    (setq end-pos (if (= (point) (mark)) (end-of-buffer) end))
+
+    ;; Bring point to beginning of region if selection was made from
+    ;; upper part of the buffer to the end.
+    (if (> (point) (mark)) (exchange-point-and-mark))
+
+
+    (setq linecount (count-lines (point) end-pos))
+    (setq linecount (if (= start (point)) 
+                        linecount
+                      (progn
+                        (forward-line)
+                        (- linecount 1))))
+
+
+    (setq str-len (+ end-pos (* linecount  (+ (length (concat prefix suffix))))))
+
+    (message "Start: %s, End-Pos: %s, Point: %s" start end-pos (point))
+    (message "Linecount: %s" linecount)
+
+    (while (re-search-forward "^\\(.*\\)$"  str-len  nil)
+      (replace-match (concat prefix "\\1" suffix) nil nil)
+      )
+    )
+  )
+
+#+END_SRC
+** HTML stuff
+#+BEGIN_SRC emacs-lisp
+(defun html-mode-end-paragraph ()
+  "End the paragraph nicely"
+  (interactive)
+  (insert "</p>\n"))
+
+(defun hexcolour-luminance (color)
+  "Calculate the luminance of a color string (e.g. \"#ffaa00\", \"blue\").
+  This is 0.3 red + 0.59 green + 0.11 blue and always between 0 and 255."
+  (let* ((values (x-color-values color))
+         (r (car values))
+         (g (cadr values))
+         (b (caddr values)))
+    (floor (+ (* .3 r) (* .59 g) (* .11 b)) 256)))
+
+(defun hexcolour-add-to-font-lock ()
+  (interactive)
+  (font-lock-add-keywords
+   nil
+   `((,(concat "#[0-9a-fA-F]\\{3\\}[0-9a-fA-F]\\{3\\}?\\|"
+               (regexp-opt (x-defined-colors) 'words))
+      (0 (let ((colour (match-string-no-properties 0)))
+           (put-text-property
+            (match-beginning 0) (match-end 0)
+            'face `((:foreground ,(if (> 128.0 (hexcolour-luminance colour))
+                                      "white" "black"))
+                    (:background ,colour)))))))))
+
+#+END_SRC
+** Org todo functions
+
+   For a couple of years I put all my todos into an org-file called
+   ~/todo.org. These functions helped me with this.
+
+#+BEGIN_SRC emacs-lisp
+
+(defun switch-to-todo ()
+  "Switch to todo buffer. Open file if necessary"
+  (interactive)
+  (find-file-other-window (concat home "/todo.org"))
+  (goto-char (point-min)))
+
+
+(defun add-todo ()
+  "Add a todo to the todo buffer."
+  (interactive)
+  (add-todo-helper (read-from-minibuffer "Todo: "))
+)
+
+(defun add-todo-helper (msg)
+  (save-current-buffer
+    (set-buffer (find-file-noselect (concat home "/todo.org")))
+    (goto-char (point-min))
+    (re-search-forward "^\* Todo$" nil t)
+    (insert "\n** TODO " msg)
+    (org-schedule nil (current-time))
+    (save-buffer)
+    )
+)
+
+#+END_SRC
+
+** Other functions
+#+BEGIN_SRC emacs-lisp
+
+(defun toggle-selective-display ()
+  "Run this to show only function names in source. run again to go back."
+  (interactive)
+  (set-selective-display (if selective-display nil 1)))
+
+
+;; Starts an ansi-term
+(defun my-ansi-term()
+  "Starts an ansi-term with optional buffer name"
+
+  (interactive)
+  (let (string)
+    (setq string
+          (read-from-minibuffer
+           "Enter terminal buffer name: "
+           "ansi-term"))
+    (ansi-term "/bin/bash" string)
+    )
+  )
+
+
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
+
+;; Rename both file and buffer.
+;; Ripped from Steve Yegges .emacs
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file!" name)
+      (if (get-buffer new-name)
+          (message "A buffer named '%s' already exists!" new-name)
+        (progn
+          (rename-file name new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil))))))
+
+;; copied from http://blog.tuxicity.se/
+;; was called delete-this-buffer-and-file()
+(defun delete-file-and-buffer ()
+  "Deletes file connected to current buffer and kills buffer."
+  (interactive)
+  (let ((filename (buffer-file-name))
+        (buffer (current-buffer))
+        (name (buffer-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (when (yes-or-no-p "Are you sure you want to remove this file? ")
+        (delete-file filename)
+        (kill-buffer buffer)
+        (message "File '%s' successfully removed" filename)))))
+
+;; vi-style parenthesis matching
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren; otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+        (t (self-insert-command (or arg 1)))))
+
+
+(defun philles-takM-formatterare ()
+  "Tar bort dessa irriterande ^M."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward "" nil t)
+      (replace-match "" nil t)))
+  )
+
+(defun philles-whitespace-formatterare ()
+  "Ta bort allt whitespace (space + tabbar) i slutet av varje rad i bufferten"
+  (interactive)
+  (message "Function disabled. Use delete-trailing-whitespace instead.")
+  )
+
+;; Never compile .emacs by hand again
+;;(add-hook 'after-save-hook 'autocompile)
+;; (defun autocompile ()
+;;   "compile itself if dot.emacs.el"
+;;   (interactive)
+;;   (if (string= (buffer-file-name) (concat default-directory "dot.emacs.el"))
+;;       (byte-compile-file (buffer-file-name))))
+
+
+
+
+#+END_SRC
+
 * lint
 #+BEGIN_SRC emacs-lisp
 
