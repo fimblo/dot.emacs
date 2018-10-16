@@ -598,6 +598,9 @@ is inserted at the global mark rather than at the current position.
 #+END_SRC
 
 ** Ibuffer-mode
+
+   A nice list-buffer replacement.
+
 #+BEGIN_SRC emacs-lisp
 (require 'ibuffer)
 
@@ -605,16 +608,14 @@ is inserted at the global mark rather than at the current position.
       (quote (("default"
                ("Org" ;; all org-related buffers
                 (mode . org-mode))
-               ("Recruitment"
-                (filename . "candidates"))
-               ("Minutes"
-                (filename . "meeting-minutes"))
+;;               ("Recruitment"
+;;                (filename . "candidates"))
                ("Remote machines"
                 (name . "^\\*tramp"))
                ("Personal WC"
                 (filename . "wc/"))
-               ("Erc"
-                (mode . erc-mode))
+;;               ("Erc"
+;;                (mode . erc-mode))
                ("Mail"
                 (or  ;; mail-related buffers
                  (mode . message-mode)
@@ -708,7 +709,51 @@ is inserted at the global mark rather than at the current position.
   (c-set-style "my-java"))
 (add-hook 'java-mode-hook 'my-java-mode-hook)
 #+END_SRC
-** Mutt-mode
+** Mail and Mutt mode
+*** Basics
+    First some settings to get mail to work.
+
+#+BEGIN_SRC emacs-lisp
+
+(require 'smtpmail)
+(require 'starttls)
+
+;;(setq smtpmail-auth-credentials '(("smtp.gmail.com" 25 "USERNAME" "PASSWORD")))
+;;(setq smtpmail-debug-info t)
+(setq my-domain "yanson.org")
+(setq message-send-mail-function 'smtpmail-send-it)
+(setq send-mail-function 'smtpmail-send-it)
+(setq smtpmail-debug-info t)
+(setq mail-host-address 'my-domain)
+(setq smtpmail-local-domain 'my-domain)
+(setq smtpmail-sendto-domain 'my-domain)
+(setq smtpmail-smtp-server "smtp.gmail.com")
+(setq smtpmail-auth-credentials "~/.netrc")
+(setq smtpmail-smtp-service 587)
+(setq smtpmail-warn-about-unknown-extensions t)
+(setq starttls-extra-arguments nil)
+(setq starttls-use-gnutls t)
+(setq user-full-name "Mattias Jansson")
+(setq mail-default-headers
+      (concat
+       "CC:\n"
+       "BCC:\n"
+       "X-RefLink: http://tinyurl.com/bprfeg\n"
+       "User-Agent: " (mapconcat 'identity (subseq (split-string (emacs-version) " ") 0 3) " ") "\n"
+        ))
+(setq mail-signature "\n-- \n Mattias Jansson\n [ fimblo@yanson.org  | +46 (0)70 205 7210 ]")
+#+END_SRC
+
+*** Good to know
+   Oh and before I forget - when I flub my password, use the following
+   to drop all credentials.
+#+BEGIN_SRC 
+   M-x auth-source-forget-all-cached
+#+END_SRC
+
+*** Mail hook
+   A hook to set things up nicely for mutt.
+
 #+BEGIN_SRC emacs-lisp
 (defun my-mutt-mode-hook ()
   (visual-line-mode)
@@ -721,7 +766,8 @@ is inserted at the global mark rather than at the current position.
              (define-key mail-mode-map "\C-c\C-w" 'message-replace-sig)
              ))
 #+END_SRC
-** Assorted hooks
+
+** Hooks with no particular home
    Finally, a bunch of small hooks for various modes.
 
 #+BEGIN_SRC emacs-lisp
@@ -731,7 +777,8 @@ is inserted at the global mark rather than at the current position.
 (add-hook 'html-mode-hook 'set-html-mode-end-paragraph)
 (add-hook 'text-mode-hook 'visual-line-mode)
 #+END_SRC
-* Helper functions
+
+* Interactive functions
 
   Here's a bunch of functions, some of them written by me, most by
   other people.
@@ -988,6 +1035,81 @@ Todo someday: support the GENERATE directive"
   (global-set-key "\M-," (lambda () (interactive) (insert " => ")))
   )
 
+#+END_SRC
+
+** Mail helper functions
+#+BEGIN_SRC emacs-lisp
+
+(defun random-quote ()
+  "Gets a random quote"
+  (load "fimblo-quotes" nil t)
+  (aref fimblo-quotes 
+        (random (- (length fimblo-quotes) 1)))
+  )
+
+(defun generate-sig ()
+ (with-temp-buffer
+   (insert (random-quote))
+   (goto-char (point-min))
+   (fill-paragraph)
+   (insert (concat
+            mail-signature
+            "\n\n"))
+   (goto-char (point-min))
+;;   (while (re-search-forward "^" nil t) (replace-match "  "))
+;;   (goto-char (point-min))
+;;   (insert "\n-- \n")
+   (buffer-string)
+   )
+ )
+
+
+(defun kill-signature ()
+  "Delete current sig"
+  (interactive)
+  (end-of-buffer)
+  (if (search-backward-regexp "^-- $" nil t )
+      (progn
+        (beginning-of-line)
+        (setq start (point))
+        (end-of-buffer)
+        (delete-region start (point))))
+)
+
+(defun message-replace-sig ()
+  "Replaces signature with new sig"
+  (interactive)
+  (kill-signature)
+  (end-of-buffer)
+  (delete-char -1)
+  (insert (generate-sig))
+  )
+
+
+(defun kill-to-signature ()
+  "Delete all text between text and signature."
+  (interactive)
+  (setq start (point))
+  (end-of-buffer)
+  (search-backward-regexp "^-- $" nil 1)
+  (previous-line)
+  (setq end (point))
+  (delete-region start end)
+  (recenter-top-bottom)
+  (insert "\n\n\n")
+  (previous-line 2)
+  )
+
+
+(defun mail-snip (b e summ)
+  "remove selected lines, and replace it with [snip:summary (n lines)]"
+  (interactive "r\nsSummary: ")
+  (let ((n (count-lines b e)))
+    (delete-region b e)
+    (insert (format "\n[snip%s (%d line%s)]\n\n"
+                    (if (= 0 (length summ)) "" (concat ": " summ))
+                    n
+                    (if (= 1 n) "" "s")))))
 #+END_SRC
 
 ** Simple text manipulation
@@ -1270,6 +1392,92 @@ point to the end of the buffer."
 
 
 
+
+#+END_SRC
+
+* Helper functions
+#+BEGIN_SRC emacs-lisp
+
+(defun file-string (file)
+    "Read the contents of a file and return as a string."
+    (with-temp-buffer
+      (insert-file-contents file)
+      (buffer-string)))
+
+(defun chomp (str)
+  "Chomp tailing newlines from string"
+  (let ((s (if (symbolp str) (symbol-name str) str)))
+    (replace-regexp-in-string "[''\n'']*$" "" s)))
+
+(defun get-ipv4-regex ()
+  (let (p1 p2 p3 octet-re)
+    (setq p1 "[01]?[[:digit:]]?[[:digit:]]")
+    (setq p2 "2[01234][[:digit:]]")
+    (setq p3 "25[012345]")
+    (setq octet-re (concat "\\(" p1 "\\|" p2 "\\|" p3 "\\)"))
+    (concat "^" (mapconcat (lambda (x) x)
+                           (list octet-re octet-re octet-re octet-re)
+                           "\\.") "$")
+    )
+  )
+
+#+END_SRC
+* Keybindings
+** Mode-specific keybindings
+#+BEGIN_SRC emacs-lisp
+(eval-after-load 'message
+  '(define-key message-mode-map [ f9 ] 'message-replace-sig))
+(eval-after-load 'message
+  '(define-key message-mode-map [?\C-c ?\C-k] 'kill-to-signature))
+
+;; make this org-specific later
+;; (global-set-key [ f10 ]   'org-show-next-heading-tidily)
+
+
+#+END_SRC
+
+** Global keybindings
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-x\C-g"          'find-file-at-point)
+(global-set-key "\C-x\C-m"          'execute-extended-command)
+(global-set-key "\C-c\C-m"          'execute-extended-command)
+(global-set-key "\C-c\C-g"          'goto-line)
+(global-set-key "\C-c\C-k"          'kill-buffer)
+(global-set-key "\C-cc"             'compile)
+(global-set-key "\C-co"             'org-capture)
+(global-set-key "\C-cd"             'gdb)
+(global-set-key "\C-cn"             'next-error)
+(global-set-key "\C-c\C-d"          'insert-date)
+(global-set-key "\C-xm"             'mail)
+(global-set-key (kbd "M-0")         'add_separator)
+(global-set-key [ \C-tab ]          'hippie-expand)
+;(global-set-key [ f35 ]             'delete-char)
+(global-set-key [ f5 ]              'switch-to-scratch)
+(global-set-key [ M-f5 ]            'open-dot-emacs)
+;(global-set-key [ f6 ]              'toggle-selective-display)
+;(global-set-key [ f6 ]              'switch-to-todo)
+;(global-set-key [ S-f6 ]            'add-todo)
+(global-set-key [ f7 ]              'my-ansi-term)
+(global-set-key [ f8 ]              'hl-line-mode)
+(global-set-key [ M-f8 ]            'linum-mode)
+(global-set-key [ f11 ]             '(lambda () (interactive) (enlarge-window 4 )))
+(global-set-key [ M-f11 ]           '(lambda () (interactive) (enlarge-window -4)))
+(global-set-key [ f12 ]             '(lambda () (interactive) (enlarge-window 4 1)))
+(global-set-key [ M-f12 ]           '(lambda () (interactive) (enlarge-window -4 1)))
+(global-set-key [ home ]            'beginning-of-buffer)
+(global-set-key [ end ]             'end-of-buffer )
+(global-set-key "\C-x\C-y"          'toggle-truncate-lines)
+(global-set-key (kbd "C-x <down>")  'windmove-down)
+(global-set-key (kbd "C-x <up>")    'windmove-up)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
+(global-set-key (kbd "C-x <left>")  'windmove-left)
+(global-set-key (kbd "C-x C-b")     'ibuffer)
+(global-set-key (kbd "M-%")         'query-replace-regexp)
+(global-set-key [(shift down)]      '(lambda () (interactive) (scroll-up 3)))
+(global-set-key [(shift up)]        '(lambda () (interactive) (scroll-down 3)))
+(global-set-key (kbd "C-x SPC")     'show-ws-toggle-show-trailing-whitespace)
+(global-set-key (kbd "C-S-e")       'merge-lines)   
+(global-set-key (kbd "C-h C-s")     'find-function-at-point)
 
 #+END_SRC
 
