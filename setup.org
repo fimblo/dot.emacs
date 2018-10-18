@@ -112,6 +112,7 @@
     htmlize
     json-mode
     load-theme-buffer-local
+    magit
     mediawiki
     mpg123
     muttrc-mode
