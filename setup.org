@@ -19,7 +19,6 @@
 #+BEGIN_SRC emacs-lisp
 (defvar home (getenv "HOME") "Home directory, sourced from Environment variable HOME")
 (setq default-directory (concat home "/"))
-(setq me (or load-file-name (buffer-file-name)))
 (defvar emacs-root
   (file-name-directory (or (file-symlink-p me)
                me
@@ -29,6 +28,13 @@
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
+
+;; If running with org-babel, me is _not_ filename.org.
+;; It's filename.el
+(setq me (or load-file-name (buffer-file-name)))
+(setq me-org (replace-regexp-in-string ".el" ".org" me) 
+
+
 #+END_SRC
 
    Make _really_ sure that we're using utf-8.
