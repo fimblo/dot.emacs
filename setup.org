@@ -19,21 +19,19 @@
 #+BEGIN_SRC emacs-lisp
 (defvar home (getenv "HOME") "Home directory, sourced from Environment variable HOME")
 (setq default-directory (concat home "/"))
+
+;; If running with org-babel, the variable 'me' does not contain the
+;; file filename.org; the file gets tangled into filename.el
+(setq me (or load-file-name (buffer-file-name)))
+(setq me-org (replace-regexp-in-string ".el" ".org" me))
+
 (defvar emacs-root
-  (file-name-directory (or (file-symlink-p me)
-               me
-               )))
+  (file-name-directory (or (file-symlink-p me) me)))
 
 (defvar hostname (getenv "HOSTNAME") "This machine's hostname")
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
-
-;; If running with org-babel, me is _not_ filename.org.
-;; It's filename.el
-(setq me (or load-file-name (buffer-file-name)))
-(setq me-org (replace-regexp-in-string ".el" ".org" me) 
-
 
 #+END_SRC
 
@@ -168,14 +166,6 @@
 
 #+BEGIN_SRC emacs-lisp
 (require 'server)
-(defadvice server-create-window-system-frame
-  (after set-window-system-frame-colours ())
-  "Set custom frame colours when creating the first frame on a display"
-  (message "Running after frame-initialize")
-  (setup-window-system-frame-colours))
-(ad-activate 'server-create-window-system-frame)
-(add-hook 'after-make-frame-functions 'setup-window-system-frame-colours t)
-
 (load "server")
 (unless (server-running-p) (server-start))
 #+END_SRC
