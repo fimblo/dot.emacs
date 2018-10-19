@@ -104,6 +104,7 @@
     ;; Other packages
     adoc-mode
     apache-mode
+    atomic-chrome
     column-marker
     edit-server
     gmail-message-mode
@@ -709,6 +710,20 @@ is inserted at the global mark rather than at the current position.
   (c-set-style "my-java"))
 (add-hook 'java-mode-hook 'my-java-mode-hook)
 #+END_SRC
+** Atomic-chrome
+   A nifty tool which enables me to edit text areas in google chrome
+   inside of an emacs frame. To get this to work, make sure you
+   install [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc][the Atomic-chrome extension]] for Google chrome. Apparently
+   there's another extension you could use for firefox too.
+
+#+BEGIN_SRC emacs-lisp
+(require 'atomic-chrome)
+(atomic-chrome-start-server)
+(setq atomic-chrome-buffer-open-style 'frame)
+(setq atomic-chrome-extension-type-list '(atomic-chrome))
+;;(setq atomic-chrome-default-major-mode 'markdown-mode)
+#+END_SRC
+
 ** Mail and Mutt mode
 *** Basics
     First some settings to get mail to work.
