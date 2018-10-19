@@ -835,7 +835,7 @@ is inserted at the global mark rather than at the current position.
     (unless previous (emacs-lisp-mode))))
 
 (defun open-dot-emacs ()
-  "Opens the  "
+  "Opens my main emacs configuration file."
   (interactive)
   (find-file emacs-root)
   (search-forward (concat (file-name-base me-org) (file-name-extension me-org t)))
