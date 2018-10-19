@@ -725,6 +725,25 @@ is inserted at the global mark rather than at the current position.
 ;;(setq atomic-chrome-default-major-mode 'markdown-mode)
 #+END_SRC
 
+** Cperl-mode 
+#+BEGIN_SRC emacs-lisp
+
+;; when in cperl-mode, set META-, to fat comma
+(defun cperl-mode-set-fat-comma ()
+  "Set M-, to fat comma (=>)"
+  (interactive)
+  (global-set-key "\M-," (lambda () (interactive) (insert " => ")))
+  )
+(add-hook 'cperl-mode-hook 'cperl-mode-set-fat-comma)
+#+END_SRC
+** javascript-mode
+
+   Since JavaScript since ES6 supports fat arrow notation for lambda
+   expressions, let's add it here too.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'javascript-mode-hook 'cperl-mode-set-fat-comma)
+#+END_SRC
 ** Mail and Mutt mode
 *** Basics
     First some settings to get mail to work.
@@ -1038,18 +1057,6 @@ Todo someday: support the GENERATE directive"
     )
   )
 
-
-#+END_SRC
-
-** Perl helper
-#+BEGIN_SRC emacs-lisp
-
-;; when in cperl-mode, set META-, to fat comma
-(defun cperl-mode-set-fat-comma ()
-  "Set M-, to fat comma (=>)"
-  (interactive)
-  (global-set-key "\M-," (lambda () (interactive) (insert " => ")))
-  )
 
 #+END_SRC
 
