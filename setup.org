@@ -838,7 +838,7 @@ is inserted at the global mark rather than at the current position.
   "Opens the  "
   (interactive)
   (find-file emacs-root)
-  (search-forward-regexp me-org end-pos 1)
+  (search-forward (concat (file-name-base me-org) (file-name-extension me-org t)))
   )
 
 #+END_SRC
