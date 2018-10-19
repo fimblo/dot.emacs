@@ -3,7 +3,5 @@
 (require 'org)			 ; Load org so we can use babel
 
 (org-babel-load-file     ; Load my setup file
- (expand-file-name
-  "settings.org"
-  user-emacs-directory))
+ (expand-file-name "~/.emacs.d/setup.org"))
 ;; EOF
