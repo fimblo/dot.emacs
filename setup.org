@@ -152,12 +152,13 @@
 
 ** Auto-customization
 
-   Move all customization stuff to another file. I don't want it
-   cluttering my stuff.
+   Move all customization stuff to another file, and I won't load
+   it. I don't want it cluttering my stuff, and I like all my
+   configuration to be under my control.
 
 #+BEGIN_SRC emacs-lisp
 (setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
+;; (load custom-file 'noerror)
 #+END_SRC
 
 ** Emacs server
