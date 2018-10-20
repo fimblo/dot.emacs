@@ -20,13 +20,14 @@
 (defvar home (getenv "HOME") "Home directory, sourced from Environment variable HOME")
 (setq default-directory (concat home "/"))
 
-;; If running with org-babel, the variable 'me' does not contain the
-;; file filename.org; the file gets tangled into filename.el
-(setq me (or load-file-name (buffer-file-name)))
-(setq me-org (replace-regexp-in-string ".el" ".org" me))
+;; If running with org-babel, the variable 'this-file' does not
+;; contain the file filename.org; the file gets tangled into
+;; filename.el
+(setq this-file (or load-file-name (buffer-file-name)))
+(setq this-file-org (replace-regexp-in-string ".el" ".org" this-file))
 
 (defvar emacs-root
-  (file-name-directory (or (file-symlink-p me) me)))
+  (file-name-directory (or (file-symlink-p this-file) this-file)))
 
 (defvar hostname (getenv "HOSTNAME") "This machine's hostname")
 
@@ -46,6 +47,24 @@
 (set-language-environment       "UTF-8")
 #+END_SRC
 
+** Declare personal variables
+
+   Here are the variables which are private to me, and are assigned in
+   the =~/.emacs.d/.secret.el= file (which for obvious reasons aren't
+   included in version control.
+#+BEGIN_SRC emacs-lisp
+(defvar me/fullname         nil "My full name.")
+(defvar me/nick             nil "My nickname.")
+(defvar me/mail/credentials nil "Where I store my credentials.")
+(defvar me/mail/mydomain    nil "My mail domainname.")
+(defvar me/mail/smtp-server nil "Hostname.domainname of smtp server.")
+(defvar me/mail/signature   nil "My email signature.")
+
+(let ((secret.el (expand-file-name ".secret.el" user-emacs-directory)))
+  (when (file-exists-p secret.el)
+    (load secret.el)))
+
+#+END_SRC
 ** Package.el configuration
 
    This needs to be in place before any configurations of installed packages.
@@ -737,16 +756,16 @@ is inserted at the global mark rather than at the current position.
 (setq message-send-mail-function 'smtpmail-send-it)
 (setq send-mail-function 'smtpmail-send-it)
 (setq smtpmail-debug-info t)
-(setq mail-host-address "yanson.org")
-(setq smtpmail-local-domain "yanson.org")
-(setq smtpmail-sendto-domain "yanson.org")
-(setq smtpmail-smtp-server "smtp.gmail.com")
-(setq smtpmail-auth-credentials "~/.netrc")
+(setq mail-host-address me/mail/mydomain)
+(setq smtpmail-local-domain me/mail/mydomain)
+(setq smtpmail-sendto-domain me/mail/mydomain)
+(setq smtpmail-smtp-server me/mail/smtp-server)
+(setq smtpmail-auth-credentials me/mail/credentials)
 (setq smtpmail-smtp-service 587)
 (setq smtpmail-warn-about-unknown-extensions t)
 (setq starttls-extra-arguments nil)
 (setq starttls-use-gnutls t)
-(setq user-full-name "Mattias Jansson")
+(setq user-full-name me/fullname)
 (setq mail-default-headers
       (concat
        "CC:\n"
@@ -754,7 +773,7 @@ is inserted at the global mark rather than at the current position.
        "X-RefLink: http://tinyurl.com/bprfeg\n"
        "User-Agent: " (mapconcat 'identity (subseq (split-string (emacs-version) " ") 0 3) " ") "\n"
         ))
-(setq mail-signature "\n-- \n Mattias Jansson\n [ fimblo@yanson.org  | +46 (0)70 205 7210 ]")
+(setq mail-signature me/mail/signature)
 #+END_SRC
 
 *** Good to know
@@ -837,7 +856,7 @@ is inserted at the global mark rather than at the current position.
   "Opens my main emacs configuration file."
   (interactive)
   (find-file emacs-root)
-  (search-forward (concat (file-name-base me-org) (file-name-extension me-org t)))
+  (search-forward (concat (file-name-base this-file-org) (file-name-extension this-file-org t)))
   )
 
 #+END_SRC
