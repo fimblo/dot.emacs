@@ -645,8 +645,8 @@ is inserted at the global mark rather than at the current position.
                 (name . "^\\*tramp"))
                ("Personal WC"
                 (filename . "wc/"))
-;;               ("Erc"
-;;                (mode . erc-mode))
+               ("Erc"
+                (mode . erc-mode))
                ("Mail"
                 (or  ;; mail-related buffers
                  (mode . message-mode)
