@@ -52,17 +52,29 @@
    Here are the variables which are private to me, and are assigned in
    the =~/.emacs.d/.secret.el= file (which for obvious reasons aren't
    included in version control.
-#+BEGIN_SRC emacs-lisp
-(defvar me/fullname         nil "My full name.")
-(defvar me/nick             nil "My nickname.")
-(defvar me/mail/credentials nil "Where I store my credentials.")
-(defvar me/mail/mydomain    nil "My mail domainname.")
-(defvar me/mail/smtp-server nil "Hostname.domainname of smtp server.")
-(defvar me/mail/signature   nil "My email signature.")
 
-(let ((secret.el (expand-file-name ".secret.el" user-emacs-directory)))
-  (when (file-exists-p secret.el)
-    (load secret.el)))
+#+BEGIN_SRC emacs-lisp
+  (defvar me/fullname              nil "My full name.")
+  (defvar me/nick                  nil "My nickname.")
+  (defvar me/mail/credentials      nil "Where I store my credentials.")
+  (defvar me/mail/mydomain         nil "My mail domainname.")
+  (defvar me/mail/smtp-server      nil "Hostname.domainname of smtp server.")
+  (defvar me/mail/signature        nil "My email signature.")
+  (defvar me/erc/server            nil "Irc server hostname")
+  (defvar me/erc/port              nil "Irc server port")
+  (defvar me/erc/nick              nil "My nick")
+  (defvar me/erc/pass              nil "My password")
+  (defvar me/erc/autojoin-alist    nil "Association list of channels to join.
+                                        For example:
+                                        ((\"chat.freenode.net\" \"#emacs\" \"#cooking\")
+                                         (\"another.server.org\" \"#foo\" \"#bar\" \"#baz\"))
+                                        ")
+  (defvar me/erc/pass-query-string nil "How should ERC ask for the password?
+                                        Useful if you have multiple servers to connect to.")
+
+  (let ((secret.el (expand-file-name ".secret.el" user-emacs-directory)))
+    (when (file-exists-p secret.el)
+      (load secret.el)))
 
 #+END_SRC
 ** Package.el configuration
@@ -688,8 +700,25 @@ is inserted at the global mark rather than at the current position.
 (setq erc-prompt
       (lambda ()
         (if (and (boundp 'erc-default-recipients) (erc-default-target))
-            (erc-propertize (concat (erc-default-target) ">") 'read-only t 'rear-nonsticky t 'front-nonsticky t)
-          (erc-propertize (concat "ERC>") 'read-only t 'rear-nonsticky t 'front-nonsticky t))))
+            (erc-propertize (concat (erc-default-target) ">")
+                            'read-only t 'rear-nonsticky t 'front-nonsticky t)
+          (erc-propertize (concat "ERC>")
+                          'read-only t 'rear-nonsticky t 'front-nonsticky t))))
+
+(defun start-irc ()
+  "Connect to IRC."
+  (interactive)
+  (require 'erc)
+  (erc-ssl
+   :server me/erc/server
+   :port me/erc/port
+   :nick me/erc/nick
+   :password me/erc/pass ; (read-passwd me/erc/pass-query-string)
+   :full-name me/fullname)
+  (setq erc-autojoin-channels-alist me/erc/autojoin-alist)
+)
+
+
 #+END_SRC
 ** Longlines-mode
 #+BEGIN_SRC emacs-lisp
