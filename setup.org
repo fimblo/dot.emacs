@@ -723,25 +723,6 @@ is inserted at the global mark rather than at the current position.
 ;;(setq atomic-chrome-default-major-mode 'markdown-mode)
 #+END_SRC
 
-** Cperl-mode 
-#+BEGIN_SRC emacs-lisp
-
-;; when in cperl-mode, set META-, to fat comma
-(defun cperl-mode-set-fat-comma ()
-  "Set M-, to fat comma (=>)"
-  (interactive)
-  (global-set-key "\M-," (lambda () (interactive) (insert " => ")))
-  )
-(add-hook 'cperl-mode-hook 'cperl-mode-set-fat-comma)
-#+END_SRC
-** javascript-mode
-
-   Since JavaScript since ES6 supports fat arrow notation for lambda
-   expressions, let's add it here too.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'javascript-mode-hook 'cperl-mode-set-fat-comma)
-#+END_SRC
 ** Mail and Mutt mode
 *** Basics
     First some settings to get mail to work.
@@ -1419,6 +1400,14 @@ point to the end of the buffer."
 * Helper functions
 #+BEGIN_SRC emacs-lisp
 
+(defun insert-fat-comma () 
+  "Inserts a ' => ' at point.
+
+   Used in Perl and Javascript."
+  (interactive)
+  (insert " => ")
+)
+
 (defun file-string (file)
     "Read the contents of a file and return as a string."
     (with-temp-buffer
@@ -1450,6 +1439,15 @@ point to the end of the buffer."
   '(define-key message-mode-map [ f9 ] 'message-replace-sig))
 (eval-after-load 'message
   '(define-key message-mode-map [?\C-c ?\C-k] 'kill-to-signature))
+
+(add-hook 'cperl-mode-hook
+          (lambda ()
+            (local-set-key (kbd "M-,") 'insert-fat-comma)))
+(add-hook 'js-mode-hook
+          (lambda ()
+            (local-set-key (kbd "M-,") 'insert-fat-comma)))
+
+
 
 ;; make this org-specific later
 ;; (global-set-key [ f10 ]   'org-show-next-heading-tidily)
