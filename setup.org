@@ -136,6 +136,7 @@
     adoc-mode
     apache-mode
     atomic-chrome
+    auctex
     column-marker
     edit-server
     gmail-message-mode
