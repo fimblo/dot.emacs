@@ -4,6 +4,8 @@
 
 * Initial setup
 ** Set up basic environment
+   # //////////////////////////////////////////////////////////////////////
+
 
    Before we can go about fixing the fun parts of emacs, we'll need to
    set up some basics.
@@ -13,12 +15,13 @@
 (setq message-log-max
       (- (expt 2 15) 1))      ; Make message log big
 #+END_SRC
+   # //////////////////////////////////////////////////////////////////////
 
 
-
-   Set some useful variables for later use
+   Set some useful variables for later use.
 
 #+BEGIN_SRC emacs-lisp
+;; Set home directory
 (defvar home (getenv "HOME") "Home directory, sourced from Environment variable HOME")
 (setq default-directory (concat home "/"))
 
@@ -36,14 +39,13 @@
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 #+END_SRC
-
+   # //////////////////////////////////////////////////////////////////////
 
 
 Don't do automatic file backups in these directories
 
 Note that the specialdir var is intended to be populated with path
-prefixes - so if you add "/" then emacs won't make backups
-anywhere...
+prefixes - so if you add =/= then emacs won't make backups anywhere...
 
 #+BEGIN_SRC emacs-lisp
 (defun my-backup-enable-predicate (name)
@@ -58,10 +60,13 @@ anywhere...
 
 (setq backup-enable-predicate #'my-backup-enable-predicate)
 #+END_SRC
+   # //////////////////////////////////////////////////////////////////////
 
 
+   Make _really_ sure that we're using utf-8. 
 
-   Make _really_ sure that we're using utf-8.
+   I'm so glad I don't have to fool around with all those old
+   character sets anymore - especially the Japanese ones...
 
 #+BEGIN_SRC emacs-lisp
 (setq locale-coding-system      'utf-8)
@@ -73,6 +78,8 @@ anywhere...
 #+END_SRC
 
 ** Declare personal variables
+   # //////////////////////////////////////////////////////////////////////
+
 
    Here are the variables which are private to me, and are assigned in
    the =~/.emacs.d/.secret.el= file (which for obvious reasons aren't
@@ -100,16 +107,16 @@ anywhere...
   (let ((secret.el (expand-file-name ".secret.el" user-emacs-directory)))
     (when (file-exists-p secret.el)
       (load secret.el)))
-
 #+END_SRC
 ** Package.el configuration
+   # //////////////////////////////////////////////////////////////////////
+
 
    This needs to be in place before any configurations of installed packages.
 
-   Most of this was shamelessly copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/master/emacs.d/emacs.org][emacs setup]]. Thanks @jeekl!
+   Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/master/emacs.d/emacs.org][emacs setup]]. Thanks @jeekl!
 
 #+BEGIN_SRC emacs-lisp
-
 ;; mkdir these and add them to load path
 (dolist (path '(  "~/.emacs.d/elpa/"
           "~/.emacs.d/el-get/"
@@ -134,6 +141,11 @@ anywhere...
 #+END_SRC
 
 ** Packages to install
+   # //////////////////////////////////////////////////////////////////////
+
+
+   Download these packages if they aren't already downloaded.
+
 #+BEGIN_SRC emacs-lisp
 (defvar elpa-packages
   '(
@@ -204,10 +216,11 @@ anywhere...
                    (not (package-built-in-p x))
                    (package-installed-p x)))
                   (mapcar 'car package-archive-contents))))
-
 #+END_SRC
 
 ** Auto-customization
+   # //////////////////////////////////////////////////////////////////////
+
 
    Move all customization stuff to another file.
 
@@ -217,6 +230,8 @@ anywhere...
 #+END_SRC
 
 ** Emacs server
+   # //////////////////////////////////////////////////////////////////////
+
 
    The emacs server is useful if you use emacs for many things, and
    you want each session to share buffers and state. Startup time is
@@ -227,9 +242,16 @@ anywhere...
 (load "server")
 (unless (server-running-p) (server-start))
 #+END_SRC
+
 * UI
-  This is the first round of setting up the UI.
+  # //////////////////////////////////////////////////////////////////////
+
+
+  Setting up the User interface so that it works the way /I/ like it.
+
 ** Basic look and feel
+   # //////////////////////////////////////////////////////////////////////
+
 
    Configuration basics.
 
@@ -266,15 +288,14 @@ anywhere...
             (show-paren-mode t)         ; show matching parens
             )
           )
-
-
-
-
 #+END_SRC
 
 ** Changes in default behaviour upon user action
+   # //////////////////////////////////////////////////////////////////////
 
-   Change some basic ways in which emacs does things.
+
+   The first section above was how emacs presents things to me. This
+   section is how it reacts to some of my commands.
 
 #+BEGIN_SRC emacs-lisp
 (setq case-fold-search t)              ; ignore case in searches
@@ -287,6 +308,8 @@ anywhere...
 (setq scroll-step 1)                   ; Moving cursor down at bottom
                                        ; scrolls only a single line
 #+END_SRC
+   # //////////////////////////////////////////////////////////////////////
+
 
    Generally, I don't like programs asking me if I /really/ want to do
    something I just told it to do. And if it must, I want that
@@ -305,6 +328,12 @@ anywhere...
 
 #+END_SRC
 ** Mouse behaviour
+   # //////////////////////////////////////////////////////////////////////
+
+
+   Get the mouse to work in emacs instances running in a terminal, and
+   other mouse configuration.
+
 #+BEGIN_SRC emacs-lisp
 (xterm-mouse-mode t)                  ; Support mouse in xterms
 (setq mouse-wheel-mode t)             ; support mouse wheel
@@ -312,6 +341,11 @@ anywhere...
 #+END_SRC
    
 ** Time display
+   # //////////////////////////////////////////////////////////////////////
+
+
+   Get emacs to display time and date.
+
 #+BEGIN_SRC emacs-lisp
 (display-time)
 (setq display-time-day-and-date t)
@@ -319,6 +353,12 @@ anywhere...
 #+END_SRC
 
 ** Indentation
+   # //////////////////////////////////////////////////////////////////////
+
+
+   Generally, get emacs to indent in multiples of 2 or 4
+   spaces. Also - avoid inserting tabs.
+
 #+BEGIN_SRC emacs-lisp
 (setq standard-indent 2)
 (setq-default indent-tabs-mode nil)
@@ -341,13 +381,16 @@ anywhere...
 #+END_SRC
 
 ** Colours, fonts and stuff
+   # //////////////////////////////////////////////////////////////////////
 
-   Apparently loading a theme using (load-theme) overlays the new
+
+   Apparently loading a theme using =load-theme= overlays the new
    theme onto whatever was there before. This might be useful at
    times, but I find it easier when I get exactly the theme I select.
 
-   Anyway, the advice function below makes load-theme behave the way I
+   Anyway, the advice function below makes =load-theme= behave the way I
    like.
+
 #+BEGIN_SRC emacs-lisp
 (defadvice load-theme (before clear-previous-themes activate)
   "Clear existing theme settings instead of layering them"
@@ -355,6 +398,8 @@ anywhere...
 
 (load-theme 'gruvbox)
 #+END_SRC
+   # //////////////////////////////////////////////////////////////////////
+
 
    For the longest time, I've for some reason enjoyed writing more in
    traditional word processors like Google Docs, Openoffice, MSWord
@@ -365,9 +410,11 @@ anywhere...
    more enjoyable for me.
 
    The code block below toggles between prose and code mode.
+
+   /By the way - to use this without modification you'll need the font
+   Noto-serif./
    
 #+BEGIN_SRC emacs-lisp
-
 (setq f/write-state "nowrite")
 (setq f/face-cookie nil)
 (defun write-toggle ()
@@ -402,13 +449,14 @@ anywhere...
       (hl-line-mode -1)
       (olivetti-mode 1)
       (setq f/write-state "write"))))
-
-
 #+END_SRC
 
 ** External stuff
+   # //////////////////////////////////////////////////////////////////////
+
 
    How emacs interacts with the world outside of it.
+
 #+BEGIN_SRC emacs-lisp
 ; default to ssh when tramping
 (setq tramp-default-method "ssh")
@@ -422,9 +470,14 @@ anywhere...
 ;; make scripts executable if they aren't already
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
-
 #+END_SRC
+
 ** Map Suffixes with modes
+   # //////////////////////////////////////////////////////////////////////
+
+   
+   Auto-set mode for these file suffixes.
+
 #+BEGIN_SRC emacs-lisp
 (setq auto-mode-alist
       (append
@@ -453,6 +506,11 @@ anywhere...
 #+END_SRC
 
 ** Display lambda symbol
+   # //////////////////////////////////////////////////////////////////////
+
+
+   In python, emacs-lisp and org-mode, replace all instances of the
+   string 'lambda' with the character λ.
 
    Not only is this pretty, it saves some space on the screen :)
 
@@ -467,14 +525,8 @@ anywhere...
 (add-hook 'python-mode-hook 'sm-lambda-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'sm-lambda-mode-hook)
 (add-hook 'org-mode-hook 'sm-lambda-mode-hook)
-
 #+END_SRC
-** Other UI things
-   Things don't really fit anywhere else at the moment.
 
-#+BEGIN_SRC emacs-lisp
-; empty right now
-#+END_SRC
 * Modes
 ** CUA-mode
    Cua-mode is normally used to make emacs act more like Windows
@@ -865,17 +917,20 @@ is inserted at the global mark rather than at the current position.
 #+END_SRC
 
 * Interactive functions
+  # //////////////////////////////////////////////////////////////////////
+
 
   Here's a bunch of functions, some of them written by me, most by
   other people.
 
 ** Set frame title bar
+   # //////////////////////////////////////////////////////////////////////
+
 
    Create a reasonable titlebar for emacs, which works on both windows
-   and unix. Note: assumes HOSTNAME is exported.
+   and unix. Note: assumes =HOSTNAME= is exported.
 
 #+BEGIN_SRC emacs-lisp
-
 (defun create_title_format (user host)
   "Creates a window title string which works for both win and unix"
   (interactive)
@@ -896,8 +951,13 @@ is inserted at the global mark rather than at the current position.
 #+END_SRC
 
 ** Buffer navigation functions
-#+BEGIN_SRC emacs-lisp
+   # //////////////////////////////////////////////////////////////////////
 
+   
+   This function has been really useful for me, since I often find
+   myself wanting to jot something down in some trash buffer.
+
+#+BEGIN_SRC emacs-lisp
 (defun switch-to-scratch ()
   "Switch to scratch buffer. Create one in `emacs-lisp-mode' if not exists."
   (interactive)
@@ -905,30 +965,73 @@ is inserted at the global mark rather than at the current position.
     (switch-to-buffer "*scratch*")
     ;; don't change current mode
     (unless previous (emacs-lisp-mode))))
+#+END_SRC
+   # //////////////////////////////////////////////////////////////////////
 
+
+   Until lately, my emacs configuration was in
+   =~/.emacs-stuff/dot.emacs.el= which I symlinked to from
+   =~/.emacs.el=. Up until then (1992-2018), this function pointed at
+   this file, which was opened upon invocation.  Since switching to
+   [[https://justin.abrah.ms/emacs/literate_programming.html][literal]] emacs configuration using =org-babel=, I've modified it a
+   bit so that it opens =~/.emacs.d= and moves the pointer to
+   =setup.org=, which I open most often. 
+
+   The function name isn't really correct anymore since it actually
+   doesn't open the file, but call me melodramatic - this name reminds
+   me of those other times. :)
+
+#+BEGIN_SRC emacs-lisp
 (defun open-dot-emacs ()
   "Opens my main emacs configuration file."
   (interactive)
   (find-file emacs-root)
-  (search-forward (concat (file-name-base this-file-org) (file-name-extension this-file-org t)))
+  (search-forward (concat (file-name-base this-file-org)
+                          (file-name-extension this-file-org t)))
   )
+#+END_SRC
+   # //////////////////////////////////////////////////////////////////////
 
+
+   Ansi-term, when invoked, normally starts by asking which shell I
+   want. Since I go with =/bin/bash=, and I can have multiple
+   ansi-term sessions running simultaneously on different machines or
+   for different purposes, I replaced the query for what shell I want
+   with a name for the ansi-term buffer.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-ansi-term()
+  "Starts an ansi-term with optional buffer name"
+
+  (interactive)
+  (let (string)
+    (setq string
+          (read-from-minibuffer
+           "Enter terminal buffer name: "
+           "ansi-term"))
+    (ansi-term "/bin/bash" string)
+    )
+  )
 #+END_SRC
 
 ** DNS-related functions
+   # //////////////////////////////////////////////////////////////////////
 
-   generate-ptr-records and sort-A-records were really useful for me
-   back when I managed Spotify's DNS manually in the bad-old-days.
+
+   The functions generate-ptr-records and sort-A-records were really
+   useful for me back when I managed Spotify's DNS manually in the
+   bad-old-days (which were in fact really good old days despite
+   having to deal with our chaos that was DNS :))
 
 #+BEGIN_SRC emacs-lisp
-
 (defun generate-ptr-records (start-pos end-pos)
   "Finds DNS A-records in region, and for each one, creates a PTR
-record in a temporary buffer.
+   record in a temporary buffer.
 
-The PTR posts are sorted into sections by domainname.
-
-If no region was set, finds all A-records from point to end of buffer."
+   The PTR posts are sorted into sections by domainname.
+   
+   If no region was set, finds all A-records from point to end of
+   buffer."
 
   (interactive "r")
   (let (origin            ; to make the hostname a fqdn
@@ -1108,13 +1211,42 @@ Todo someday: support the GENERATE directive"
       )
     )
   )
-
-
 #+END_SRC
 
 ** Mail helper functions
-#+BEGIN_SRC emacs-lisp
+   # //////////////////////////////////////////////////////////////////////
 
+
+   Gmail messed everything up.
+
+   Prior to 2009, I had my own mail server, synced all my mail to my
+   local machine using offlineimap. I read email using mutt-ng and
+   composed email in emacs. Often, I also sent email directly from
+   emacs.
+
+   This worked flawlessly for me - I configured everything just the
+   way I wanted it, and it was sweeeet. Mass mailing a long list of
+   people with payloads which were all slightly different? No
+   problem. Using GPG for people who understood what it was, but not
+   others? Simple. Emailing someone a IRC transcript or code with just
+   a few keystrokes? Wonderfully quick.
+
+   Then came Gmail. With lots of storage. And a powerful search
+   engine. And how they /almost/ email threads to work quite well (but
+   not as well as in mutt). And how they used some vim and emacs
+   navigation keybindings. And all of this without having to worry
+   about maintaining my mail server...
+
+   Ultimately, I couldn't resist the change. I moved everything to
+   Google, and though I'm still concerned about my privacy,
+   convenience is.. well, convenient.
+   
+   So. 
+
+   These functions are from before 2009, and I'm not 100% sure that
+   bitrot hasn't set in.
+   
+#+BEGIN_SRC emacs-lisp
 (defun random-quote ()
   "Gets a random quote"
   (load "fimblo-quotes" nil t)
@@ -1138,7 +1270,6 @@ Todo someday: support the GENERATE directive"
    )
  )
 
-
 (defun kill-signature ()
   "Delete current sig"
   (interactive)
@@ -1160,7 +1291,6 @@ Todo someday: support the GENERATE directive"
   (insert (generate-sig))
   )
 
-
 (defun kill-to-signature ()
   "Delete all text between text and signature."
   (interactive)
@@ -1175,7 +1305,6 @@ Todo someday: support the GENERATE directive"
   (previous-line 2)
   )
 
-
 (defun mail-snip (b e summ)
   "remove selected lines, and replace it with [snip:summary (n lines)]"
   (interactive "r\nsSummary: ")
@@ -1188,7 +1317,21 @@ Todo someday: support the GENERATE directive"
 #+END_SRC
 
 ** Simple text manipulation
+   # //////////////////////////////////////////////////////////////////////
+
+
+   A bunch of small functions which help me modify text in different
+   ways.
+
 #+BEGIN_SRC emacs-lisp
+
+(defun insert-fat-comma () 
+  "Inserts a ' => ' at point.
+
+   Used in Perl and Javascript."
+  (interactive)
+  (insert " => ")
+)
 
 (defun merge-lines ()
   "Make paragraph I am in right now into one line."
@@ -1203,7 +1346,8 @@ Todo someday: support the GENERATE directive"
       )
     )
 )
-;; inserts a separator
+
+;; inserts a context-aware commented separator
 (fset 'add_separator
       [?\C-a return up ?\C-5 ?\C-0 ?- ?\C-  ?\C-a ?\M-x ?c ?o ?m ?m ?e ?n ?t ?  ?r ?e ?g ?i ?o ?n return down])
 
@@ -1242,6 +1386,8 @@ Todo someday: support the GENERATE directive"
       (goto-char (point-max))
       (insert suffix)
       )))
+
+
 (defun wrap-region (start end)
   "Given a prefix and a suffix, this function will wrap each line
 in the region such that they are prefixed with the prefix and
@@ -1249,7 +1395,6 @@ suffixed with the suffix.
 
 If no region is selected, it will do the above for all lines from
 point to the end of the buffer."
-
 
   (interactive "r")
   (let (prefix suffix linecount str-len end-pos)
@@ -1282,15 +1427,17 @@ point to the end of the buffer."
       )
     )
   )
-
 #+END_SRC
-** HTML stuff
-#+BEGIN_SRC emacs-lisp
-(defun html-mode-end-paragraph ()
-  "End the paragraph nicely"
-  (interactive)
-  (insert "</p>\n"))
 
+** HTML stuff
+   # //////////////////////////////////////////////////////////////////////
+
+
+   In =html-mode= and =css-mode=, make all instances of strings
+   matching #xxyyzz where x, y, and z are two-char hex chars get
+   syntax highlighting corresponding to the colour specified.
+
+#+BEGIN_SRC emacs-lisp
 (defun hexcolour-luminance (color)
   "Calculate the luminance of a color string (e.g. \"#ffaa00\", \"blue\").
   This is 0.3 red + 0.59 green + 0.11 blue and always between 0 and 255."
@@ -1315,6 +1462,8 @@ point to the end of the buffer."
 
 #+END_SRC
 ** Org functions
+   # //////////////////////////////////////////////////////////////////////
+
 
    For a couple of years I put all my todos into an org-file called
    ~/todo.org. These functions helped me with this.
@@ -1345,9 +1494,12 @@ point to the end of the buffer."
     )
 )
 #+END_SRC
+   # //////////////////////////////////////////////////////////////////////
+
 
    I use this following function when I use plain org-mode for
    presentations.
+
 #+BEGIN_SRC emacs-lisp
 ;; http://stackoverflow.com/questions/12915528/easier-outline-navigation-in-emacs
 (defun org-show-next-heading-tidily ()
@@ -1363,33 +1515,36 @@ point to the end of the buffer."
     (org-overview)
     (org-reveal t)
     (org-show-entry)
-    (show-children)))
+    (show-children)
+  )
+)
 #+END_SRC
 
 ** Other functions
-#+BEGIN_SRC emacs-lisp
+   # //////////////////////////////////////////////////////////////////////
 
+
+   This function is useful to toggle selective-display, which is often
+   (but not always) used to show all lines which don't start with
+   indentation - that is, function/method/class names in a buffer.
+
+#+BEGIN_SRC emacs-lisp
 (defun toggle-selective-display ()
-  "Run this to show only function names in source. run again to go back."
+  "Run this to show only lines in buffer with a non-whitespace
+   character on column 0. run again to go back."
   (interactive)
   (set-selective-display (if selective-display nil 1)))
 
-
-;; Starts an ansi-term
-(defun my-ansi-term()
-  "Starts an ansi-term with optional buffer name"
-
-  (interactive)
-  (let (string)
-    (setq string
-          (read-from-minibuffer
-           "Enter terminal buffer name: "
-           "ansi-term"))
-    (ansi-term "/bin/bash" string)
-    )
-  )
+#+END_SRC
+   # //////////////////////////////////////////////////////////////////////
 
 
+   When I want to do simple arithmetic in the buffer, I write (for
+   example): =(+ 3 8)= then place my cursor after the close paren and
+   run =eval-and-replace= which replaces the expression with its
+   output.
+
+#+BEGIN_SRC emacs-lisp
 (defun eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)
@@ -1399,9 +1554,14 @@ point to the end of the buffer."
              (current-buffer))
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
+#+END_SRC
+   # //////////////////////////////////////////////////////////////////////
 
 
-;; Rename both file and buffer.
+   These two functions help me do operations on both a file and its
+   corresponding buffer.
+
+#+BEGIN_SRC emacs-lisp
 ;; Ripped from Steve Yegges .emacs
 (defun rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME."
@@ -1419,7 +1579,6 @@ point to the end of the buffer."
           (set-buffer-modified-p nil))))))
 
 ;; copied from http://blog.tuxicity.se/
-;; was called delete-this-buffer-and-file()
 (defun delete-file-and-buffer ()
   "Deletes file connected to current buffer and kills buffer."
   (interactive)
@@ -1432,8 +1591,16 @@ point to the end of the buffer."
         (delete-file filename)
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
+#+END_SRC
+   # //////////////////////////////////////////////////////////////////////
 
-;; vi-style parenthesis matching
+
+   I used this function before I found out about =forward-sexp= and
+   =backward-sexp=, bound by default to =C-M-f= and =C-M-b=. I'm
+   keeping it mostly as an example of how to use prefix arguments in
+   =(interactive "p")=.
+
+#+BEGIN_SRC emacs-lisp
 (defun match-paren (arg)
   "Go to the matching paren if on a paren; otherwise insert %."
   (interactive "p")
@@ -1441,6 +1608,22 @@ point to the end of the buffer."
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
         (t (self-insert-command (or arg 1)))))
 
+#+END_SRC
+   # //////////////////////////////////////////////////////////////////////
+
+
+   My oldest remaining emacs configuration, copied in '93 from someone
+   who in turn copied it from someone called "phille" at KTH. He was
+   considered an emacs-god at the time.
+
+   I don't really use these anymore, since there are simpler ways of
+   removing ^M or removing whitespaces at the end of all lines in a
+   buffer.
+
+   But I keep them here to remind me of those early days when I had to
+   turn off my modem to exit emacs.
+
+#+BEGIN_SRC emacs-lisp
 
 (defun philles-takM-formatterare ()
   "Tar bort dessa irriterande ^M."
@@ -1457,29 +1640,15 @@ point to the end of the buffer."
   (message "Function disabled. Use delete-trailing-whitespace instead.")
   )
 
-;; Never compile .emacs by hand again
-;;(add-hook 'after-save-hook 'autocompile)
-;; (defun autocompile ()
-;;   "compile itself if dot.emacs.el"
-;;   (interactive)
-;;   (if (string= (buffer-file-name) (concat default-directory "dot.emacs.el"))
-;;       (byte-compile-file (buffer-file-name))))
-
-
-
-
 #+END_SRC
 
 * Helper functions
+  # //////////////////////////////////////////////////////////////////////
+
+
+  These functions are called by others.
+
 #+BEGIN_SRC emacs-lisp
-
-(defun insert-fat-comma () 
-  "Inserts a ' => ' at point.
-
-   Used in Perl and Javascript."
-  (interactive)
-  (insert " => ")
-)
 
 (defun file-string (file)
     "Read the contents of a file and return as a string."
@@ -1506,7 +1675,24 @@ point to the end of the buffer."
 
 #+END_SRC
 * Keybindings
+  # //////////////////////////////////////////////////////////////////////
+
+
+  Keybindings!
+
 ** Mode-specific keybindings
+   # //////////////////////////////////////////////////////////////////////
+
+
+   Below, two ways of binding keys in a local context. 
+
+   1. The first tells emacs to add a key-function mapping to a specific
+      mode-map after it loads the module.
+   2. The second adds a lambda where a key is mapped to a function to a
+      mode's hook.
+
+   I /think/ I like the second method more.
+
 #+BEGIN_SRC emacs-lisp
 (eval-after-load 'message
   '(define-key message-mode-map [ f9 ] 'message-replace-sig))
@@ -1520,15 +1706,17 @@ point to the end of the buffer."
           (lambda ()
             (local-set-key (kbd "M-,") 'insert-fat-comma)))
 
-
-
 ;; make this org-specific later
 ;; (global-set-key [ f10 ]   'org-show-next-heading-tidily)
-
-
 #+END_SRC
 
 ** Global keybindings
+   # //////////////////////////////////////////////////////////////////////
+
+   
+   Of all these global keybindings, I think I just use a handful. Some
+   of them should be local too.
+
 #+BEGIN_SRC emacs-lisp
 (global-set-key "\C-x\C-g"          'find-file-at-point)
 (global-set-key "\C-x\C-m"          'execute-extended-command)
@@ -1574,7 +1762,20 @@ point to the end of the buffer."
 #+END_SRC
 
 * lint
+  # //////////////////////////////////////////////////////////////////////
+
+
+  Here some pocket lint which I don't use but might want to at some
+  point in the future.
+
 #+BEGIN_SRC emacs-lisp
+;; Never compile .emacs by hand again
+;;(add-hook 'after-save-hook 'autocompile)
+;; (defun autocompile ()
+;;   "compile itself if dot.emacs.el"
+;;   (interactive)
+;;   (if (string= (buffer-file-name) (concat default-directory "dot.emacs.el"))
+;;       (byte-compile-file (buffer-file-name))))
 
 ;;(defmacro help/on-gui (statement &rest statements)
 ;;  "Evaluate the enclosed body only when run on GUI."
@@ -1589,5 +1790,11 @@ point to the end of the buffer."
 ;;  (require '...)
 ;;  (...-mode)) 
 ;;
+
+;; (defun html-mode-end-paragraph ()
+;;   "End the paragraph nicely"
+;;   (interactive)
+;;  (insert "</p>\n"))
+
 
 #+END_SRC
