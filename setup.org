@@ -861,7 +861,6 @@ is inserted at the global mark rather than at the current position.
 (add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
 (add-hook 'html-helper-mode-hook 'hexcolour-add-to-font-lock)
 (add-hook 'html-mode-hook 'hexcolour-add-to-font-lock)
-(add-hook 'html-mode-hook 'set-html-mode-end-paragraph)
 (add-hook 'text-mode-hook 'visual-line-mode)
 #+END_SRC
 
