@@ -14,6 +14,8 @@
       (- (expt 2 15) 1))      ; Make message log big
 #+END_SRC
 
+
+
    Set some useful variables for later use
 
 #+BEGIN_SRC emacs-lisp
@@ -34,6 +36,8 @@
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 #+END_SRC
+
+
 
 Don't do automatic file backups in these directories
 
