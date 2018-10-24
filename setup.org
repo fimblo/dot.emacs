@@ -365,7 +365,7 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 (setq-default tab-width 4)
 (setq tab-width 4)
 (setq-default tab-stop-list
-              (mapcar '(lambda (x) (* x 4))
+              (mapcar #'(lambda (x) (* x 4))
                       (cdr (reverse 
                             (let (value)
                               (dotimes (number 32 value)
