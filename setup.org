@@ -33,8 +33,29 @@
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
-
 #+END_SRC
+
+Don't do automatic file backups in these directories
+
+Note that the specialdir var is intended to be populated with path
+prefixes - so if you add "/" then emacs won't make backups
+anywhere...
+
+#+BEGIN_SRC emacs-lisp
+(defun my-backup-enable-predicate (name)
+  (let (found)
+    (dolist (specialdir '("/home/fimblo/gdrive/"
+                          "/some/other/directory/") found)
+      (if (string-prefix-p specialdir name)
+          (setq found t)))
+    (if found
+        nil
+      (normal-backup-enable-predicate name))))
+
+(setq backup-enable-predicate #'my-backup-enable-predicate)
+#+END_SRC
+
+
 
    Make _really_ sure that we're using utf-8.
 
