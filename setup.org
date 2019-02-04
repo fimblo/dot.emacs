@@ -190,6 +190,7 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
     org-bullets
     puppet-mode
     rainbow-mode
+    rainbow-delimiters
     ssh-config-mode
     twittering-mode
     yaml-mode
