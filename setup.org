@@ -186,7 +186,7 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
     magit
     mediawiki
     mpg123
-    muttrc-mode
+    ; muttrc-mode
     olivetti
     org-bullets
     puppet-mode
@@ -194,7 +194,7 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
     rainbow-mode
     ssh-config-mode
     swiper
-    twittering-mode
+    ; twittering-mode
     yaml-mode
     )
   "These packages are installed if necessary."
