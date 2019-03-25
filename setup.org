@@ -402,13 +402,13 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
    # //////////////////////////////////////////////////////////////////////
 
 
-   For the longest time, I've for some reason enjoyed writing more in
-   traditional word processors like Google Docs, Openoffice, MSWord
-   even if I've been an emacs user for decades. I never really
+   For the longest time, I've for some reason enjoyed writing much
+   more in traditional word processors like Google Docs, Openoffice,
+   MSWord even if I've been an emacs user for decades. I never really
    understood why until I realised that it had to do with the UI. By
    changing the font into something with serifs, and writing in the
    "middle" of the buffer window, I discovered that writing became
-   more enjoyable for me.
+   more enjoyable for me in an emacs environment.
 
    The code block below toggles between prose and code mode.
 
@@ -544,7 +544,7 @@ copy is automatically inserted at the global mark, and text you type
 is inserted at the global mark rather than at the current position.
 #+end_quote
 
-   Really useful for copying text from one doc to another.
+   Really useful for copying text from one buffer to another.
 
 #+BEGIN_SRC emacs-lisp
 (cua-mode t)
