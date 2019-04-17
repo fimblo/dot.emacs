@@ -30,9 +30,9 @@
 (defconst sys/cygwinp
   (eq system-type 'cygwin)     "Is this a Cygwin system?")
 (defconst sys/linux-x-p
-  (and (dispay-graphic-p) sys/linuxp) "Is this a GNU/Linux system running X?")
+  (and (display-graphic-p) sys/linuxp) "Is this a GNU/Linux system running X?")
 (defconst sys/mac-x-p
-  (and (dispay-graphic-p) sys/macp)   "Is this a Mac system running X?")
+  (and (display-graphic-p) sys/macp)    "Is this a Mac system running X?")
 
 
 #+END_SRC
@@ -48,7 +48,7 @@
 (setq this-file (or load-file-name (buffer-file-name)))
 (setq this-file-org (replace-regexp-in-string ".el" ".org" this-file))
 
-(defvar emacs-root
+(setq emacs-root
   (file-name-directory (or (file-symlink-p this-file) this-file)))
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
