@@ -4,8 +4,6 @@
 
 * Initial setup
 ** Set up basic environment
-   # //////////////////////////////////////////////////////////////////////
-
 
    Before we can go about fixing the fun parts of emacs, we'll need to
    set up some basics.
@@ -15,8 +13,6 @@
 (setq message-log-max
       (- (expt 2 15) 1))      ; Make message log big
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
-
 
    Set some useful variables for later use.
 
@@ -39,7 +35,6 @@
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
 Don't do automatic file backups in these directories
@@ -60,7 +55,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 
 (setq backup-enable-predicate #'my-backup-enable-predicate)
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    Make _really_ sure that we're using utf-8. 
@@ -78,7 +72,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Declare personal variables
-   # //////////////////////////////////////////////////////////////////////
 
 
    Here are the variables which are private to me, and are assigned in
@@ -109,7 +102,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
       (load secret.el)))
 #+END_SRC
 ** Package.el configuration
-   # //////////////////////////////////////////////////////////////////////
 
 
    This needs to be in place before any configurations of installed packages.
@@ -141,7 +133,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Packages to install
-   # //////////////////////////////////////////////////////////////////////
 
 
    Download these packages if they aren't already downloaded.
@@ -222,7 +213,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Auto-customization
-   # //////////////////////////////////////////////////////////////////////
 
 
    Move all customization stuff to another file.
@@ -233,7 +223,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Emacs server
-   # //////////////////////////////////////////////////////////////////////
 
 
    The emacs server is useful if you use emacs for many things, and
@@ -247,13 +236,11 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 * UI
-  # //////////////////////////////////////////////////////////////////////
 
 
   Setting up the User interface so that it works the way /I/ like it.
 
 ** Basic look and feel
-   # //////////////////////////////////////////////////////////////////////
 
 
    Configuration basics.
@@ -294,7 +281,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Changes in default behaviour upon user action
-   # //////////////////////////////////////////////////////////////////////
 
 
    The first section above was how emacs presents things to me. This
@@ -311,7 +297,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 (setq scroll-step 1)                   ; Moving cursor down at bottom
                                        ; scrolls only a single line
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    Generally, I don't like programs asking me if I /really/ want to do
@@ -331,7 +316,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 
 #+END_SRC
 ** Mouse behaviour
-   # //////////////////////////////////////////////////////////////////////
 
 
    Get the mouse to work in emacs instances running in a terminal, and
@@ -344,7 +328,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
    
 ** Time display
-   # //////////////////////////////////////////////////////////////////////
 
 
    Get emacs to display time and date.
@@ -356,7 +339,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Indentation
-   # //////////////////////////////////////////////////////////////////////
 
 
    Generally, get emacs to indent in multiples of 2 or 4
@@ -384,7 +366,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Colours, fonts and stuff
-   # //////////////////////////////////////////////////////////////////////
 
 
    Apparently loading a theme using =load-theme= overlays the new
@@ -401,7 +382,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 
 (load-theme 'gruvbox)
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    For the longest time, I've for some reason enjoyed writing much
@@ -455,7 +435,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** External stuff
-   # //////////////////////////////////////////////////////////////////////
 
 
    How emacs interacts with the world outside of it.
@@ -476,7 +455,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Map Suffixes with modes
-   # //////////////////////////////////////////////////////////////////////
 
    
    Auto-set mode for these file suffixes.
@@ -509,7 +487,6 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
 #+END_SRC
 
 ** Display lambda symbol
-   # //////////////////////////////////////////////////////////////////////
 
 
    In python, emacs-lisp and org-mode, replace all instances of the
@@ -920,14 +897,12 @@ is inserted at the global mark rather than at the current position.
 #+END_SRC
 
 * Interactive functions
-  # //////////////////////////////////////////////////////////////////////
 
 
   Here's a bunch of functions, some of them written by me, most by
   other people.
 
 ** Set frame title bar
-   # //////////////////////////////////////////////////////////////////////
 
 
    Create a reasonable titlebar for emacs, which works on both windows
@@ -954,7 +929,6 @@ is inserted at the global mark rather than at the current position.
 #+END_SRC
 
 ** Buffer navigation functions
-   # //////////////////////////////////////////////////////////////////////
 
    
    This function has been really useful for me, since I often find
@@ -969,7 +943,6 @@ is inserted at the global mark rather than at the current position.
     ;; don't change current mode
     (unless previous (emacs-lisp-mode))))
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    Until lately, my emacs configuration was in
@@ -993,7 +966,6 @@ is inserted at the global mark rather than at the current position.
                           (file-name-extension this-file-org t)))
   )
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    Ansi-term, when invoked, normally starts by asking which shell I
@@ -1018,7 +990,6 @@ is inserted at the global mark rather than at the current position.
 #+END_SRC
 
 ** DNS-related functions
-   # //////////////////////////////////////////////////////////////////////
 
 
    The functions generate-ptr-records and sort-A-records were really
@@ -1217,7 +1188,6 @@ Todo someday: support the GENERATE directive"
 #+END_SRC
 
 ** Mail helper functions
-   # //////////////////////////////////////////////////////////////////////
 
 
    Gmail messed everything up.
@@ -1320,7 +1290,6 @@ Todo someday: support the GENERATE directive"
 #+END_SRC
 
 ** Simple text manipulation
-   # //////////////////////////////////////////////////////////////////////
 
 
    A bunch of small functions which help me modify text in different
@@ -1433,7 +1402,6 @@ point to the end of the buffer."
 #+END_SRC
 
 ** HTML stuff
-   # //////////////////////////////////////////////////////////////////////
 
 
    In =html-mode= and =css-mode=, make all instances of strings
@@ -1465,7 +1433,6 @@ point to the end of the buffer."
 
 #+END_SRC
 ** Org functions
-   # //////////////////////////////////////////////////////////////////////
 
 
    For a couple of years I put all my todos into an org-file called
@@ -1497,7 +1464,6 @@ point to the end of the buffer."
     )
 )
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    I use this following function when I use plain org-mode for
@@ -1524,7 +1490,6 @@ point to the end of the buffer."
 #+END_SRC
 
 ** Other functions
-   # //////////////////////////////////////////////////////////////////////
 
 
    This function is useful to toggle selective-display, which is often
@@ -1539,7 +1504,6 @@ point to the end of the buffer."
   (set-selective-display (if selective-display nil 1)))
 
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    When I want to do simple arithmetic in the buffer, I write (for
@@ -1558,7 +1522,6 @@ point to the end of the buffer."
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    These two functions help me do operations on both a file and its
@@ -1595,7 +1558,6 @@ point to the end of the buffer."
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    I used this function before I found out about =forward-sexp= and
@@ -1612,7 +1574,6 @@ point to the end of the buffer."
         (t (self-insert-command (or arg 1)))))
 
 #+END_SRC
-   # //////////////////////////////////////////////////////////////////////
 
 
    My oldest remaining emacs configuration, copied in '93 from someone
@@ -1646,7 +1607,6 @@ point to the end of the buffer."
 #+END_SRC
 
 * Helper functions
-  # //////////////////////////////////////////////////////////////////////
 
 
   These functions are called by others.
@@ -1678,13 +1638,11 @@ point to the end of the buffer."
 
 #+END_SRC
 * Keybindings
-  # //////////////////////////////////////////////////////////////////////
 
 
   Keybindings!
 
 ** Mode-specific keybindings
-   # //////////////////////////////////////////////////////////////////////
 
 
    Below, two ways of binding keys in a local context. 
@@ -1714,7 +1672,6 @@ point to the end of the buffer."
 #+END_SRC
 
 ** Global keybindings
-   # //////////////////////////////////////////////////////////////////////
 
    
    Of all these global keybindings, I think I just use a handful. Some
@@ -1765,7 +1722,6 @@ point to the end of the buffer."
 #+END_SRC
 
 * lint
-  # //////////////////////////////////////////////////////////////////////
 
 
   Here some pocket lint which I don't use but might want to at some
