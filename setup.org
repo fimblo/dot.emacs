@@ -14,12 +14,33 @@
       (- (expt 2 15) 1))      ; Make message log big
 #+END_SRC
 
-   Set some useful variables for later use.
+   Set some constants
 
 #+BEGIN_SRC emacs-lisp
-;; Set home directory
-(defvar home (getenv "HOME") "Home directory, sourced from Environment variable HOME")
-(setq default-directory (concat home "/"))
+(defconst hostname 
+  (getenv "HOSTNAME")          "This machine's hostname")
+(defconst sys/home
+  (getenv "HOME")              "Home directory")
+(defconst sys/windowsp
+  (eq system-type 'windows-nt) "Is this a Windows system?")
+(defconst sys/linuxp
+  (eq system-type 'gnu/linux)  "Is this a GNU/Linux system?")
+(defconst sys/macp
+  (eq system-type 'darwin)     "Is this a Mac system?")
+(defconst sys/cygwinp
+  (eq system-type 'cygwin)     "Is this a Cygwin system?")
+(defconst sys/linux-x-p
+  (and (dispay-graphic-p) sys/linuxp) "Is this a GNU/Linux system running X?")
+(defconst sys/mac-x-p
+  (and (dispay-graphic-p) sys/macp)   "Is this a Mac system running X?")
+
+
+#+END_SRC
+
+   Set some variables
+
+#+BEGIN_SRC emacs-lisp
+(setq default-directory (concat sys/home "/"))
 
 ;; If running with org-babel, the variable 'this-file' does not
 ;; contain the file filename.org; the file gets tangled into
@@ -29,8 +50,6 @@
 
 (defvar emacs-root
   (file-name-directory (or (file-symlink-p this-file) this-file)))
-
-(defvar hostname (getenv "HOSTNAME") "This machine's hostname")
 
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
@@ -546,7 +565,7 @@ is inserted at the global mark rather than at the current position.
 #+BEGIN_SRC emacs-lisp
 (require 'org-install)
 (setq org-log-done 'time)
-(setq org-directory (concat home "/notes/"))
+(setq org-directory (concat sys/home "/notes/"))
 (make-directory org-directory 1)
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (add-hook 'org-mode-hook
@@ -916,7 +935,7 @@ is inserted at the global mark rather than at the current position.
         '(:eval
           (if buffer-file-name
               (replace-regexp-in-string
-               home
+               sys/home
                "~"
                (buffer-file-name))
             (buffer-name))))
@@ -1443,7 +1462,7 @@ point to the end of the buffer."
 (defun switch-to-todo ()
   "Switch to todo buffer. Open file if necessary"
   (interactive)
-  (find-file-other-window (concat home "/todo.org"))
+  (find-file-other-window (concat sys/home "/todo.org"))
   (goto-char (point-min)))
 
 
@@ -1455,7 +1474,7 @@ point to the end of the buffer."
 
 (defun add-todo-helper (msg)
   (save-current-buffer
-    (set-buffer (find-file-noselect (concat home "/todo.org")))
+    (set-buffer (find-file-noselect (concat sys/home "/todo.org")))
     (goto-char (point-min))
     (re-search-forward "^\* Todo$" nil t)
     (insert "\n** TODO " msg)
