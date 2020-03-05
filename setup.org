@@ -770,54 +770,41 @@ is inserted at the global mark rather than at the current position.
 #+BEGIN_SRC emacs-lisp
 (require 'ibuffer)
 
+;; Don't show empty filter groups - they clutter the buffer
+(setq ibuffer-show-empty-filter-groups nil)
+
 (setq ibuffer-saved-filter-groups
       (quote (("default"
-               ("Org" ;; all org-related buffers
-                (mode . org-mode))
-;;               ("Recruitment"
-;;                (filename . "candidates"))
-               ("Remote machines"
-                (name . "^\\*tramp"))
-               ("Personal WC"
-                (filename . "wc/"))
-               ("Erc"
-                (mode . erc-mode))
-               ("Mail"
-                (or  ;; mail-related buffers
-                 (mode . message-mode)
-                 (mode . mail-mode)
-                 (mode . mutt-mode)
-                 ))
-               ("Version Control" (or (mode . svn-status-mode)
-                                      (mode . svn-log-edit-mode)
-                                      (name . "^\\*svn-")
-                                      (name . "^\\*vc\\*$")
-                                      (name . "^\\*Annotate")
-                                      (name . "^\\*git-")
-                                      (name . "^\\*vc-")))
-               ("Emacs lisp"
-                (mode . emacs-lisp-mode))
-               ("Emacs auto"
-                (or (name . "^\\*scratch\\*$")
-                    (name . "^\\*Messages\\*$")
-                    (name . "^\\*Help\\*$")
-                    (name . "^\\*info\\*$")
-                    (name . "^\\*Occur\\*$")
-                    (name . "^\\*grep\\*$")
-                    (name . "^\\*Compile-Log\\*$")
-                    (name . "^\\*Backtrace\\*$")
-                    (name . "^\\*Process List\\*$")
-                    (name . "^\\*gud\\*$")
-                    (name . "^\\*Man")
-                    (name . "^\\*Kill Ring\\*$")
-                    (name . "^\\*Calendar\\*$")
-                    (name . "^\\*Completions\\*$")
-                    (name . "^\\*shell\\*$")
-                    (name . "^\\*compilation\\*$")))
-               )
-              )
-             )
-      )
+               ("Dired" 
+                (and (mode . dired-mode)
+                     (not (filename . "ssh:"))))
+
+               ("Remote" (filename . "ssh:"))
+
+               ("Projects"
+                (and (filename . "wc/")
+                     (not (or (name . "magit-diff:")
+                              (name . "magit-process:")
+                              (name . "magit:")
+                              (mode . magit-mode)))))
+               ("Dropbox" (filename . "Dropbox/"))
+               ("Shell" (or (mode . term-mode)
+                            (mode . eshell-mode)))
+               ("Org" (mode . org-mode))
+               ("Emacs lisp" (mode . emacs-lisp-mode))
+               ("Perl" (or
+                        (mode . cperl-mode)
+                        (mode . perl-mode)))
+               ("Mail" (or
+                        (mode . message-mode)
+                        (mode . mail-mode)
+                        (mode . mutt-mode)))
+               ("Magit"
+                (or (name . "magit-diff:")
+                    (name . "magit-process:")
+                    (name . "magit:")
+                    (mode . magit-mode))
+                )))))
 
 (add-hook 'ibuffer-mode-hook
           (lambda ()
