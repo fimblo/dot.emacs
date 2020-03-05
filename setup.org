@@ -625,27 +625,49 @@ is inserted at the global mark rather than at the current position.
 
 ** Cperl-mode
 
-   Cperl-mode has more useful features than plain Perl-mode. To turn
-   most of them on, set =cperl-hairy= to =t=.
+   Cperl-mode has more useful features than plain Perl-mode. Since
+   Perl-mode is autoloaded when opening files with perl suffixes, we
+   begin below by replacing perl-mode with cperl-mode.
 
-   By setting =cperl-electric-parens= to =t=, I get auto-complete of
-   the following paired symbols: =({[]})= and in special cases, like
-   in the following code, the =<>= too.
 
-#+BEGIN_SRC
-  while (<>)) {
-  }
-#+END_SRC
+   I mentioned lots of useful features right? To turn most of them on,
+   set =cperl-hairy= to =t=. But this turns _all_ of the bells and
+   whistles on, so instead I activate only the stuff I want.
 
-   Some keywords get auto-expanded, like =if=, =while=, =for=,
-   =unless=, =until= etc if you set =cperl-electric-keywords= to
-   =t=.
+   - =cperl-electric-parens=
+     Setting this to =t=, I get auto-complete of the following paired
+     symbols: =({[]})= and in special cases, like in the following code,
+     the =<>= too.
+
+   - =cperl-electric-keywords=
+     If set to =t= some keywords get auto-expanded. E.g. =if=, =while=, =for=,
+     =unless=, =until=.
+
+   - =cperl-electric-linefeed=
+     If set to =t=, hitting =C-j= inside of, say, the inner
+     conditional parens will place the cursor inside the curly
+     brackets with the right indentation.
   
+
 #+BEGIN_SRC emacs-lisp
 (defalias 'perl-mode 'cperl-mode) 
-(setq cperl-hairy t)
+;;(setq cperl-hairy t)
 (setq cperl-electric-parens t)
 (setq cperl-electric-keywords t)
+(setq cperl-electric-linefeed t)
+#+END_SRC
+
+   Finally, some hooks. The first one is a keybinding which inserts a
+   fat comma on =M-,=. The second autoloads =flymake-mode= when cperl
+   is loaded.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'cperl-mode-hook
+          (lambda ()
+            (local-set-key (kbd "M-,") 'insert-fat-comma)))
+(add-hook 'cperl-mode-hook
+          (lambda ()
+            (flymake-mode)))
 #+END_SRC
 ** Org-mode
    I love org-mode, even if I only use a fraction of its capabilities.
@@ -1752,9 +1774,6 @@ point to the end of the buffer."
 (eval-after-load 'message
   '(define-key message-mode-map [?\C-c ?\C-k] 'kill-to-signature))
 
-(add-hook 'cperl-mode-hook
-          (lambda ()
-            (local-set-key (kbd "M-,") 'insert-fat-comma)))
 (add-hook 'js-mode-hook
           (lambda ()
             (local-set-key (kbd "M-,") 'insert-fat-comma)))
