@@ -451,6 +451,16 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
       (setq f/write-state "write"))))
 #+END_SRC
 
+   Set the face for comments and for the hl-mode row in prog-modes.
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute font-lock-comment-face nil :slant 'italic)
+
+(eval-after-load "hl-line"
+  '(set-face-attribute 'hl-line nil :background "grey10"))
+
+#+END_SRC
+
 ** External stuff
 
 
@@ -669,6 +679,23 @@ is inserted at the global mark rather than at the current position.
           (lambda ()
             (flymake-mode)))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(eval-after-load "cperl"
+  '(progn
+     (set-face-attribute cperl-array-face nil
+                         :foreground "yellow"
+                         :weight 'normal
+                         :slant 'italic)
+     (set-face-attribute cperl-hash-face nil
+                         :foreground "red"
+                         :weight 'normal
+                         :slant 'italic)
+     )
+  )
+#+END_SRC
+
+
 ** Org-mode
    I love org-mode, even if I only use a fraction of its capabilities.
 #+BEGIN_SRC emacs-lisp
