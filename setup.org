@@ -565,9 +565,33 @@ is inserted at the global mark rather than at the current position.
    view. Toggle between simple and detailed view using =(=.
 
 #+BEGIN_SRC emacs-lisp
-(setq dired-listing-switches "-AFhlv --group-directories-first")
+(setq dired-listing-switches "-aFhlv --group-directories-first")
 (add-hook 'dired-mode-hook
           (lambda () (dired-hide-details-mode 1)))
+#+END_SRC
+
+   
+
+
+#+BEGIN_SRC emacs-lisp
+(defvar f/dired-dotfiles-shown t "helper var for dired-dotfiles-toggle function." )
+(defun dired-dotfiles-toggle ()
+  "Toggle for displaying or hiding hidden files."
+
+  (interactive)
+  (setq f/dired-dotfiles-shown
+        (if f/dired-dotfiles-shown
+            (progn
+              (dired-sort-other "-Fhlv --group-directories-first")
+              nil)
+          (progn
+            (dired-sort-other "-aFhlv --group-directories-first")
+            t)
+          )
+        )
+  )
+(define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
+
 #+END_SRC
 
    Enable changing permissions and creating directories using a =/= in
