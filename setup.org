@@ -161,23 +161,7 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
   '(
 
     ;; Some themes first
-    ; abyss-theme
-    ; ample-theme
-    ; arjen-grey-theme
-    ; atom-dark-theme
-    ; badger-theme
-    ; birds-of-paradise-plus-theme
-    ; color-theme
-    ; color-theme-approximate
-    ; color-theme-cobalt
-    ; color-theme-twilight
-    ; darkburn-theme
-    ; darkmine-theme
-    ; darkokai-theme
-    ; darktooth-theme
-    ; dracula-theme  
     gruvbox-theme
-    ; poet-theme
 
     ;; Other packages
     adoc-mode
@@ -186,6 +170,7 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
     auctex
     column-marker
     counsel
+    dired-subtree
     edit-server
     gmail-message-mode
     graphviz-dot-mode
@@ -199,13 +184,26 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
     ; muttrc-mode
     olivetti
     org-bullets
-    puppet-mode
-    rainbow-delimiters
+    rainbow-delimiters    ; abyss-theme
+    ; ample-theme
+    ; arjen-grey-theme
+    ; atom-dark-theme
+    ; badger-theme
+    ; birds-of-paradise-plus-theme
+    ; darkburn-theme
+    ; darkmine-theme
+    ; darkokai-theme
+    ; darktooth-theme
+    ; dracula-theme  
+
     rainbow-mode
     ssh-config-mode
     swiper
     ; twittering-mode
     yaml-mode
+
+    
+    dumb-jump
     )
   "These packages are installed if necessary."
   )
@@ -560,6 +558,43 @@ is inserted at the global mark rather than at the current position.
 
 #+END_SRC
 
+** Dired-mode
+
+   In dired-mode, show directories first, then regular files. Dotfiles
+   before non-dotfiles. Also, open dired-mode in the simple
+   view. Toggle between simple and detailed view using =(=.
+
+#+BEGIN_SRC emacs-lisp
+(setq dired-listing-switches "-AFhlv --group-directories-first")
+(add-hook 'dired-mode-hook
+          (lambda () (dired-hide-details-mode 1)))
+#+END_SRC
+
+   Enable changing permissions and creating directories using a =/= in
+   the filename in writable dired-mode (wdired).
+
+   By the way, use =C-x C-q= to enter wdired, and =C-c C-c= to exit.
+
+#+BEGIN_SRC emacs-lisp
+(setq wdired-allow-to-change-permissions t)
+(setq wdired-create-parent-directories t)
+#+END_SRC
+
+   When your cursor is on a directory and you press =i=,
+   =dired-maybe-insert-subdir= is called. It adds the subdirectory at
+   the bottom of the buffer. Though this is useful, Dired-subtree is
+   better - it adds the subdir directly under the dir you opened,
+   indented a bit.
+
+   Use =<tab>= to expand a dir, and =<tab>= again to close it. If
+   you've moved your cursor into the contents of the dir, then
+   =shift-tab= will close it for you.
+
+#+BEGIN_SRC emacs-lisp
+(define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
+(define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
+#+END_SRC
+
 ** Org-mode
    I love org-mode, even if I only use a fraction of its capabilities.
 #+BEGIN_SRC emacs-lisp
@@ -677,7 +712,6 @@ is inserted at the global mark rather than at the current position.
 ;(global-set-key (kbd "C-c k") 'counsel-ag)
 
 #+END_SRC
-
 
 ** DNS-mode
 
