@@ -590,7 +590,6 @@ is inserted at the global mark rather than at the current position.
           )
         )
   )
-(define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
 
 #+END_SRC
 
@@ -615,10 +614,39 @@ is inserted at the global mark rather than at the current position.
    =shift-tab= will close it for you.
 
 #+BEGIN_SRC emacs-lisp
-(define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
-(define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
+(eval-after-load "dired"
+  '(progn
+     (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
+     (define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
+     (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
+     )
+  )
 #+END_SRC
 
+** Cperl-mode
+
+   Cperl-mode has more useful features than plain Perl-mode. To turn
+   most of them on, set =cperl-hairy= to =t=.
+
+   By setting =cperl-electric-parens= to =t=, I get auto-complete of
+   the following paired symbols: =({[]})= and in special cases, like
+   in the following code, the =<>= too.
+
+#+BEGIN_SRC
+  while (<>)) {
+  }
+#+END_SRC
+
+   Some keywords get auto-expanded, like =if=, =while=, =for=,
+   =unless=, =until= etc if you set =cperl-electric-keywords= to
+   =t=.
+  
+#+BEGIN_SRC emacs-lisp
+(defalias 'perl-mode 'cperl-mode) 
+(setq cperl-hairy t)
+(setq cperl-electric-parens t)
+(setq cperl-electric-keywords t)
+#+END_SRC
 ** Org-mode
    I love org-mode, even if I only use a fraction of its capabilities.
 #+BEGIN_SRC emacs-lisp
