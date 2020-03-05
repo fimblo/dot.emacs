@@ -56,7 +56,7 @@ fi
 
 
 # Start emacs daemon if it hasnt already been started.
-! ps -ef |grep [eE]macs.*--daemon > /dev/null 2>&1 && \
+! ps -ef |grep -v gpg-agent | grep [eE]macs.*--daemon > /dev/null 2>&1 && \
   $emacsbin --daemon
 
 
