@@ -513,6 +513,23 @@ prefixes - so if you add =/= then emacs won't make backups anywhere...
       '(".o" ".elc" ".class" "java~" ".ps" ".abs" ".mx" ".~jv" ))
 #+END_SRC
 
+   The above works if you only look at the file suffix - but after
+   loading, emacs will look at the first line of the file (if
+   appropriate) and see if there is a hashbang specifying an
+   interpreter. If that interpreter is in =interpreter-mode-alist=, it
+   will use the mode specified there.
+
+   Since =perl-mode= is the default, Perl scripts starting with the
+   line =#!/bin/bin/perl= will be associated with that despite
+   the instructions in =auto-mode-alist=, so we need to add the
+   mapping =(perl . cperl-mode)= in the =interpreter-mode-alist=.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+#+END_SRC
+
+
+
 ** Display lambda symbol
 
 
