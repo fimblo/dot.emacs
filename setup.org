@@ -701,10 +701,12 @@ is inserted at the global mark rather than at the current position.
 (eval-after-load "cperl"
   '(progn
      (set-face-attribute cperl-array-face nil
+                         :background nil
                          :foreground "yellow"
                          :weight 'normal
                          :slant 'italic)
      (set-face-attribute cperl-hash-face nil
+                         :background nil
                          :foreground "red"
                          :weight 'normal
                          :slant 'italic)
@@ -1868,11 +1870,20 @@ point to the end of the buffer."
 (global-set-key (kbd "C-x <left>")  'windmove-left)
 (global-set-key (kbd "C-x C-b")     'ibuffer)
 (global-set-key (kbd "M-%")         'query-replace-regexp)
-(global-set-key [(shift down)]      '(lambda () (interactive) (scroll-up 3)))
-(global-set-key [(shift up)]        '(lambda () (interactive) (scroll-down 3)))
+;(global-set-key [(shift down)]      '(lambda () (interactive) (scroll-up 3)))
+;(global-set-key [(shift up)]        '(lambda () (interactive) (scroll-down 3)))
 (global-set-key (kbd "C-x SPC")     'show-ws-toggle-show-trailing-whitespace)
 (global-set-key (kbd "C-S-e")       'merge-lines)   
 (global-set-key (kbd "C-h C-s")     'find-function-at-point)
+
+
+(global-set-key [(meta n)] '(lambda () (interactive) (scroll-up 3)))
+(global-set-key [(meta p)]   '(lambda () (interactive) (scroll-down 3)))
+;(global-set-key [(shift down)]   '(lambda () (interactive) (scroll-other-window -3))
+;(global-set-key [(shift up)]   '(lambda () (interactive) (scroll-other-window 3))
+
+
+
 
 #+END_SRC
 
