@@ -1848,10 +1848,10 @@ point to the end of the buffer."
 (global-set-key "\C-xm"             'mail)
 (global-set-key (kbd "M-0")         'add_separator)
 (global-set-key [ \C-tab ]          'hippie-expand)
-;(global-set-key [ f35 ]             'delete-char)
 (global-set-key [ f5 ]              'switch-to-scratch)
 (global-set-key [ M-f5 ]            'open-dot-emacs)
-;(global-set-key [ f6 ]              'toggle-selective-display)
+(global-set-key [ f6 ]              'toggle-selective-display)
+(global-set-key "\C-x\C-y"          'toggle-truncate-lines)
 ;(global-set-key [ f6 ]              'switch-to-todo)
 ;(global-set-key [ S-f6 ]            'add-todo)
 (global-set-key [ f7 ]              'my-ansi-term)
@@ -1861,27 +1861,28 @@ point to the end of the buffer."
 (global-set-key [ M-f11 ]           '(lambda () (interactive) (enlarge-window -4)))
 (global-set-key [ f12 ]             '(lambda () (interactive) (enlarge-window 4 1)))
 (global-set-key [ M-f12 ]           '(lambda () (interactive) (enlarge-window -4 1)))
-(global-set-key [ home ]            'beginning-of-buffer)
-(global-set-key [ end ]             'end-of-buffer )
-(global-set-key "\C-x\C-y"          'toggle-truncate-lines)
 (global-set-key (kbd "C-x <down>")  'windmove-down)
 (global-set-key (kbd "C-x <up>")    'windmove-up)
 (global-set-key (kbd "C-x <right>") 'windmove-right)
 (global-set-key (kbd "C-x <left>")  'windmove-left)
 (global-set-key (kbd "C-x C-b")     'ibuffer)
 (global-set-key (kbd "M-%")         'query-replace-regexp)
-;(global-set-key [(shift down)]      '(lambda () (interactive) (scroll-up 3)))
-;(global-set-key [(shift up)]        '(lambda () (interactive) (scroll-down 3)))
 (global-set-key (kbd "C-x SPC")     'show-ws-toggle-show-trailing-whitespace)
 (global-set-key (kbd "C-S-e")       'merge-lines)   
 (global-set-key (kbd "C-h C-s")     'find-function-at-point)
 
 
-(global-set-key [(meta n)] '(lambda () (interactive) (scroll-up 3)))
-(global-set-key [(meta p)]   '(lambda () (interactive) (scroll-down 3)))
-;(global-set-key [(shift down)]   '(lambda () (interactive) (scroll-other-window -3))
-;(global-set-key [(shift up)]   '(lambda () (interactive) (scroll-other-window 3))
+(global-set-key [(meta ?n)]         '(lambda () (interactive) (scroll-up 3)))
+(global-set-key [(meta ?p)]         '(lambda () (interactive) (scroll-down 3)))
+(global-set-key [(shift meta ?n)]   '(lambda () (interactive) (scroll-other-window 3)))
+(global-set-key [(shift meta ?p)]   '(lambda () (interactive) (scroll-other-window -3)))
 
+
+(global-set-key [ home ]            'beginning-of-buffer)
+(global-set-key [ end ]             'end-of-buffer )
+;; The following two are default keybindings. But I added them here to remind me of them.
+(global-set-key [(meta home) ]      'beginning-of-buffer-other-window)
+(global-set-key [(meta end) ]       'end-of-buffer-other-window )
 
 
 
