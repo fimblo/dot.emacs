@@ -1689,6 +1689,74 @@
      )
    #+END_SRC
 
+** Moving lines and regions
+
+   These functions allow me to move single lines or entire regions up and down.
+
+   #+BEGIN_SRC emacs-lisp
+     ;; http://www.emacswiki.org/emacs/MoveLineRegion
+
+     (defun move-line (&optional n)
+       "Move current line N (1) lines up/down leaving point in place."
+       (interactive "p")
+       (when (null n)
+         (setq n 1))
+       (let ((col (current-column)))
+         (beginning-of-line)
+         (forward-line)
+         (transpose-lines n)
+         (forward-line -1)
+         (forward-char col))
+       (indent-according-to-mode))
+
+     (defun move-line-up (n)
+       "Moves current line N (1) lines up leaving point in place."
+       (interactive "p")
+       (move-line (if (null n) -1 (- n))))
+
+     (defun move-line-down (n)
+       "Moves current line N (1) lines down leaving point in place."
+       (interactive "p")
+       (move-line (if (null n) 1 n)))
+
+     (defun move-region (start end n)
+       "Move the current region up or down by N lines."
+       (interactive "r\np")
+       (let ((line-text (delete-and-extract-region start end)))
+         (forward-line n)
+         (let ((start (point)))
+           (insert line-text)
+           (setq deactivate-mark nil)
+           (set-mark start))))
+
+     (defun move-region-up (start end n)
+       "Move the current region up by N lines."
+       (interactive "r\np")
+       (move-region start end (if (null n) -1 (- n))))
+
+     (defun move-region-down (start end n)
+       "Move the current region down by N lines."
+       (interactive "r\np")
+       (move-region start end (if (null n) 1 n)))
+
+     (defun move-line-region-up (start end n)
+       (interactive "r\np")
+       (if (region-active-p) (move-region-up start end n) (move-line-up n)))
+
+     (defun move-line-region-down (start end n)
+       (interactive "r\np")
+       (if (region-active-p) (move-region-down start end n) (move-line-down n)))
+
+
+
+
+     (global-set-key [(meta up)]   'move-line-up)
+     (global-set-key [(meta down)] 'move-line-down)
+
+     (global-set-key [(shift meta up)]   'move-line-region-up)
+     (global-set-key [(shift meta down)] 'move-line-region-down)
+   #+END_SRC
+
 ** Other functions
 
    This function is useful to toggle selective-display, which is often
@@ -1901,16 +1969,25 @@
      (global-set-key (kbd "C-S-e")       'merge-lines)
      (global-set-key (kbd "C-h C-s")     'find-function-at-point)
 
+     ;; move the buffer contents up and down without moving the cursor
      (global-set-key [(meta ?n)]         '(lambda () (interactive) (scroll-up 3)))
      (global-set-key [(meta ?p)]         '(lambda () (interactive) (scroll-down 3)))
      (global-set-key [(shift meta ?n)]   '(lambda () (interactive) (scroll-other-window 3)))
      (global-set-key [(shift meta ?p)]   '(lambda () (interactive) (scroll-other-window -3)))
 
+     ;; Move lines and regions up and down
+     (global-set-key [(meta up)]         'move-line-up)
+     (global-set-key [(meta down)]       'move-line-down)
+     (global-set-key [(shift meta up)]   'move-line-region-up)
+     (global-set-key [(shift meta down)] 'move-line-region-down)
+
+     ;; Jump to top and bottom of a buffer or the other one
+     ;; The last two are default keybindings. But I added them here to remind me of them.
      (global-set-key [ home ]            'beginning-of-buffer)
      (global-set-key [ end ]             'end-of-buffer )
-     ;; The following two are default keybindings. But I added them here to remind me of them.
      (global-set-key [(meta home) ]      'beginning-of-buffer-other-window)
      (global-set-key [(meta end) ]       'end-of-buffer-other-window )
+
 
    #+END_SRC
 
