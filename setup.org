@@ -763,6 +763,9 @@
 
    #+BEGIN_SRC emacs-lisp
      (require 'org-install)
+     (setq org-startup-indented t)
+     (setq org-src-tab-acts-natively t)
+     (setq org-edit-src-content-indentation 2)
      (setq org-log-done 'time)
      (setq org-directory (concat sys/home "/notes/"))
      (make-directory org-directory 1)
