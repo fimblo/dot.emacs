@@ -2,6 +2,17 @@
 #+AUTHOR:     Mattias Jansson (fimblo)
 #+EMAIL:      fimblo@yanson.org
 
+#+BEGIN_COMMENT
+Not exported
+
+  Starting a line with '<s' followed by tab auto-inserts
+
+  #+BEGIN_SRC 
+
+  #+END_SRC
+
+#+END_COMMENT
+
 * Introduction
 
   This document is my so-called dot-emacs file. Actually, it's not -
