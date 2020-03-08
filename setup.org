@@ -13,7 +13,7 @@
     ;; Minimal config here. The rest will be in setup.org
     (package-initialize)	 ; This needs to be early in config
     (require 'org)			 ; Load org so we can use babel
-    
+
     (org-babel-load-file     ; Load my setup file
      (expand-file-name "~/.emacs.d/setup.org"))
     ;; EOF
@@ -74,7 +74,7 @@
    running in.
 
    #+BEGIN_SRC emacs-lisp
-     (defconst hostname 
+     (defconst hostname
        (getenv "HOSTNAME")          "This machine's hostname")
      (defconst sys/home
        (getenv "HOME")              "Home directory")
@@ -97,20 +97,19 @@
 
    #+BEGIN_SRC emacs-lisp
      (setq default-directory (concat sys/home "/"))
-     
+
      ;; Sice I'm running with org-babel, the variable 'this-file' does not
      ;; contain the file filename.org; the file gets tangled into
      ;; filename.el
      (setq this-file (or load-file-name (buffer-file-name)))
      (setq this-file-org (replace-regexp-in-string ".el" ".org" this-file))
-     
+
      (setq emacs-root
        (file-name-directory (or (file-symlink-p this-file) this-file)))
-     
+
      (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
      (setq exec-path (append exec-path '("/usr/local/bin")))
    #+END_SRC
-
 
    Don't do automatic file backups in these directories
 
@@ -130,12 +129,11 @@
          (if found
              nil
            (normal-backup-enable-predicate name))))
-     
+
      (setq backup-enable-predicate #'my-backup-enable-predicate)
    #+END_SRC
 
-
-   Make _really_ sure that we're using utf-8. 
+   Make _really_ sure that we're using utf-8.
 
    I'm so glad I don't have to fool around with all those old
    character sets anymore - especially the Japanese ones...
@@ -150,7 +148,6 @@
    #+END_SRC
 
 ** Declare personal variables
-
 
    Here are the variables which are private to me, and are assigned in
    the =~/.emacs.d/.secret.el= file (which for obvious reasons aren't
@@ -174,14 +171,13 @@
                                            ")
      (defvar me/erc/pass-query-string nil "How should ERC ask for the password?
                                            Useful if you have multiple servers to connect to.")
-   
+
      (let ((secret.el (expand-file-name ".secret.el" user-emacs-directory)))
        (when (file-exists-p secret.el)
          (load secret.el)))
    #+END_SRC
 
 ** Package.el configuration
-
 
    This needs to be in place before any configurations of installed packages.
 
@@ -195,9 +191,9 @@
        (make-directory path t)
        (let ((default-directory path))
          (normal-top-level-add-subdirs-to-load-path)))
-     
+
      (require 'package)
-     
+
      ;; add these sources
      (eval-after-load "package"
        '(progn
@@ -207,22 +203,21 @@
           (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
           (add-to-list 'package-archives '("tromey"    . "http://tromey.com/elpa/"))
      ))
-     
+
      (setq url-http-attempt-keepalives nil)  ; A package.el bug. Apparently.
    #+END_SRC
 
 ** Packages to install
-
 
    Download these packages if they aren't already downloaded.
 
    #+BEGIN_SRC emacs-lisp
      (defvar elpa-packages
        '(
-     
+
          ;; Some themes first
          gruvbox-theme
-     
+
          ;; Other packages
          adoc-mode
          apache-mode
@@ -254,29 +249,27 @@
          ; darkmine-theme
          ; darkokai-theme
          ; darktooth-theme
-         ; dracula-theme  
-     
+         ; dracula-theme
+
          rainbow-mode
          ssh-config-mode
          swiper
          ; twittering-mode
          yaml-mode
-     
-         
+
          dumb-jump
          )
        "These packages are installed if necessary."
        )
-     
+
      (if (not package-archive-contents)
          (package-refresh-contents))
-     
+
      (dolist (pkg elpa-packages)
        (when (and (not (package-installed-p pkg))
                 (assoc pkg package-archive-contents))
          (package-install pkg)))
-     
-         
+
      (defun package-list-unaccounted-packages ()
        "Like `package-list-packages', but shows only the packages that
        are installed and are not in `elpa-packages'.  Useful for
@@ -291,7 +284,6 @@
 
 ** Auto-customization
 
-
    Move all customization stuff to another file.
 
    #+BEGIN_SRC emacs-lisp
@@ -300,7 +292,6 @@
    #+END_SRC
 
 ** Emacs server
-
 
    The emacs server is useful if you use emacs for many things, and
    you want each session to share buffers and state. Startup time is
@@ -314,17 +305,15 @@
 
 * UI
 
-
   Setting up the User interface so that it works the way /I/ like it.
 
 ** Basic look and feel
-
 
    Configuration basics.
 
    #+BEGIN_SRC emacs-lisp
      (setq default-major-mode 'org-mode)     ; default mode is org-mode
-     
+
      (setq fci-rule-column 80)               ; fill column
      (setq inhibit-startup-message t)        ; no startup message
      (setq initial-scratch-message nil)      ; no *scratch* message
@@ -344,8 +333,7 @@
      (menu-bar-mode -1)
      (if (boundp 'fringe-mode) (fringe-mode -1))
      (if (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
-     
-     
+
      ;; Look and feel for all programming modes
      (add-hook 'prog-mode-hook
                (lambda ()
@@ -359,7 +347,6 @@
 
 ** Changes in default behaviour upon user action
 
-
    The first section above was how emacs presents things to me. This
    section is how it reacts to some of my commands.
 
@@ -369,12 +356,11 @@
      (setq apropos-do-all t)                ; show all funcs/vars in help
      (put 'downcase-region 'disabled nil)   ; allow downcase-region commands
      (put 'upcase-region 'disabled nil)     ; allow downcase-region commands
-     
+
      (setq next-line-add-newlines t)        ; C-n at eob opens new lines.
      (setq scroll-step 1)                   ; Moving cursor down at bottom
                                             ; scrolls only a single line
    #+END_SRC
-
 
    Generally, I don't like programs asking me if I /really/ want to do
    something I just told it to do. And if it must, I want that
@@ -383,17 +369,16 @@
    #+BEGIN_SRC emacs-lisp
      (defun my-dummy-ring-bell-function () nil)    ; replace beep with visible bell
      (setq ring-bell-function `my-dummy-ring-bell-function)
-     
+
      (fset 'yes-or-no-p 'y-or-n-p)                 ; y or n instead of yes or no
      (setq confirm-nonexistent-file-or-buffer nil) ; just open new buffers
      (setq kill-buffer-query-functions             ; dont ask to kill live buffers
            (remq 'process-kill-buffer-query-function
                  kill-buffer-query-functions))
      (put 'eval-expression 'disabled nil)          ; no confirm on eval-expression
-     
+
    #+END_SRC
 ** Mouse behaviour
-
 
    Get the mouse to work in emacs instances running in a terminal, and
    other mouse configuration.
@@ -403,9 +388,8 @@
      (setq mouse-wheel-mode t)             ; support mouse wheel
      (setq mouse-wheel-follow-mouse t)     ; scrolls mouse pointer position, not pointer
    #+END_SRC
-   
-** Time display
 
+** Time display
 
    Get emacs to display time and date.
 
@@ -417,7 +401,6 @@
 
 ** Indentation
 
-
    Generally, get emacs to indent in multiples of 2 or 4
    spaces. Also - avoid inserting tabs.
 
@@ -428,12 +411,11 @@
      (setq tab-width 4)
      (setq-default tab-stop-list
                    (mapcar #'(lambda (x) (* x 4))
-                           (cdr (reverse 
+                           (cdr (reverse
                                  (let (value)
                                    (dotimes (number 32 value)
                                      (setq value (cons number value))))))))
-     
-     
+
      (setq perl-continued-brace-offset -2)
      (setq perl-continued-statement-offset 2)
      (setq perl-indent-level 2)
@@ -443,7 +425,6 @@
    #+END_SRC
 
 ** Colours, fonts and stuff
-
 
    Apparently loading a theme using =load-theme= overlays the new
    theme onto whatever was there before. This might be useful at
@@ -456,10 +437,9 @@
      (defadvice load-theme (before clear-previous-themes activate)
        "Clear existing theme settings instead of layering them"
        (mapc #'disable-theme custom-enabled-themes))
-     
+
      (load-theme 'gruvbox)
    #+END_SRC
-
 
    For the longest time, I've for some reason enjoyed writing much
    more in traditional word processors like Google Docs, Openoffice,
@@ -473,24 +453,24 @@
 
    /By the way - to use this without modification you'll need the font
    Noto-serif./
-   
+
    #+BEGIN_SRC emacs-lisp
      (setq f/write-state "nowrite")
      (setq f/face-cookie nil)
      (defun write-toggle ()
        "Toggles write-state of current buffer.
-     
+
         Write-state defaults to nil, but when activated, does the following:
         - Changes the cursor to a short horizontal line
         - Changes the font to Noto Serif
         - Removes hl-line-mode
         - Activates Olivetti-mode
-     
+
         Toggling again reverts the changes."
-     
+
        (interactive)
        (if (string= f/write-state "write")
-           (progn 
+           (progn
              (message "write-state")
              (setq cursor-type 'bar)
              (variable-pitch-mode 0)
@@ -501,10 +481,10 @@
          (progn
            (message "not write-state")
            (setq cursor-type '(hbar . 2))
-           (variable-pitch-mode 1)       
+           (variable-pitch-mode 1)
            (setq f/face-cookie              ; when changing face, save old
                  (face-remap-add-relative   ; face in a cookie.
-                  'default 
+                  'default
                   '(:family "Noto Serif")))
            (hl-line-mode -1)
            (olivetti-mode 1)
@@ -515,27 +495,26 @@
 
    #+BEGIN_SRC emacs-lisp
      (set-face-attribute font-lock-comment-face nil :slant 'italic)
-     
+
      (eval-after-load "hl-line"
        '(set-face-attribute 'hl-line nil :background "grey10"))
-     
+
    #+END_SRC
 
 ** External stuff
-
 
    How emacs interacts with the world outside of it.
 
    #+BEGIN_SRC emacs-lisp
      ; default to ssh when tramping
      (setq tramp-default-method "ssh")
-     
+
      ;; What browser to use?
      (if (eq system-type 'darwin)
          (setq browse-url-browser-function 'browse-url-default-macosx-browser)
        (setq browse-url-browser-function 'browse-url-chromium)
        )
-     
+
      ;; make scripts executable if they aren't already
      (add-hook 'after-save-hook
                'executable-make-buffer-file-executable-if-script-p)
@@ -543,7 +522,6 @@
 
 ** Map Suffixes with modes
 
-   
    Auto-set mode for these file suffixes.
 
    #+BEGIN_SRC emacs-lisp
@@ -567,7 +545,7 @@
              '("\\.pm"                 . cperl-mode           )
              '("\\.pl"                 . cperl-mode           ))
             auto-mode-alist))
-     
+
      ;; and ignore these suffixes when expanding
      (setq completion-ignored-extensions
            '(".o" ".elc" ".class" "java~" ".ps" ".abs" ".mx" ".~jv" ))
@@ -588,10 +566,7 @@
      (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
    #+END_SRC
 
-
-
 ** Display lambda symbol
-
 
    In python, emacs-lisp and org-mode, replace all instances of the
    string 'lambda' with the character λ.
@@ -635,150 +610,157 @@
      (setq shift-select-mode nil)                 ; do not select text when moving with shift.
      (setq cua-delete-selection nil)              ; dont kill selections on keypress
      (setq cua-enable-cursor-indications t)       ; customize cursor color
-     
+
      (setq cua-normal-cursor-color "white")
      ;; if Buffer is...
      ;;(setq cua-normal-cursor-color "#15FF00")     ; R/W, then cursor is green
      ;;(setq cua-read-only-cursor-color "purple1")  ; R/O, then cursor is purple
      ;;(setq cua-overwrite-cursor-color "red")      ; in Overwrite mode, cursor is red
      ;;(setq cua-global-mark-cursor-color "yellow") ; in Global mark mode, cursor is yellow
-     
+
    #+END_SRC
 
 ** Dired-mode
+*** Order to display files
 
-   In dired-mode, show directories first, then regular files. Dotfiles
-   before non-dotfiles. Also, open dired-mode in the simple
-   view. Toggle between simple and detailed view using =(=.
+    In dired-mode, show directories first, then regular files. Dotfiles
+    before non-dotfiles. Also, open dired-mode in the simple
+    view. Toggle between simple and detailed view using =(=.
 
-   #+BEGIN_SRC emacs-lisp
-     (setq dired-listing-switches "-aFhlv --group-directories-first")
-     (add-hook 'dired-mode-hook
-               (lambda () (dired-hide-details-mode 1)))
-   #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (setq dired-listing-switches "-aFhlv --group-directories-first")
+      (add-hook 'dired-mode-hook
+                (lambda () (dired-hide-details-mode 1)))
+    #+END_SRC
 
-   
-   This function makes it easy to toggle between showing dotfiles and
-   hiding them. I bound it in a section a bit further below to =.=.
+    This function makes it easy to toggle between showing dotfiles and
+    hiding them. I bound it in a section a bit further below to =.=.
 
-   #+BEGIN_SRC emacs-lisp
-     (defvar f/dired-dotfiles-shown t "helper var for dired-dotfiles-toggle function." )
-     (defun dired-dotfiles-toggle ()
-       "Toggle for displaying or hiding hidden files."
-     
-       (interactive)
-       (setq f/dired-dotfiles-shown
-             (if f/dired-dotfiles-shown
-                 (progn
-                   (dired-sort-other "-Fhlv --group-directories-first")
-                   nil)
-               (progn
-                 (dired-sort-other "-aFhlv --group-directories-first")
-                 t)
-               )
-             )
-       )
-   #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (defvar f/dired-dotfiles-shown t "helper var for dired-dotfiles-toggle function." )
+      (defun dired-dotfiles-toggle ()
+        "Toggle for displaying or hiding hidden files."
 
-   Enable changing permissions and creating directories using a =/= in
-   the filename in writable dired-mode (wdired).
+        (interactive)
+        (setq f/dired-dotfiles-shown
+              (if f/dired-dotfiles-shown
+                  (progn
+                    (dired-sort-other "-Fhlv --group-directories-first")
+                    nil)
+                (progn
+                  (dired-sort-other "-aFhlv --group-directories-first")
+                  t)
+                )
+              )
+        )
+    #+END_SRC
 
-   By the way, use =C-x C-q= to enter wdired, and =C-c C-c= to exit.
+*** Wdired modifications
 
-   #+BEGIN_SRC emacs-lisp
-     (setq wdired-allow-to-change-permissions t)
-     (setq wdired-create-parent-directories t)
-   #+END_SRC
+    Enable changing permissions and creating directories using a =/= in
+    the filename in writable dired-mode (wdired).
 
-   When your cursor is on a directory and you press =i=,
-   =dired-maybe-insert-subdir= is called. It adds the subdirectory at
-   the bottom of the buffer. Though this is useful, Dired-subtree is
-   better - it adds the subdir directly under the dir you opened,
-   indented a bit.
+    By the way, use =C-x C-q= to enter wdired, and =C-c C-c= to exit.
 
-   Use =<tab>= to expand a dir, and =<tab>= again to close it. If
-   you've moved your cursor into the contents of the dir, then
-   =shift-tab= will close it for you.
+    #+BEGIN_SRC emacs-lisp
+      (setq wdired-allow-to-change-permissions t)
+      (setq wdired-create-parent-directories t)
+    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (eval-after-load "dired"
-       '(progn
-          (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
-          (define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
-          (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
-          )
-       )
-   #+END_SRC
+*** Dired keybindings
+
+    When your cursor is on a directory and you press =i=,
+    =dired-maybe-insert-subdir= is called. It adds the subdirectory at
+    the bottom of the buffer. Though this is useful, Dired-subtree is
+    better - it adds the subdir directly under the dir you opened,
+    indented a bit.
+
+    Use =<tab>= to expand a dir, and =<tab>= again to close it. If
+    you've moved your cursor into the contents of the dir, then
+    =shift-tab= will close it for you.
+
+    #+BEGIN_SRC emacs-lisp
+      (eval-after-load "dired"
+        '(progn
+           (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
+           (define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
+           (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
+           )
+        )
+    #+END_SRC
 
 ** Cperl-mode
+*** Some hairy cperl settings
 
-   Cperl-mode has more useful features than plain Perl-mode. Since
-   Perl-mode is autoloaded when opening files with perl suffixes, we
-   begin below by replacing perl-mode with cperl-mode.
+    Cperl-mode has more useful features than plain Perl-mode. Since
+    Perl-mode is autoloaded when opening files with perl suffixes, we
+    begin below by replacing perl-mode with cperl-mode.
 
+    I mentioned lots of useful features right? To turn most of them on,
+    set =cperl-hairy= to =t=. But this turns _all_ of the bells and
+    whistles on, so instead I activate only the stuff I want.
 
-   I mentioned lots of useful features right? To turn most of them on,
-   set =cperl-hairy= to =t=. But this turns _all_ of the bells and
-   whistles on, so instead I activate only the stuff I want.
+    - =cperl-electric-parens= ::
 
-   - =cperl-electric-parens= ::
+      Setting this to =t=, I get auto-complete of the following paired
+      symbols: =({[]})= and in special cases, like in the following code,
+      the =<>= too.
 
-     Setting this to =t=, I get auto-complete of the following paired
-     symbols: =({[]})= and in special cases, like in the following code,
-     the =<>= too.
+    - =cperl-electric-keywords= ::
 
-   - =cperl-electric-keywords= ::
+      If set to =t= some keywords get auto-expanded. E.g. =if=, =while=, =for=,
+      =unless=, =until=.
 
-     If set to =t= some keywords get auto-expanded. E.g. =if=, =while=, =for=,
-     =unless=, =until=.
+    - =cperl-electric-linefeed= ::
 
-   - =cperl-electric-linefeed= ::
+      If set to =t=, hitting =C-j= inside of, say, the inner
+      conditional parens will place the cursor inside the curly
+      brackets with the right indentation.
 
-     If set to =t=, hitting =C-j= inside of, say, the inner
-     conditional parens will place the cursor inside the curly
-     brackets with the right indentation.
-  
+    #+BEGIN_SRC emacs-lisp
+      (defalias 'perl-mode 'cperl-mode)
+      ;;(setq cperl-hairy t)
+      (setq cperl-electric-parens t)
+      (setq cperl-electric-keywords t)
+      (setq cperl-electric-linefeed t)
+    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (defalias 'perl-mode 'cperl-mode) 
-     ;;(setq cperl-hairy t)
-     (setq cperl-electric-parens t)
-     (setq cperl-electric-keywords t)
-     (setq cperl-electric-linefeed t)
-   #+END_SRC
+*** Cperl-hooks
 
-   Next, a cperl hook to set some stuff up.
+    Next, a cperl hook to set some stuff up.
 
-   - The first one is a keybinding which inserts a fat comma on
-     =M-,=. 
+    - The first one is a keybinding which inserts a fat comma on
+      =M-,=.
 
-   - The second autoloads =flymake-mode= when cperl is loaded.
+    - The second autoloads =flymake-mode= when cperl is loaded.
 
-   - Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
-     and its face for arrays and hashes are kind of ugly. Here I
-     change it so it's slanted, unbolded and coloured.
+    - Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
+      and its face for arrays and hashes are kind of ugly. Here I
+      change it so it's slanted, unbolded and coloured.
 
-   #+BEGIN_SRC emacs-lisp
-   (add-hook 'cperl-mode-hook
-             (lambda () (progn
-                     (local-set-key (kbd "M-,") 'insert-fat-comma)
-                     (flymake-mode)
+    #+BEGIN_SRC emacs-lisp
+    (add-hook 'cperl-mode-hook
+              (lambda () (progn
+                      (local-set-key (kbd "M-,") 'insert-fat-comma)
+                      (flymake-mode)
 
-                     (set-face-italic 'cperl-array-face t)
-                     (set-face-bold 'cperl-array-face nil)
-                     (set-face-foreground 'cperl-array-face "yellow")
-                     (set-face-background 'cperl-array-face nil)
-                     (set-face-italic 'cperl-hash-face t)
-                     (set-face-bold 'cperl-hash-face nil)
-                     (set-face-foreground 'cperl-hash-face "red")
-                     (set-face-background 'cperl-hash-face nil)
-                     )
-               )
-             )
-   #+END_SRC
+                      (set-face-italic 'cperl-array-face t)
+                      (set-face-bold 'cperl-array-face nil)
+                      (set-face-foreground 'cperl-array-face "yellow")
+                      (set-face-background 'cperl-array-face nil)
+                      (set-face-italic 'cperl-hash-face t)
+                      (set-face-bold 'cperl-hash-face nil)
+                      (set-face-foreground 'cperl-hash-face "red")
+                      (set-face-background 'cperl-hash-face nil)
+                      )
+                )
+              )
+    #+END_SRC
 
 ** Org-mode
+
    I love org-mode, even if I only use a fraction of its capabilities.
+
    #+BEGIN_SRC emacs-lisp
      (require 'org-install)
      (setq org-log-done 'time)
@@ -792,8 +774,7 @@
                  (auto-fill-mode -1)))
    #+END_SRC
 
-
-*** Org-babel 
+*** Org-babel
    #+BEGIN_SRC emacs-lisp
      (setq org-src-fontify-natively t)
      (setq org-hide-leading-stars t)       ; remove leading stars in org-mode
@@ -802,10 +783,10 @@
      (setq org-fontify-whole-heading-line t)
      (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
        (font-lock-fontify-buffer))
-     
+
      (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
      (setq org-bullets 1)                  ; activate said pretty bullets
-     
+
    #+END_SRC
 
 ** Visual-line-mode
@@ -848,6 +829,9 @@
    #+END_SRC
 
 ** Flyspell-mode
+
+   Spell-checker for emacs.
+
    #+BEGIN_SRC emacs-lisp
      (setq ispell-program-name "aspell")
      (setq flyspell-mark-duplications-flag nil)
@@ -855,6 +839,11 @@
    #+END_SRC
 
 ** Comint-mode
+
+   =Comint-mode= is essential for emacs to interact with another
+   process - like the shell, or a database user interface (sqsh, isql,
+   etc).
+
    #+BEGIN_SRC emacs-lisp
      (ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes in shell output windows
      (custom-set-variables
@@ -865,7 +854,6 @@
       '(comint-input-ignoredups t)           ; no duplicates in command history
       '(comint-completion-addsuffix t)       ; insert space/slash after file completion
       )
-     
    #+END_SRC
 
 ** Swiper, Ivy and Counsel
@@ -894,7 +882,7 @@
      (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
      ;(global-set-key (kbd "C-x l") 'counsel-locate)
      ;(global-set-key (kbd "C-c k") 'counsel-ag)
-     
+
    #+END_SRC
 
 ** DNS-mode
@@ -902,7 +890,7 @@
    A decade or so ago, I manually edited dns zone files a lot, and I
    made frequent use of the $INCLUDE directive - meaning most dns zone
    files didn't have a SOA post to increment. This resulted in an
-   error when saving. 
+   error when saving.
 
    I wrote this piece of advice to avoid this problem.
 
@@ -919,7 +907,7 @@
                   )
          )
        )
-     
+
      (ad-activate 'dns-mode-soa-maybe-increment-serial)
    #+END_SRC
 
@@ -929,18 +917,18 @@
 
    #+BEGIN_SRC emacs-lisp
      (require 'ibuffer)
-     
+
      ;; Don't show empty filter groups - they clutter the buffer
      (setq ibuffer-show-empty-filter-groups nil)
-     
+
      (setq ibuffer-saved-filter-groups
            (quote (("default"
-                    ("Dired" 
+                    ("Dired"
                      (and (mode . dired-mode)
                           (not (filename . "ssh:"))))
-     
+
                     ("Remote" (filename . "ssh:"))
-     
+
                     ("Projects"
                      (and (filename . "wc/")
                           (not (or (name . "magit-diff:")
@@ -965,7 +953,7 @@
                          (name . "magit:")
                          (mode . magit-mode))
                      )))))
-     
+
      (add-hook 'ibuffer-mode-hook
                (lambda ()
                  (ibuffer-switch-to-saved-filter-groups "default")))
@@ -975,10 +963,11 @@
 ** Erc-mode
 
    I don't use IRC as much nowadays, but used this config when I did.
+
    #+BEGIN_SRC emacs-lisp
      ;; set a max-size to a irc buffer...
      (setq erc-max-buffer-size 20000)
-     
+
      ;; Make erc prompt show channelname.
      (setq erc-prompt
            (lambda ()
@@ -987,7 +976,7 @@
                                  'read-only t 'rear-nonsticky t 'front-nonsticky t)
                (erc-propertize (concat "ERC>")
                                'read-only t 'rear-nonsticky t 'front-nonsticky t))))
-     
+
      (defun start-irc ()
        "Connect to IRC."
        (interactive)
@@ -1000,8 +989,6 @@
         :full-name me/fullname)
        (setq erc-autojoin-channels-alist me/erc/autojoin-alist)
      )
-     
-     
    #+END_SRC
 
 ** Longlines-mode
@@ -1013,7 +1000,9 @@
    #+END_SRC
 
 ** Adoc-mode-hook
-   For asciidoc mode
+
+   For reading asciidoc files.
+
    #+BEGIN_SRC emacs-lisp
      (add-hook 'adoc-mode-hook
                (lambda()
@@ -1031,7 +1020,7 @@
                                (insert "#!/usr/bin/env python\n")
                                (insert "# -*- tab-width: 4 -*-\n")
                                )))))
-     
+
    #+END_SRC
 
 ** Java-mode
@@ -1046,6 +1035,7 @@
    #+END_SRC
 
 ** Atomic-chrome
+
    A nifty tool which enables me to edit text areas in google chrome
    inside of an emacs frame. To get this to work, make sure you
    install [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc][the Atomic-chrome extension]] for Google chrome. Apparently
@@ -1061,13 +1051,14 @@
 
 ** Mail and Mutt mode
 *** Basics
+
     First some settings to get mail to work.
 
    #+BEGIN_SRC emacs-lisp
-   
+
    (require 'smtpmail)
    (require 'starttls)
-   
+
    ;;(setq smtpmail-auth-credentials '(("smtp.gmail.com" 25 "USERNAME" "PASSWORD")))
    ;;(setq smtpmail-debug-info t)
    (setq message-send-mail-function 'smtpmail-send-it)
@@ -1094,9 +1085,11 @@
    #+END_SRC
 
 *** Good to know
+
    Oh and before I forget - when I flub my password, use the following
    to drop all credentials.
-   #+BEGIN_SRC 
+
+   #+BEGIN_SRC
         M-x auth-source-forget-all-cached
    #+END_SRC
 
@@ -1109,7 +1102,7 @@
        (orgstruct-mode)
        )
      (add-hook 'message-mode-hook 'my-mutt-mode-hook)
-     
+
      (add-hook 'mail-mode-hook
                '(lambda ()
                   (define-key mail-mode-map "\C-c\C-w" 'message-replace-sig)
@@ -1128,12 +1121,10 @@
 
 * Interactive functions
 
-
   Here's a bunch of functions, some of them written by me, most by
   other people.
 
 ** Set frame title bar
-
 
    Create a reasonable titlebar for emacs, which works on both windows
    and unix. Note: assumes =HOSTNAME= is exported.
@@ -1151,7 +1142,7 @@
                     (buffer-file-name))
                  (buffer-name))))
        )
-     
+
      ;; Set window and icon title.
      (if (eq system-type 'windows-nt)
          (setq frame-title-format (create_title_format "USERNAME" "COMPUTERNAME"))
@@ -1160,7 +1151,6 @@
 
 ** Buffer navigation functions
 
-   
    This function has been really useful for me, since I often find
    myself wanting to jot something down in some trash buffer.
 
@@ -1174,14 +1164,13 @@
          (unless previous (emacs-lisp-mode))))
    #+END_SRC
 
-
    Until lately, my emacs configuration was in
    =~/.emacs-stuff/dot.emacs.el= which I symlinked to from
    =~/.emacs.el=. Up until then (1992-2018), this function pointed at
    this file, which was opened upon invocation.  Since switching to
    [[https://justin.abrah.ms/emacs/literate_programming.html][literal]] emacs configuration using =org-babel=, I've modified it a
    bit so that it opens =~/.emacs.d= and moves the pointer to
-   =setup.org=, which I open most often. 
+   =setup.org=, which I open most often.
 
    The function name isn't really correct anymore since it actually
    doesn't open the file, but call me melodramatic - this name reminds
@@ -1197,7 +1186,6 @@
        )
    #+END_SRC
 
-
    Ansi-term, when invoked, normally starts by asking which shell I
    want. Since I go with =/bin/bash=, and I can have multiple
    ansi-term sessions running simultaneously on different machines or
@@ -1207,7 +1195,7 @@
    #+BEGIN_SRC emacs-lisp
      (defun my-ansi-term()
        "Starts an ansi-term with optional buffer name"
-     
+
        (interactive)
        (let (string)
          (setq string
@@ -1221,7 +1209,6 @@
 
 ** DNS-related functions
 
-
    The functions generate-ptr-records and sort-A-records were really
    useful for me back when I managed Spotify's DNS manually in the
    bad-old-days (which were in fact really good old days despite
@@ -1231,43 +1218,41 @@
      (defun generate-ptr-records (start-pos end-pos)
        "Finds DNS A-records in region, and for each one, creates a PTR
         record in a temporary buffer.
-     
+
         The PTR posts are sorted into sections by domainname.
-        
+
         If no region was set, finds all A-records from point to end of
         buffer."
-     
+
        (interactive "r")
        (let (origin            ; to make the hostname a fqdn
              rgx               ; ugly regex matching an A-record
-     
+
              hostname          ; one hostname
              ip                ; one IPv4 address
              oct-list          ; each IPv4 octet in a list
              first-octets      ; 'aaa.bbb.ccc'
              last-octet        ; 'ddd'
              comment           ; optional comment, if any
-     
+
              ptr-rec           ; one generated PTR record
              list-of-ptr-recs  ; PTR records with first 3 octets in common
              ptr-hash          ; key first 3 octets, value list-of-ptr-recs
              )
-     
-     
+
          ;; if no region was set, work from point to end-of-buffer.
          (setq end-pos (if (= (point) (mark)) (end-of-buffer)))
-     
+
          ;; Bring point to beginning of region if selection was made from
          ;; upper part of the buffer to the end.
          (if (> (point) (mark)) (exchange-point-and-mark))
-     
+
          ;; Pads string to three chars
          (defun pad-octet (octet)
            (if (= (length octet) 3)
                octet
              (pad-octet (concat octet " "))))
-     
-     
+
          ;; Read Origin from minibuffer
          (setq origin
                (read-from-minibuffer
@@ -1276,24 +1261,24 @@
          (setq origin (if (string= (substring origin -1) ".") ; make fqdn
                           origin                              ; if not fqdn
                         (concat origin ".")))
-     
+
          ;; Regexp matching an A-record with optional comment
          (setq rgx
                (concat
                 ;; hostname part
                 "^\\([[:alnum:]\.-]+\\)"
                 ".*?"
-     
+
                 ;; followed by A
                 "[ ''\t'']A[ ''\t'']+"
                 ".*?"
-     
+
                 ;; followed by (very) loose definition of an ip address
                 "\\([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\\)"
-     
+
                 ;; followed by an optional comment
                 ".*?\\(;.*?\\)?$"))
-     
+
          ;; Walk through region, picking up all A-records and putting them
          ;; into a hash, using first three octets as key
          (setq ptr-hash (make-hash-table :test 'equal))
@@ -1301,31 +1286,31 @@
            (setq hostname (match-string 1))
            (setq ip (match-string 2))
            (setq comment (if (null (match-string 3)) "" (match-string 3)))
-     
+
            (setq oct-list (split-string ip "\\."))
            (setq first-octets (mapconcat
                                (lambda (x) x)
                                (nreverse (cons "IN-ADDR.ARPA." (butlast oct-list 1)))
                                "."))
            (setq last-octet (nth 3 oct-list))
-     
+
            ;; create a PTR record
            (setq ptr-rec (concat (pad-octet last-octet)
                                  "  IN  PTR  "
                                  hostname "." origin
                                  " " comment))
-     
+
            ;; put the PTR record into the correct list
            (setq list-of-ptr-recs (gethash first-octets ptr-hash))
            (setq list-of-ptr-recs
                  (if (null list-of-ptr-recs)
                      (list ptr-rec)
                    (cons ptr-rec list-of-ptr-recs)))
-     
+
            ;; put the list
            (puthash first-octets list-of-ptr-recs ptr-hash)
            )
-     
+
          (with-output-to-temp-buffer "ptr-records"
            (maphash
             (lambda (k v)
@@ -1341,27 +1326,26 @@
            )
          )
        )
-     
+
      (defun sort-A-records (start-pos end-pos)
        "Given a DNS buffer containing a bunch of A-records, this
      function finds all records inside a region and sorts them by ip
      address. The output is placed in a temporary buffer called
      'sorted-ips'.
-     
+
      Todo someday: support the GENERATE directive"
        (interactive "r")
-     
+
        ;; --------------------------------------------------
        ;; Helper functions
        (defun eq-octet (a b index)
          (= (string-to-number (nth index a))
             (string-to-number (nth index b))))
-     
+
        (defun lt-octet (a b index)
          (< (string-to-number (nth index a))
             (string-to-number (nth index b))))
-     
-     
+
        (defun sort-hash-by-ip (hashtable)
          (let (mylist)
            (setq mylist         ;; Create a list of ip-hostname pairs
@@ -1375,7 +1359,7 @@
                  (lambda (y z)
                    (setq y (split-string  (car y) "\\."))
                    (setq z (split-string  (car z) "\\."))
-     
+
                    (if (eq-octet y z 0)
                        (if (eq-octet y z 1)
                            (if (eq-octet y z 2)
@@ -1387,24 +1371,22 @@
                  )
            )
          )
-     
-     
-     
+
        ;; --------------------------------------------------
        ;; Main body starts here
        (let (iphash)
          ;; create hash
          (setq iphash (make-hash-table :test 'equal))
-     
+
          ;; if no region selected, just grab all A-records from point.
          (setq end-pos (if (= (point) (mark)) (end-of-buffer)))
          (if (> (point) (mark)) (exchange-point-and-mark))
-     
+
          (while (search-forward-regexp
                  "^\\([[:alnum:]\.-]+\\).*?[ ''\t'']A[ ''\t'']+.*?\\([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\\)" end-pos 1)
            (puthash (match-string 2) (match-string 1) iphash)
            )
-     
+
          (with-output-to-temp-buffer "sorted-ips"
            (let (item mylist)
              (setq mylist (sort-hash-by-ip iphash))
@@ -1418,7 +1400,6 @@
    #+END_SRC
 
 ** Mail helper functions
-
 
    Gmail messed everything up.
 
@@ -1443,20 +1424,20 @@
    Ultimately, I couldn't resist the change. I moved everything to
    Google, and though I'm still concerned about my privacy,
    convenience is.. well, convenient.
-   
-   So. 
+
+   So.
 
    These functions are from before 2009, and I'm not 100% sure that
    bitrot hasn't set in.
-   
+
    #+BEGIN_SRC emacs-lisp
      (defun random-quote ()
        "Gets a random quote"
        (load "fimblo-quotes" nil t)
-       (aref fimblo-quotes 
+       (aref fimblo-quotes
              (random (- (length fimblo-quotes) 1)))
        )
-     
+
      (defun generate-sig ()
       (with-temp-buffer
         (insert (random-quote))
@@ -1472,7 +1453,7 @@
         (buffer-string)
         )
       )
-     
+
      (defun kill-signature ()
        "Delete current sig"
        (interactive)
@@ -1484,7 +1465,7 @@
              (end-of-buffer)
              (delete-region start (point))))
      )
-     
+
      (defun message-replace-sig ()
        "Replaces signature with new sig"
        (interactive)
@@ -1493,7 +1474,7 @@
        (delete-char -1)
        (insert (generate-sig))
        )
-     
+
      (defun kill-to-signature ()
        "Delete all text between text and signature."
        (interactive)
@@ -1507,7 +1488,7 @@
        (insert "\n\n\n")
        (previous-line 2)
        )
-     
+
      (defun mail-snip (b e summ)
        "remove selected lines, and replace it with [snip:summary (n lines)]"
        (interactive "r\nsSummary: ")
@@ -1521,20 +1502,19 @@
 
 ** Simple text manipulation
 
-
    A bunch of small functions which help me modify text in different
    ways.
 
    #+BEGIN_SRC emacs-lisp
-   
-   (defun insert-fat-comma () 
+
+   (defun insert-fat-comma ()
      "Inserts a ' => ' at point.
-   
+
       Used in Perl and Javascript."
      (interactive)
      (insert " => ")
    )
-   
+
    (defun merge-lines ()
      "Make paragraph I am in right now into one line."
      (interactive)
@@ -1548,32 +1528,28 @@
          )
        )
    )
-   
+
    ;; inserts a context-aware commented separator
    (fset 'add_separator
          [?\C-a return up ?\C-5 ?\C-0 ?- ?\C-  ?\C-a ?\M-x ?c ?o ?m ?m ?e ?n ?t ?  ?r ?e ?g ?i ?o ?n return down])
-   
-   
+
    (defun insert-time ()
      "Insert date/time at point"
      (interactive)
      (insert (format-time-string "%Y/%m/%d-%R")))
-   
-   
+
    (defun insert-date ()
      "Insert date at point"
      (interactive)
      (insert (format-time-string "%Y%m%d")))
-   
-   
+
    (defun iwb ()
      "indent whole buffer"
      (interactive)
      (delete-trailing-whitespace)
      (indent-region (point-min) (point-max) nil)
      (untabify (point-min) (point-max)))
-   
-   
+
    (defun wrap-text (start end)
      "Asks for two strings, which will be placed before and after a
       selected region"
@@ -1588,42 +1564,39 @@
          (goto-char (point-max))
          (insert suffix)
          )))
-   
-   
+
    (defun wrap-region (start end)
      "Given a prefix and a suffix, this function will wrap each line
    in the region such that they are prefixed with the prefix and
    suffixed with the suffix.
-   
+
    If no region is selected, it will do the above for all lines from
    point to the end of the buffer."
-   
+
      (interactive "r")
      (let (prefix suffix linecount str-len end-pos)
        (setq prefix (read-from-minibuffer "Prefix: "))
        (setq suffix (read-from-minibuffer "Suffix: "))
-   
+
        ;; if no region was set, work from point to end-of-buffer.
        (setq end-pos (if (= (point) (mark)) (end-of-buffer) end))
-   
+
        ;; Bring point to beginning of region if selection was made from
        ;; upper part of the buffer to the end.
        (if (> (point) (mark)) (exchange-point-and-mark))
-   
-   
+
        (setq linecount (count-lines (point) end-pos))
-       (setq linecount (if (= start (point)) 
+       (setq linecount (if (= start (point))
                            linecount
                          (progn
                            (forward-line)
                            (- linecount 1))))
-   
-   
+
        (setq str-len (+ end-pos (* linecount  (+ (length (concat prefix suffix))))))
-   
+
        (message "Start: %s, End-Pos: %s, Point: %s" start end-pos (point))
        (message "Linecount: %s" linecount)
-   
+
        (while (re-search-forward "^\\(.*\\)$"  str-len  nil)
          (replace-match (concat prefix "\\1" suffix) nil nil)
          )
@@ -1632,7 +1605,6 @@
    #+END_SRC
 
 ** HTML stuff
-
 
    In =html-mode= and =css-mode=, make all instances of strings
    matching #xxyyzz where x, y, and z are two-char hex chars get
@@ -1647,7 +1619,7 @@
               (g (cadr values))
               (b (caddr values)))
          (floor (+ (* .3 r) (* .59 g) (* .11 b)) 256)))
-     
+
      (defun hexcolour-add-to-font-lock ()
        (interactive)
        (font-lock-add-keywords
@@ -1660,30 +1632,28 @@
                  'face `((:foreground ,(if (> 128.0 (hexcolour-luminance colour))
                                            "white" "black"))
                          (:background ,colour)))))))))
-     
+
    #+END_SRC
 
 ** Org functions
-
 
    For a couple of years I put all my todos into an org-file called
    ~/todo.org. These functions helped me with this.
 
    #+BEGIN_SRC emacs-lisp
-   
+
    (defun switch-to-todo ()
      "Switch to todo buffer. Open file if necessary"
      (interactive)
      (find-file-other-window (concat sys/home "/todo.org"))
      (goto-char (point-min)))
-   
-   
+
    (defun add-todo ()
      "Add a todo to the todo buffer."
      (interactive)
      (add-todo-helper (read-from-minibuffer "Todo: "))
    )
-   
+
    (defun add-todo-helper (msg)
      (save-current-buffer
        (set-buffer (find-file-noselect (concat sys/home "/todo.org")))
@@ -1695,7 +1665,6 @@
        )
    )
    #+END_SRC
-
 
    I use this following function when I use plain org-mode for
    presentations.
@@ -1722,7 +1691,6 @@
 
 ** Other functions
 
-
    This function is useful to toggle selective-display, which is often
    (but not always) used to show all lines which don't start with
    indentation - that is, function/method/class names in a buffer.
@@ -1733,9 +1701,8 @@
         character on column 0. run again to go back."
        (interactive)
        (set-selective-display (if selective-display nil 1)))
-     
-   #+END_SRC
 
+   #+END_SRC
 
    When I want to do simple arithmetic in the buffer, I write (for
    example): =(+ 3 8)= then place my cursor after the close paren and
@@ -1753,7 +1720,6 @@
          (error (message "Invalid expression")
                 (insert (current-kill 0)))))
    #+END_SRC
-
 
    These two functions help me do operations on both a file and its
    corresponding buffer.
@@ -1774,7 +1740,7 @@
                (rename-buffer new-name)
                (set-visited-file-name new-name)
                (set-buffer-modified-p nil))))))
-     
+
      ;; copied from http://blog.tuxicity.se/
      (defun delete-file-and-buffer ()
        "Deletes file connected to current buffer and kills buffer."
@@ -1790,7 +1756,6 @@
              (message "File '%s' successfully removed" filename)))))
    #+END_SRC
 
-
    I used this function before I found out about =forward-sexp= and
    =backward-sexp=, bound by default to =C-M-f= and =C-M-b=. I'm
    keeping it mostly as an example of how to use prefix arguments in
@@ -1804,7 +1769,6 @@
              ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
              (t (self-insert-command (or arg 1)))))
    #+END_SRC
-
 
    My oldest remaining emacs configuration, copied in '93 from someone
    who in turn copied it from someone called "phille" at KTH. He was
@@ -1826,33 +1790,32 @@
          (while (search-forward "" nil t)
            (replace-match "" nil t)))
        )
-     
+
      (defun philles-whitespace-formatterare ()
        "Ta bort allt whitespace (space + tabbar) i slutet av varje rad i bufferten"
        (interactive)
        (message "Function disabled. Use delete-trailing-whitespace instead.")
        )
-     
+
    #+END_SRC
 
 * Helper functions
 
-
   These functions are called by others.
 
    #+BEGIN_SRC emacs-lisp
-   
+
    (defun file-string (file)
        "Read the contents of a file and return as a string."
        (with-temp-buffer
          (insert-file-contents file)
          (buffer-string)))
-   
+
    (defun chomp (str)
      "Chomp tailing newlines from string"
      (let ((s (if (symbolp str) (symbol-name str) str)))
        (replace-regexp-in-string "[''\n'']*$" "" s)))
-   
+
    (defun get-ipv4-regex ()
      (let (p1 p2 p3 octet-re)
        (setq p1 "[01]?[[:digit:]]?[[:digit:]]")
@@ -1864,18 +1827,16 @@
                               "\\.") "$")
        )
      )
-   
+
    #+END_SRC
 
 * Keybindings
-
 
   Keybindings!
 
 ** Mode-specific keybindings
 
-
-   Below, two ways of binding keys in a local context. 
+   Below, two ways of binding keys in a local context.
 
    1. The first tells emacs to add a key-function mapping to a specific
       mode-map after it loads the module.
@@ -1889,18 +1850,17 @@
        '(define-key message-mode-map [ f9 ] 'message-replace-sig))
      (eval-after-load 'message
        '(define-key message-mode-map [?\C-c ?\C-k] 'kill-to-signature))
-     
+
      (add-hook 'js-mode-hook
                (lambda ()
                  (local-set-key (kbd "M-,") 'insert-fat-comma)))
-     
+
      ;; make this org-specific later
      ;; (global-set-key [ f10 ]   'org-show-next-heading-tidily)
    #+END_SRC
 
 ** Global keybindings
 
-   
    Of all these global keybindings, I think I just use a handful. Some
    of them should be local too.
 
@@ -1938,28 +1898,23 @@
      (global-set-key (kbd "C-x C-b")     'ibuffer)
      (global-set-key (kbd "M-%")         'query-replace-regexp)
      (global-set-key (kbd "C-x SPC")     'show-ws-toggle-show-trailing-whitespace)
-     (global-set-key (kbd "C-S-e")       'merge-lines)   
+     (global-set-key (kbd "C-S-e")       'merge-lines)
      (global-set-key (kbd "C-h C-s")     'find-function-at-point)
-     
-     
+
      (global-set-key [(meta ?n)]         '(lambda () (interactive) (scroll-up 3)))
      (global-set-key [(meta ?p)]         '(lambda () (interactive) (scroll-down 3)))
      (global-set-key [(shift meta ?n)]   '(lambda () (interactive) (scroll-other-window 3)))
      (global-set-key [(shift meta ?p)]   '(lambda () (interactive) (scroll-other-window -3)))
-     
-     
+
      (global-set-key [ home ]            'beginning-of-buffer)
      (global-set-key [ end ]             'end-of-buffer )
      ;; The following two are default keybindings. But I added them here to remind me of them.
      (global-set-key [(meta home) ]      'beginning-of-buffer-other-window)
      (global-set-key [(meta end) ]       'end-of-buffer-other-window )
-     
-     
-     
+
    #+END_SRC
 
 * lint
-
 
   Here some pocket lint which I don't use but might want to at some
   point in the future.
@@ -1972,26 +1927,24 @@
      ;;   (interactive)
      ;;   (if (string= (buffer-file-name) (concat default-directory "dot.emacs.el"))
      ;;       (byte-compile-file (buffer-file-name))))
-     
+
      ;;(defmacro help/on-gui (statement &rest statements)
      ;;  "Evaluate the enclosed body only when run on GUI."
      ;;  `(when (display-graphic-p)
      ;;     ,statement
      ;;     ,@statements))
-     
+
      ;; or
      ;;
      ;;(when (display-graphic-p)
      ;;  (set-frame-font "...")
      ;;  (require '...)
-     ;;  (...-mode)) 
+     ;;  (...-mode))
      ;;
-     
+
      ;; (defun html-mode-end-paragraph ()
      ;;   "End the paragraph nicely"
      ;;   (interactive)
      ;;  (insert "</p>\n"))
-     
-     
-   #+END_SRC
 
+   #+END_SRC
