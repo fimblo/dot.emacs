@@ -179,6 +179,7 @@
        (when (file-exists-p secret.el)
          (load secret.el)))
    #+END_SRC
+
 ** Package.el configuration
 
 
@@ -758,40 +759,22 @@
      change it so it's slanted, unbolded and coloured.
 
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'cperl-mode-hook
-               (lambda () (progn
-                       (local-set-key (kbd "M-,") 'insert-fat-comma)
-                       (flymake-mode)
+   (add-hook 'cperl-mode-hook
+             (lambda () (progn
+                     (local-set-key (kbd "M-,") 'insert-fat-comma)
+                     (flymake-mode)
 
-                       (set-face-italic 'cperl-array-face t)
-                       (set-face-bold 'cperl-array-face nil)
-                       (set-face-foreground 'cperl-array-face "yellow")
-                       (set-face-background 'cperl-array-face nil)
-                       (set-face-italic 'cperl-hash-face t)
-                       (set-face-bold 'cperl-hash-face nil)
-                       (set-face-foreground 'cperl-hash-face "red")
-                       (set-face-background 'cperl-hash-face nil)
-                       )
-                 )
+                     (set-face-italic 'cperl-array-face t)
+                     (set-face-bold 'cperl-array-face nil)
+                     (set-face-foreground 'cperl-array-face "yellow")
+                     (set-face-background 'cperl-array-face nil)
+                     (set-face-italic 'cperl-hash-face t)
+                     (set-face-bold 'cperl-hash-face nil)
+                     (set-face-foreground 'cperl-hash-face "red")
+                     (set-face-background 'cperl-hash-face nil)
+                     )
                )
-   #+END_SRC
-
-
-
-   #+BEGIN_SRC emacs-lisp
-     ;; (eval-after-load "cperl-mode"
-     ;;   '(progn
-     ;;      (set-face-attribute cperl-array-face nil
-     ;;                          :background nil
-     ;;                          :foreground "yellow"
-     ;;                          :weight 'normal
-     ;;                          :slant 'italic)
-     ;;      (set-face-attribute cperl-hash-face nil
-     ;;                          :background nil
-     ;;                          :foreground "red"
-     ;;                          :weight 'normal
-     ;;                          :slant 'italic)
-     ;;      )
+             )
    #+END_SRC
 
 ** Org-mode
@@ -870,6 +853,7 @@
      (setq flyspell-mark-duplications-flag nil)
      (setq flyspell-consider-dash-as-word-delimiter-flag t)
    #+END_SRC
+
 ** Comint-mode
    #+BEGIN_SRC emacs-lisp
      (ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes in shell output windows
@@ -883,6 +867,7 @@
       )
      
    #+END_SRC
+
 ** Swiper, Ivy and Counsel
 
    For about six months, I tried Ido-mode and icomplete-mode, and
@@ -986,6 +971,7 @@
                  (ibuffer-switch-to-saved-filter-groups "default")))
      (setq ibuffer-default-sorting-mode 'major-mode)
    #+END_SRC
+
 ** Erc-mode
 
    I don't use IRC as much nowadays, but used this config when I did.
@@ -1017,6 +1003,7 @@
      
      
    #+END_SRC
+
 ** Longlines-mode
    #+BEGIN_SRC emacs-lisp
      (add-hook 'longlines-mode-hook
@@ -1024,6 +1011,7 @@
                  (auto-fill-mode -1)
                  (longlines-show-hard-newlines)))
    #+END_SRC
+
 ** Adoc-mode-hook
    For asciidoc mode
    #+BEGIN_SRC emacs-lisp
@@ -1032,6 +1020,7 @@
                  (auto-fill-mode -1)
                  (visual-line-mode)))
    #+END_SRC
+
 ** Python-mode
    #+BEGIN_SRC emacs-lisp
      (add-hook 'python-mode-hook
@@ -1044,6 +1033,7 @@
                                )))))
      
    #+END_SRC
+
 ** Java-mode
    #+BEGIN_SRC emacs-lisp
      (defun my-java-mode-hook ()
@@ -1054,6 +1044,7 @@
        (c-set-style "my-java"))
      (add-hook 'java-mode-hook 'my-java-mode-hook)
    #+END_SRC
+
 ** Atomic-chrome
    A nifty tool which enables me to edit text areas in google chrome
    inside of an emacs frame. To get this to work, make sure you
@@ -1671,6 +1662,7 @@
                          (:background ,colour)))))))))
      
    #+END_SRC
+
 ** Org functions
 
 
