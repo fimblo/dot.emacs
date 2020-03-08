@@ -748,14 +748,14 @@
 
    Next, a cperl hook to set some stuff up.
 
-   The first one is a keybinding which inserts a fat comma on
-   =M-,=. 
+   - The first one is a keybinding which inserts a fat comma on
+     =M-,=. 
 
-   The second autoloads =flymake-mode= when cperl is loaded.
+   - The second autoloads =flymake-mode= when cperl is loaded.
 
-   And lastly, =cperl-mode= has quite aggressive syntax-highlighting,
-   and its face for arrays and hashes are kind of ugly. Here I change
-   it so it's slanted, unbolded and coloured.
+   - Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
+     and its face for arrays and hashes are kind of ugly. Here I
+     change it so it's slanted, unbolded and coloured.
 
    #+BEGIN_SRC emacs-lisp
      (add-hook 'cperl-mode-hook
