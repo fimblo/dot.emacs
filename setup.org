@@ -1196,8 +1196,9 @@ Not exported
        "Opens my main emacs configuration file."
        (interactive)
        (find-file emacs-root)
-       (search-forward (concat (file-name-base this-file-org)
-                               (file-name-extension this-file-org t)))
+       (end-of-buffer)
+       (search-backward (concat (file-name-base this-file-org)
+                                (file-name-extension this-file-org t)))
        )
    #+END_SRC
 
