@@ -599,6 +599,26 @@ Not exported
      (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
    #+END_SRC
 
+** Em and En-dash
+
+I want to be able to insert the em-dash and the en-dash symbols in my writing.
+
+
+   #+BEGIN_SRC emacs-lisp
+(defun insert-em-dash ()
+  "Insert an em-dash"
+  (interactive)
+  (insert "—"))
+
+(defun insert-en-dash ()
+  "Insert an em-dash"
+  (interactive)
+  (insert "–"))
+
+   #+END_SRC
+
+
+
 ** Display lambda symbol
 
    In python, emacs-lisp and org-mode, replace all instances of the
