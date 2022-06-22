@@ -225,79 +225,81 @@ Not exported
    Download these packages if they aren't already downloaded.
 
    #+BEGIN_SRC emacs-lisp
-     (defvar elpa-packages
-       '(
+   (defvar elpa-packages
+     '(
 
-         ;; Some themes first
-         gruvbox-theme
+       ;; Some themes first
+       gruvbox-theme
 
-         ;; Other packages
-         adoc-mode
-         all-the-icons
-         all-the-icons-dired
-         all-the-icons-ibuffer
-         apache-mode
-         atomic-chrome
-         auctex
-         column-marker
-         counsel
-         dired-subtree
-         edit-server
-         gmail-message-mode
-         graphviz-dot-mode
-         highlight-tail
-         htmlize
-         json-mode
-         load-theme-buffer-local
-         magit
-         mediawiki
-         mpg123
-         ; muttrc-mode
-         olivetti
-         org-bullets
-         rainbow-delimiters    ; abyss-theme
-         spaceline
-         spaceline-all-the-icons
-         ; ample-theme
-         ; arjen-grey-theme
-         ; atom-dark-theme
-         ; badger-theme
-         ; birds-of-paradise-plus-theme
-         ; darkburn-theme
-         ; darkmine-theme
-         ; darkokai-theme
-         ; darktooth-theme
-         ; dracula-theme
+       ;; Other packages
+       adoc-mode
+       all-the-icons
+       all-the-icons-dired
+       all-the-icons-ibuffer
+       apache-mode
+       atomic-chrome
+       auctex
+       column-marker
+       company-mode
+       counsel
+       dired-subtree
+       edit-server
+       gmail-message-mode
+       graphviz-dot-mode
+       highlight-tail
+       htmlize
+       json-mode
+       load-theme-buffer-local
+       magit
+       mediawiki
+       mpg123
+       ; muttrc-mode
+       olivetti
+       org-bullets
+       rainbow-delimiters    ; abyss-theme
+       spaceline
+       spaceline-all-the-icons
+       ; ample-theme
+       ; arjen-grey-theme
+       ; atom-dark-theme
+       ; badger-theme
+       ; birds-of-paradise-plus-theme
+       ; darkburn-theme
+       ; darkmine-theme
+       ; darkokai-theme
+       ; darktooth-theme
+       ; dracula-theme
 
-         rainbow-mode
-         ssh-config-mode
-         swiper
-         ; twittering-mode
-         yaml-mode
+       rainbow-mode
+       ssh-config-mode
+       swiper
+       ; twittering-mode
+       web-mode
+       yaml-mode
 
-         dumb-jump
-         )
-       "These packages are installed if necessary."
+       dumb-jump
        )
+     "These packages are installed if necessary."
+     )
 
-     (if (not package-archive-contents)
-         (package-refresh-contents))
+   (if (not package-archive-contents)
+       (package-refresh-contents))
 
-     (dolist (pkg elpa-packages)
-       (when (and (not (package-installed-p pkg))
-                (assoc pkg package-archive-contents))
-         (package-install pkg)))
+   (dolist (pkg elpa-packages)
+     (when (and (not (package-installed-p pkg))
+              (assoc pkg package-archive-contents))
+       (package-install pkg)))
 
-     (defun package-list-unaccounted-packages ()
-       "Like `package-list-packages', but shows only the packages that
-       are installed and are not in `elpa-packages'.  Useful for
-       cleaning out unwanted packages."
-       (interactive)
-       (package-show-package-list
-        (remove-if-not (lambda (x) (and (not (memq x elpa-packages))
-                        (not (package-built-in-p x))
-                        (package-installed-p x)))
-                       (mapcar 'car package-archive-contents))))
+   (defun package-list-unaccounted-packages ()
+     "Like `package-list-packages', but shows only the packages that
+     are installed and are not in `elpa-packages'.  Useful for
+     cleaning out unwanted packages."
+     (interactive)
+     (package-show-package-list
+      (remove-if-not (lambda (x) (and (not (memq x elpa-packages))
+                      (not (package-built-in-p x))
+                      (package-installed-p x)))
+                     (mapcar 'car package-archive-contents))))
    #+END_SRC
 
 ** Auto-customization
@@ -452,11 +454,12 @@ Not exported
    like.
 
    #+BEGIN_SRC emacs-lisp
-     (defadvice load-theme (before clear-previous-themes activate)
-       "Clear existing theme settings instead of layering them"
-       (mapc #'disable-theme custom-enabled-themes))
+        (defadvice load-theme (before clear-previous-themes activate)
+          "Clear existing theme settings instead of layering them"
+          (mapc #'disable-theme custom-enabled-themes))
 
-     (load-theme 'gruvbox)
+   ;     (load-theme 'gruvbox)
+         (load-theme 'tsdh-dark)
    #+END_SRC
 
    For the longest time, I've for some reason enjoyed writing much
@@ -1165,6 +1168,17 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
                   ))
    #+END_SRC
 
+** For Typescript
+#+BEGIN_SRC emacs-lisp
+(require 'web-mode)
+
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                (setup-tide-mode))))
+
+#+END_SRC
 ** Hooks with no particular home
    Finally, a bunch of small hooks for various modes.
 
