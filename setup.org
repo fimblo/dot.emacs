@@ -548,16 +548,11 @@ Not exported
 
    ;; If on MacOS
    (if (eq system-type 'darwin)
-       (progn
          (setq browse-url-browser-function 'browse-url-default-macosx-browser)
-
-         ;; use gnu ls instead of bsd ls
-         (setq dired-use-ls-dired t
-               insert-directory-program "/opt/homebrew/bin/gls"
-               dired-listing-switches "-aBhl --group-directories-first")
-
-         )
      )
+
+   ;; Use Emacs built-in lisp ls so dired works on all platforms (bsd, gnu, etc)
+   (setq ls-lisp-use-insert-directory-program nil)
 
    ;; make scripts executable if they aren't already
    (add-hook 'after-save-hook
