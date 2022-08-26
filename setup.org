@@ -533,8 +533,8 @@ Not exported
 
 ;; make modeline a little nicer
 (require 'spaceline-config)
-;; (spaceline-all-the-icons-theme) ; for a slightly fancier theme
-(spaceline-emacs-theme) ; for a simpler but nice theme
+(spaceline-all-the-icons-theme) ; for a slightly fancier theme
+; (spaceline-emacs-theme) ; for a simpler but nice theme
 #+END_SRC
 ** External stuff
 
