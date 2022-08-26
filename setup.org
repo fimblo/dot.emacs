@@ -231,35 +231,6 @@ Not exported
 
        ;; Some themes first
        gruvbox-theme
-
-       ;; Other packages
-       adoc-mode
-       all-the-icons
-       all-the-icons-dired
-       all-the-icons-ibuffer
-       apache-mode
-       atomic-chrome
-       auctex
-       column-marker
-       company-mode
-       counsel
-       dired-subtree
-       edit-server
-       gmail-message-mode
-       graphviz-dot-mode
-       highlight-tail
-       htmlize
-       json-mode
-       load-theme-buffer-local
-       magit
-       mediawiki
-       mpg123
-       ; muttrc-mode
-       olivetti
-       org-bullets
-       rainbow-delimiters    ; abyss-theme
-       spaceline
-       spaceline-all-the-icons
        ; ample-theme
        ; arjen-grey-theme
        ; atom-dark-theme
@@ -271,14 +242,42 @@ Not exported
        ; darktooth-theme
        ; dracula-theme
 
+
+       ;; Other packages
+       ; muttrc-mode
+       ; omnisharp ;; tested a bit, remove this later prolly
+       ; twittering-mode
+       adoc-mode
+       all-the-icons
+       all-the-icons-dired
+       all-the-icons-ibuffer
+       apache-mode
+       atomic-chrome
+       auctex
+       column-marker
+       counsel
+       dired-subtree
+       dumb-jump
+       edit-server
+       gmail-message-mode
+       graphviz-dot-mode
+       highlight-tail
+       htmlize
+       json-mode
+       load-theme-buffer-local
+       magit
+       mediawiki
+       mpg123
+       olivetti
+       org-bullets
+       rainbow-delimiters    ; abyss-theme
        rainbow-mode
+       spaceline
+       spaceline-all-the-icons
        ssh-config-mode
        swiper
-       ; twittering-mode
        web-mode
        yaml-mode
-
-       dumb-jump
        )
      "These packages are installed if necessary."
      )
@@ -527,16 +526,14 @@ Not exported
 
 
 #+BEGIN_SRC emacs-lisp
-  ;; First time, run 'M-x all-the-icons-install-fonts' to download the icons
-  (require 'all-the-icons)
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+;; First time, run 'M-x all-the-icons-install-fonts' to download the icons
+(require 'all-the-icons)
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
-
-
-  ;; make modeline a little nicer
-  (require 'spaceline-config)
-  ;; (spaceline-all-the-icons-theme) ; for a slightly fancier theme
-  (spaceline-emacs-theme) ; for a simpler but nice theme
+;; make modeline a little nicer
+(require 'spaceline-config)
+;; (spaceline-all-the-icons-theme) ; for a slightly fancier theme
+(spaceline-emacs-theme) ; for a simpler but nice theme
 #+END_SRC
 ** External stuff
 
@@ -646,6 +643,39 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
    #+END_SRC
 
 * Modes
+** Atomic-chrome
+
+   A nifty tool which enables me to edit text areas in google chrome
+   inside of an emacs frame. To get this to work, make sure you
+   install [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc][the Atomic-chrome extension]] for Google chrome. Apparently
+   there's another extension you could use for firefox too.
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'atomic-chrome)
+     (atomic-chrome-start-server)
+     (setq atomic-chrome-buffer-open-style 'frame)
+     (setq atomic-chrome-extension-type-list '(atomic-chrome))
+     ;;(setq atomic-chrome-default-major-mode 'markdown-mode)
+   #+END_SRC
+
+** Comint-mode
+
+   =Comint-mode= is essential for emacs to interact with another
+   process - like the shell, or a database user interface (sqsh, isql,
+   etc).
+
+   #+BEGIN_SRC emacs-lisp
+     (ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes in shell output windows
+     (custom-set-variables
+      '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
+      '(comint-scroll-to-bottom-on-output t) ; always add output at the bottom
+      '(comint-scroll-show-maximum-output t) ; scroll to show max possible output
+      '(comint-completion-autolist t)        ; show completion list when ambiguous
+      '(comint-input-ignoredups t)           ; no duplicates in command history
+      '(comint-completion-addsuffix t)       ; insert space/slash after file completion
+      )
+   #+END_SRC
+
 ** CUA-mode
    Cua-mode is normally used to make emacs act more like Windows
    (control-c to copy, etc). I use a subset so that I can use
@@ -748,146 +778,35 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
         )
     #+END_SRC
 
-** Cperl-mode
-*** Some hairy cperl settings
+** Erc-mode
 
-    Cperl-mode has more useful features than plain Perl-mode. Since
-    Perl-mode is autoloaded when opening files with perl suffixes, we
-    begin below by replacing perl-mode with cperl-mode.
-
-    I mentioned lots of useful features right? To turn most of them on,
-    set =cperl-hairy= to =t=. But this turns _all_ of the bells and
-    whistles on, so instead I activate only the stuff I want.
-
-    - =cperl-electric-parens= ::
-
-      Setting this to =t=, I get auto-complete of the following paired
-      symbols: =({[]})= and in special cases, like in the following code,
-      the =<>= too.
-
-    - =cperl-electric-keywords= ::
-
-      If set to =t= some keywords get auto-expanded. E.g. =if=, =while=, =for=,
-      =unless=, =until=.
-
-    - =cperl-electric-linefeed= ::
-
-      If set to =t=, hitting =C-j= inside of, say, the inner
-      conditional parens will place the cursor inside the curly
-      brackets with the right indentation.
-
-    #+BEGIN_SRC emacs-lisp
-      (defalias 'perl-mode 'cperl-mode)
-      ;;(setq cperl-hairy t)
-      (setq cperl-electric-parens t)
-      (setq cperl-electric-keywords t)
-      (setq cperl-electric-linefeed t)
-    #+END_SRC
-
-*** Cperl-hooks
-
-    Next, a cperl hook to set some stuff up.
-
-    - The first one is a keybinding which inserts a fat comma on
-      =M-,=. 
-
-    - The second autoloads =flymake-mode= when cperl is loaded.
-
-    - Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
-      and its face for arrays and hashes are kind of ugly. Here I
-      change it so it's slanted, unbolded and coloured.
-
-    #+BEGIN_SRC emacs-lisp
-    (add-hook 'cperl-mode-hook
-              (lambda () (progn
-                      (local-set-key (kbd "M-,") 'insert-fat-comma)
-                      (flymake-mode)
-
-                      (set-face-italic 'cperl-array-face t)
-                      (set-face-bold 'cperl-array-face nil)
-                      (set-face-foreground 'cperl-array-face "yellow")
-                      (set-face-background 'cperl-array-face nil)
-                      (set-face-italic 'cperl-hash-face t)
-                      (set-face-bold 'cperl-hash-face nil)
-                      (set-face-foreground 'cperl-hash-face "red")
-                      (set-face-background 'cperl-hash-face nil)
-                      )
-                )
-              )
-    #+END_SRC
-
-** Org-mode
-
-   I love org-mode, even if I only use a fraction of its capabilities.
+   I don't use IRC as much nowadays, but used this config when I did.
 
    #+BEGIN_SRC emacs-lisp
-     (require 'org-install)
-     (setq org-startup-indented t)
-     (setq org-src-tab-acts-natively t)
-     (setq org-edit-src-content-indentation 2)
-     (setq org-log-done 'time)
-     (setq org-directory (concat sys/home "/notes/"))
-     (make-directory org-directory 1)
-     (setq org-default-notes-file (concat org-directory "/notes.org"))
-     (add-hook 'org-mode-hook
-               (lambda ()
-                 (visual-line-mode)
-                 (flyspell-mode)
-                 (auto-fill-mode -1)))
-   #+END_SRC
+     ;; set a max-size to a irc buffer...
+     (setq erc-max-buffer-size 20000)
 
-*** Org-babel
-   #+BEGIN_SRC emacs-lisp
-     (setq org-src-fontify-natively t)
-     (setq org-hide-leading-stars t)       ; remove leading stars in org-mode
-     (setq org-src-tab-acts-natively t)
-     (setq org-edit-src-content-indentation 0)
-     (setq org-fontify-whole-heading-line t)
-     (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
-       (font-lock-fontify-buffer))
+     ;; Make erc prompt show channelname.
+     (setq erc-prompt
+           (lambda ()
+             (if (and (boundp 'erc-default-recipients) (erc-default-target))
+                 (erc-propertize (concat (erc-default-target) ">")
+                                 'read-only t 'rear-nonsticky t 'front-nonsticky t)
+               (erc-propertize (concat "ERC>")
+                               'read-only t 'rear-nonsticky t 'front-nonsticky t))))
 
-     (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
-     (setq org-bullets 1)                  ; activate said pretty bullets
-
-   #+END_SRC
-
-** Visual-line-mode
-
-   Make it easy to set margin on visual-line-mode regardless of frame
-   size.
-
-   #+BEGIN_SRC emacs-lisp
-     (defvar visual-wrap-column nil)
-     (defun set-visual-wrap-column (new-wrap-column &optional buffer)
-       "Force visual line wrap at NEW-WRAP-COLUMN in BUFFER (defaults
-         to current buffer) by setting the right-hand margin on every
-         window that displays BUFFER.  A value of NIL or 0 for
-         NEW-WRAP-COLUMN disables this behavior."
-       (interactive (list (read-number "New visual wrap column, 0 to disable: " (or visual-wrap-column fill-column 0))))
-       (if (and (numberp new-wrap-column)
-                (zerop new-wrap-column))
-           (setq new-wrap-column nil))
-       (with-current-buffer (or buffer (current-buffer))
-         (visual-line-mode t)
-         (set (make-local-variable 'visual-wrap-column) new-wrap-column)
-         (add-hook 'window-configuration-change-hook 'update-visual-wrap-column nil t)
-         (let ((windows (get-buffer-window-list)))
-           (while windows
-             (when (window-live-p (car windows))
-               (with-selected-window (car windows)
-                 (update-visual-wrap-column)))
-             (setq windows (cdr windows))))))
-     (defun update-visual-wrap-column ()
-       (if (not visual-wrap-column)
-           (set-window-margins nil nil)
-         (let* ((current-margins (window-margins))
-                (right-margin (or (cdr current-margins) 0))
-                (current-width (window-width))
-                (current-available (+ current-width right-margin)))
-           (if (<= current-available visual-wrap-column)
-               (set-window-margins nil (car current-margins))
-             (set-window-margins nil (car current-margins)
-                                 (- current-available visual-wrap-column))))))
+     (defun start-irc ()
+       "Connect to IRC."
+       (interactive)
+       (require 'erc)
+       (erc-ssl
+        :server me/erc/server
+        :port me/erc/port
+        :nick me/erc/nick
+        :password me/erc/pass ; (read-passwd me/erc/pass-query-string)
+        :full-name me/fullname)
+       (setq erc-autojoin-channels-alist me/erc/autojoin-alist)
+     )
    #+END_SRC
 
 ** Flyspell-mode
@@ -898,79 +817,6 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
      (setq ispell-program-name "aspell")
      (setq flyspell-mark-duplications-flag nil)
      (setq flyspell-consider-dash-as-word-delimiter-flag t)
-   #+END_SRC
-
-** Comint-mode
-
-   =Comint-mode= is essential for emacs to interact with another
-   process - like the shell, or a database user interface (sqsh, isql,
-   etc).
-
-   #+BEGIN_SRC emacs-lisp
-     (ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes in shell output windows
-     (custom-set-variables
-      '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
-      '(comint-scroll-to-bottom-on-output t) ; always add output at the bottom
-      '(comint-scroll-show-maximum-output t) ; scroll to show max possible output
-      '(comint-completion-autolist t)        ; show completion list when ambiguous
-      '(comint-input-ignoredups t)           ; no duplicates in command history
-      '(comint-completion-addsuffix t)       ; insert space/slash after file completion
-      )
-   #+END_SRC
-
-** Swiper, Ivy and Counsel
-
-   For about six months, I tried Ido-mode and icomplete-mode, and
-   somehow they often made me feel more frustrated than helped. I was
-   introduced to Swiper and friends at an emacs-meetup, and will give
-   it a try for a while.
-
-   #+BEGIN_SRC emacs-lisp
-     (ivy-mode 1)
-     (setq ivy-use-virtual-buffers t)
-     (setq enable-recursive-minibuffers t)
-     (global-set-key (kbd "C-S-s") 'swiper)
-     (global-set-key (kbd "C-c C-r") 'ivy-resume)
-     (global-set-key (kbd "<f6>") 'ivy-resume)
-     (global-set-key (kbd "M-x") 'counsel-M-x)
-     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-     (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-     (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-     (global-set-key (kbd "<f1> l") 'counsel-find-library)
-     (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-     (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-     (global-set-key (kbd "C-c g") 'counsel-git)
-     (global-set-key (kbd "C-c j") 'counsel-git-grep)
-     (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-     ;(global-set-key (kbd "C-x l") 'counsel-locate)
-     ;(global-set-key (kbd "C-c k") 'counsel-ag)
-
-   #+END_SRC
-
-** DNS-mode
-
-   A decade or so ago, I manually edited dns zone files a lot, and I
-   made frequent use of the $INCLUDE directive - meaning most dns zone
-   files didn't have a SOA post to increment. This resulted in an
-   error when saving.
-
-   I wrote this piece of advice to avoid this problem.
-
-   #+BEGIN_SRC emacs-lisp
-     (defadvice dns-mode-soa-maybe-increment-serial (before maybe-set-increment)
-       "if there is a dns soa post, increment it. Otherwise, just save"
-       (save-excursion
-         (beginning-of-buffer)
-         (message "dns-mode-soa-auto-increment-serial %s"
-                  (setq dns-mode-soa-auto-increment-serial
-                        (and (search-forward-regexp "IN[ ''\t'']+SOA" nil t)
-                             (not (search-forward-regexp "@SERIAL@" nil t)))
-                        )
-                  )
-         )
-       )
-
-     (ad-activate 'dns-mode-soa-maybe-increment-serial)
    #+END_SRC
 
 ** Ibuffer-mode
@@ -1022,37 +868,6 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
      (setq ibuffer-default-sorting-mode 'major-mode)
    #+END_SRC
 
-** Erc-mode
-
-   I don't use IRC as much nowadays, but used this config when I did.
-
-   #+BEGIN_SRC emacs-lisp
-     ;; set a max-size to a irc buffer...
-     (setq erc-max-buffer-size 20000)
-
-     ;; Make erc prompt show channelname.
-     (setq erc-prompt
-           (lambda ()
-             (if (and (boundp 'erc-default-recipients) (erc-default-target))
-                 (erc-propertize (concat (erc-default-target) ">")
-                                 'read-only t 'rear-nonsticky t 'front-nonsticky t)
-               (erc-propertize (concat "ERC>")
-                               'read-only t 'rear-nonsticky t 'front-nonsticky t))))
-
-     (defun start-irc ()
-       "Connect to IRC."
-       (interactive)
-       (require 'erc)
-       (erc-ssl
-        :server me/erc/server
-        :port me/erc/port
-        :nick me/erc/nick
-        :password me/erc/pass ; (read-passwd me/erc/pass-query-string)
-        :full-name me/fullname)
-       (setq erc-autojoin-channels-alist me/erc/autojoin-alist)
-     )
-   #+END_SRC
-
 ** Longlines-mode
    #+BEGIN_SRC emacs-lisp
      (add-hook 'longlines-mode-hook
@@ -1061,58 +876,9 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
                  (longlines-show-hard-newlines)))
    #+END_SRC
 
-** Adoc-mode-hook
-
-   For reading asciidoc files.
-
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'adoc-mode-hook
-               (lambda()
-                 (auto-fill-mode -1)
-                 (visual-line-mode)))
-   #+END_SRC
-
-** Python-mode
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'python-mode-hook
-               (lambda()
-                 (cond ((eq buffer-file-number nil)
-                        (progn (interactive)
-                               (goto-line 1)
-                               (insert "#!/usr/bin/env python\n")
-                               (insert "# -*- tab-width: 4 -*-\n")
-                               )))))
-
-   #+END_SRC
-
-** Java-mode
-   #+BEGIN_SRC emacs-lisp
-     (defun my-java-mode-hook ()
-       (c-add-style
-        "my-java"
-        '("java"
-          (c-basic-offset . 2)))
-       (c-set-style "my-java"))
-     (add-hook 'java-mode-hook 'my-java-mode-hook)
-   #+END_SRC
-
-** Atomic-chrome
-
-   A nifty tool which enables me to edit text areas in google chrome
-   inside of an emacs frame. To get this to work, make sure you
-   install [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc][the Atomic-chrome extension]] for Google chrome. Apparently
-   there's another extension you could use for firefox too.
-
-   #+BEGIN_SRC emacs-lisp
-     (require 'atomic-chrome)
-     (atomic-chrome-start-server)
-     (setq atomic-chrome-buffer-open-style 'frame)
-     (setq atomic-chrome-extension-type-list '(atomic-chrome))
-     ;;(setq atomic-chrome-default-major-mode 'markdown-mode)
-   #+END_SRC
-
-** Mail and Mutt mode
-*** Basics
+** Language specific modes
+*** Mail and Mutt mode
+**** Basics
 
     First some settings to get mail to work.
 
@@ -1146,7 +912,7 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
    (setq mail-signature me/mail/signature)
    #+END_SRC
 
-*** Good to know
+**** Good to know
 
    Oh and before I forget - when I flub my password, use the following
    to drop all credentials.
@@ -1155,7 +921,7 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
         M-x auth-source-forget-all-cached
    #+END_SRC
 
-*** Mail hook
+**** Mail hook
    A hook to set things up nicely for mutt.
 
    #+BEGIN_SRC emacs-lisp
@@ -1171,7 +937,170 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
                   ))
    #+END_SRC
 
-** For Typescript
+*** Adoc-mode-hook
+
+   For reading asciidoc files.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'adoc-mode-hook
+               (lambda()
+                 (auto-fill-mode -1)
+                 (visual-line-mode)))
+   #+END_SRC
+
+*** Python-mode
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'python-mode-hook
+               (lambda()
+                 (cond ((eq buffer-file-number nil)
+                        (progn (interactive)
+                               (goto-line 1)
+                               (insert "#!/usr/bin/env python\n")
+                               (insert "# -*- tab-width: 4 -*-\n")
+                               )))))
+
+   #+END_SRC
+
+*** DNS-mode
+
+   A decade or so ago, I manually edited dns zone files a lot, and I
+   made frequent use of the $INCLUDE directive - meaning most dns zone
+   files didn't have a SOA post to increment. This resulted in an
+   error when saving.
+
+   I wrote this piece of advice to avoid this problem.
+
+   #+BEGIN_SRC emacs-lisp
+     (defadvice dns-mode-soa-maybe-increment-serial (before maybe-set-increment)
+       "if there is a dns soa post, increment it. Otherwise, just save"
+       (save-excursion
+         (beginning-of-buffer)
+         (message "dns-mode-soa-auto-increment-serial %s"
+                  (setq dns-mode-soa-auto-increment-serial
+                        (and (search-forward-regexp "IN[ ''\t'']+SOA" nil t)
+                             (not (search-forward-regexp "@SERIAL@" nil t)))
+                        )
+                  )
+         )
+       )
+
+     (ad-activate 'dns-mode-soa-maybe-increment-serial)
+   #+END_SRC
+
+*** Org-mode
+
+   I love org-mode, even if I only use a fraction of its capabilities.
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'org-install)
+     (setq org-startup-indented t)
+     (setq org-src-tab-acts-natively t)
+     (setq org-edit-src-content-indentation 2)
+     (setq org-log-done 'time)
+     (setq org-directory (concat sys/home "/notes/"))
+     (make-directory org-directory 1)
+     (setq org-default-notes-file (concat org-directory "/notes.org"))
+     (add-hook 'org-mode-hook
+               (lambda ()
+                 (visual-line-mode)
+                 (flyspell-mode)
+                 (auto-fill-mode -1)))
+   #+END_SRC
+
+*** Org-babel
+   #+BEGIN_SRC emacs-lisp
+     (setq org-src-fontify-natively t)
+     (setq org-hide-leading-stars t)       ; remove leading stars in org-mode
+     (setq org-src-tab-acts-natively t)
+     (setq org-edit-src-content-indentation 0)
+     (setq org-fontify-whole-heading-line t)
+     (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
+       (font-lock-fontify-buffer))
+
+     (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
+     (setq org-bullets 1)                  ; activate said pretty bullets
+
+   #+END_SRC
+*** Java-mode
+   #+BEGIN_SRC emacs-lisp
+     (defun my-java-mode-hook ()
+       (c-add-style
+        "my-java"
+        '("java"
+          (c-basic-offset . 2)))
+       (c-set-style "my-java"))
+     (add-hook 'java-mode-hook 'my-java-mode-hook)
+   #+END_SRC
+
+
+*** Cperl-mode
+**** Some hairy cperl settings
+
+    Cperl-mode has more useful features than plain Perl-mode. Since
+    Perl-mode is autoloaded when opening files with perl suffixes, we
+    begin below by replacing perl-mode with cperl-mode.
+
+    I mentioned lots of useful features right? To turn most of them on,
+    set =cperl-hairy= to =t=. But this turns _all_ of the bells and
+    whistles on, so instead I activate only the stuff I want.
+
+    - =cperl-electric-parens= ::
+
+      Setting this to =t=, I get auto-complete of the following paired
+      symbols: =({[]})= and in special cases, like in the following code,
+      the =<>= too.
+
+    - =cperl-electric-keywords= ::
+
+      If set to =t= some keywords get auto-expanded. E.g. =if=, =while=, =for=,
+      =unless=, =until=.
+
+    - =cperl-electric-linefeed= ::
+
+      If set to =t=, hitting =C-j= inside of, say, the inner
+      conditional parens will place the cursor inside the curly
+      brackets with the right indentation.
+
+    #+BEGIN_SRC emacs-lisp
+      (defalias 'perl-mode 'cperl-mode)
+      ;;(setq cperl-hairy t)
+      (setq cperl-electric-parens t)
+      (setq cperl-electric-keywords t)
+      (setq cperl-electric-linefeed t)
+    #+END_SRC
+
+**** Cperl-hooks
+
+    Next, a cperl hook to set some stuff up.
+
+    - The first one is a keybinding which inserts a fat comma on
+      =M-,=. 
+
+    - The second autoloads =flymake-mode= when cperl is loaded.
+
+    - Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
+      and its face for arrays and hashes are kind of ugly. Here I
+      change it so it's slanted, unbolded and coloured.
+
+    #+BEGIN_SRC emacs-lisp
+    (add-hook 'cperl-mode-hook
+              (lambda () (progn
+                      (local-set-key (kbd "M-,") 'insert-fat-comma)
+                      (flymake-mode)
+
+                      (set-face-italic 'cperl-array-face t)
+                      (set-face-bold 'cperl-array-face nil)
+                      (set-face-foreground 'cperl-array-face "yellow")
+                      (set-face-background 'cperl-array-face nil)
+                      (set-face-italic 'cperl-hash-face t)
+                      (set-face-bold 'cperl-hash-face nil)
+                      (set-face-foreground 'cperl-hash-face "red")
+                      (set-face-background 'cperl-hash-face nil)
+                      )
+                )
+              )
+    #+END_SRC
+*** For Typescript
 #+BEGIN_SRC emacs-lisp
 (require 'web-mode)
 
@@ -1182,6 +1111,74 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
                 (setup-tide-mode))))
 
 #+END_SRC
+** Swiper, Ivy and Counsel
+
+   For about six months, I tried Ido-mode and icomplete-mode, and
+   somehow they often made me feel more frustrated than helped. I was
+   introduced to Swiper and friends at an emacs-meetup, and will give
+   it a try for a while.
+
+   #+BEGIN_SRC emacs-lisp
+     (ivy-mode 1)
+     (setq ivy-use-virtual-buffers t)
+     (setq enable-recursive-minibuffers t)
+     (global-set-key (kbd "C-S-s") 'swiper)
+     (global-set-key (kbd "C-c C-r") 'ivy-resume)
+     (global-set-key (kbd "<f6>") 'ivy-resume)
+     (global-set-key (kbd "M-x") 'counsel-M-x)
+     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+     (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+     (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+     (global-set-key (kbd "<f1> l") 'counsel-find-library)
+     (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+     (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+     (global-set-key (kbd "C-c g") 'counsel-git)
+     (global-set-key (kbd "C-c j") 'counsel-git-grep)
+     (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+     ;(global-set-key (kbd "C-x l") 'counsel-locate)
+     ;(global-set-key (kbd "C-c k") 'counsel-ag)
+
+   #+END_SRC
+
+** Visual-line-mode
+
+   Make it easy to set margin on visual-line-mode regardless of frame
+   size.
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar visual-wrap-column nil)
+     (defun set-visual-wrap-column (new-wrap-column &optional buffer)
+       "Force visual line wrap at NEW-WRAP-COLUMN in BUFFER (defaults
+         to current buffer) by setting the right-hand margin on every
+         window that displays BUFFER.  A value of NIL or 0 for
+         NEW-WRAP-COLUMN disables this behavior."
+       (interactive (list (read-number "New visual wrap column, 0 to disable: " (or visual-wrap-column fill-column 0))))
+       (if (and (numberp new-wrap-column)
+                (zerop new-wrap-column))
+           (setq new-wrap-column nil))
+       (with-current-buffer (or buffer (current-buffer))
+         (visual-line-mode t)
+         (set (make-local-variable 'visual-wrap-column) new-wrap-column)
+         (add-hook 'window-configuration-change-hook 'update-visual-wrap-column nil t)
+         (let ((windows (get-buffer-window-list)))
+           (while windows
+             (when (window-live-p (car windows))
+               (with-selected-window (car windows)
+                 (update-visual-wrap-column)))
+             (setq windows (cdr windows))))))
+     (defun update-visual-wrap-column ()
+       (if (not visual-wrap-column)
+           (set-window-margins nil nil)
+         (let* ((current-margins (window-margins))
+                (right-margin (or (cdr current-margins) 0))
+                (current-width (window-width))
+                (current-available (+ current-width right-margin)))
+           (if (<= current-available visual-wrap-column)
+               (set-window-margins nil (car current-margins))
+             (set-window-margins nil (car current-margins)
+                                 (- current-available visual-wrap-column))))))
+   #+END_SRC
+
 ** Hooks with no particular home
    Finally, a bunch of small hooks for various modes.
 
