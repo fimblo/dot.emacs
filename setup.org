@@ -354,10 +354,11 @@ Not exported
      (if (boundp 'fringe-mode) (fringe-mode -1))
      (if (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
+
      ;; Look and feel for all programming modes
      (add-hook 'prog-mode-hook
                (lambda ()
-                 (fringe-mode 1)
+                 (fringe-mode '(4 . 4))
                  (linum-mode 1)              ; show line number in margin
                  (hl-line-mode 1)            ; highlight the current line
                  (show-paren-mode t)         ; show matching parens
