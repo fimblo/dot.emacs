@@ -47,7 +47,7 @@ fi
 emacsbin=$(deref $(which emacs))
 emacsclientbin=$(deref $(which emacsclient))
 
-myVersion="GNU Emacs 26"
+myVersion="GNU Emacs 28"
 if ! $emacsbin --version | grep -q "$myVersion" ; then
     echo "This is not version '$myVersion'. Starting whatever version and not starting server."
     $emacsbin $@ &
