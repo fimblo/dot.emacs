@@ -251,6 +251,7 @@ Not exported
        all-the-icons
        all-the-icons-dired
        all-the-icons-ibuffer
+       all-the-icons-ivy
        apache-mode
        atomic-chrome
        auctex
@@ -536,6 +537,9 @@ Not exported
 (require 'spaceline-config)
 (spaceline-all-the-icons-theme) ; for a slightly fancier theme
 ; (spaceline-emacs-theme) ; for a simpler but nice theme
+
+;; add icons to ivy
+(all-the-icons-ivy-setup)
 #+END_SRC
 ** External stuff
 
