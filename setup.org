@@ -853,7 +853,6 @@ Dependencies: =shellcheck= (homebrew, apt, etc)
 #+END_SRC
    
 
-
 ** Flyspell-mode
 
    Spell-checker for emacs.
