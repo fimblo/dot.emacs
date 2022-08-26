@@ -259,6 +259,7 @@ Not exported
        dired-subtree
        dumb-jump
        edit-server
+       flycheck
        gmail-message-mode
        graphviz-dot-mode
        highlight-tail
@@ -810,6 +811,49 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
      )
    #+END_SRC
 
+** Flycheck
+I've been using =flymake= for decades, but this one seems
+better. It's smarter about where it shows the errors/warnings for
+one, and feels faster than =flymake=.
+
+When troubleshooting =flycheck=, =flycheck-verify-setup= is a useful command.
+
+*** Basic configuration
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook #'global-flycheck-mode)
+#+END_SRC
+
+*** Flycheck for Perl
+Dependencies: =Perl::Critic::= (cpan)
+
+#+BEGIN_SRC emacs-lisp
+(setq flycheck-perl-include-path '("." "lib") )
+
+;; Perl critic levels of severity:
+;; 1 - brutal
+;; 2 - cruel
+;; 3 - harsh
+;; 4 - stern
+;; 5 - gentle
+(setq flycheck-perlcritic-severity 5)
+#+END_SRC
+
+*** Flycheck for emacs-lisp
+Dependencies: None
+
+#+BEGIN_SRC emacs-lisp
+(setq-default flycheck-emacs-lisp-load-path 'inherit) ; use load-path's path for flycheck
+#+END_SRC
+
+*** Flycheck for bash
+Dependencies: =shellcheck= (homebrew, apt, etc)
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'sh-mode-hook 'flycheck-mode)
+#+END_SRC
+   
+
+
 ** Flyspell-mode
 
    Spell-checker for emacs.
@@ -1072,35 +1116,36 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
 
 **** Cperl-hooks
 
-    Next, a cperl hook to set some stuff up.
+Next, a cperl hook to set some stuff up.
 
-    - The first one is a keybinding which inserts a fat comma on
-      =M-,=. 
+- The first one is a keybinding which inserts a fat comma on
+  =M-,=. 
 
-    - The second autoloads =flymake-mode= when cperl is loaded.
+- +The second autoloads =flymake-mode= when cperl is loaded.+ I'm giving flycheck a chance for a while...
 
-    - Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
-      and its face for arrays and hashes are kind of ugly. Here I
-      change it so it's slanted, unbolded and coloured.
+- Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
+  and its face for arrays and hashes are kind of ugly. Here I
+  change it so it's slanted, unbolded and coloured.
 
-    #+BEGIN_SRC emacs-lisp
-    (add-hook 'cperl-mode-hook
-              (lambda () (progn
-                      (local-set-key (kbd "M-,") 'insert-fat-comma)
-                      (flymake-mode)
+#+BEGIN_SRC emacs-lisp
+(add-hook 'cperl-mode-hook
+          (lambda () (progn
+                       (local-set-key (kbd "M-,") 'insert-fat-comma)
+                       ;;(flymake-mode)
+                       (flycheck-mode)
 
-                      (set-face-italic 'cperl-array-face t)
-                      (set-face-bold 'cperl-array-face nil)
-                      (set-face-foreground 'cperl-array-face "yellow")
-                      (set-face-background 'cperl-array-face nil)
-                      (set-face-italic 'cperl-hash-face t)
-                      (set-face-bold 'cperl-hash-face nil)
-                      (set-face-foreground 'cperl-hash-face "red")
-                      (set-face-background 'cperl-hash-face nil)
-                      )
-                )
-              )
-    #+END_SRC
+                       (set-face-italic 'cperl-array-face t)
+                       (set-face-bold 'cperl-array-face nil)
+                       (set-face-foreground 'cperl-array-face "yellow")
+                       (set-face-background 'cperl-array-face nil)
+                       (set-face-italic 'cperl-hash-face t)
+                       (set-face-bold 'cperl-hash-face nil)
+                       (set-face-foreground 'cperl-hash-face "red")
+                       (set-face-background 'cperl-hash-face nil)
+                       )
+            )
+          )
+#+END_SRC
 *** For Typescript
 #+BEGIN_SRC emacs-lisp
 (require 'web-mode)
