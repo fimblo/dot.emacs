@@ -24,14 +24,14 @@ not really. When my emacs instance starts up, it looks for and finds
 a file called =~/.emacs.d/init.el=, which it loads and applies. It
 currently looks like this:
 
-#+BEGIN_SRC
-    ;; Minimal config here. The rest will be in setup.org
-    (package-initialize)     ; This needs to be early in config
-    (require 'org)           ; Load org so we can use babel
+#+BEGIN_SRC emacs-lisp
+  ;; Minimal config here. The rest will be in setup.org
+  (package-initialize)     ; This needs to be early in config
+  (require 'org)           ; Load org so we can use babel
 
-    (org-babel-load-file     ; Load my setup file
-     (expand-file-name "~/.emacs.d/setup.org"))
-    ;; EOF
+  (org-babel-load-file     ; Load my setup file
+   (expand-file-name "~/.emacs.d/setup.org"))
+  ;; EOF
 #+END_SRC
 
 It starts by loading the emacs lisp packages, and activating
@@ -415,6 +415,7 @@ interaction to be as non-intrusive as possible.
   (put 'eval-expression 'disabled nil)          ; no confirm on eval-expression
 
 #+END_SRC
+
 ** Mouse behaviour
 
 Get the mouse to work in emacs instances running in a terminal, and
@@ -560,6 +561,7 @@ This is just eye-candy for the most part. But icons in dired and a newer modelin
   ;; add icons to ivy
   (all-the-icons-ivy-setup)
 #+END_SRC
+
 ** External stuff
 
 How emacs interacts with the world outside of it.
@@ -631,7 +633,6 @@ mapping =(perl . cperl-mode)= in the =interpreter-mode-alist=.
 
 I want to be able to insert the em-dash and the en-dash symbols in my writing.
 
-
 #+BEGIN_SRC emacs-lisp
   (defun insert-em-dash ()
     "Insert an em-dash"
@@ -644,8 +645,6 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
     (insert "–"))
 
 #+END_SRC
-
-
 
 ** Display lambda symbol
 
@@ -668,6 +667,7 @@ Not only is this pretty, it saves some space on the screen :)
 #+END_SRC
 
 * Modes - Emacs behaviour
+
 ** Atomic-chrome
 
 A nifty tool which enables me to edit text areas in google chrome
@@ -755,7 +755,6 @@ Really useful for copying text from one buffer to another.
   ;;(setq cua-read-only-cursor-color "purple1")  ; R/O, then cursor is purple
   ;;(setq cua-overwrite-cursor-color "red")      ; in Overwrite mode, cursor is red
   ;;(setq cua-global-mark-cursor-color "yellow") ; in Global mark mode, cursor is yellow
-
 #+END_SRC
 
 ** Dired-mode
@@ -859,6 +858,7 @@ I don't use IRC as much nowadays, but used this config when I did.
 #+END_SRC
 
 ** Flycheck
+
 I've been using =flymake= for decades, but this one seems
 better. It's smarter about where it shows the errors/warnings for
 one, and feels faster than =flymake=.
@@ -964,6 +964,7 @@ A nice list-buffer replacement.
 #+END_SRC
 
 ** Longlines-mode
+
 #+BEGIN_SRC emacs-lisp
   (add-hook 'longlines-mode-hook
             (lambda()
@@ -997,7 +998,6 @@ it a try for a while.
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
                                           ;(global-set-key (kbd "C-x l") 'counsel-locate)
                                           ;(global-set-key (kbd "C-c k") 'counsel-ag)
-
 #+END_SRC
 
 ** Visual-line-mode
@@ -1088,6 +1088,7 @@ to drop all credentials.
 #+END_SRC
 
 *** Mail hook
+
 A hook to set things up nicely for mutt.
 
 #+BEGIN_SRC emacs-lisp
@@ -1115,6 +1116,7 @@ For reading asciidoc files.
 #+END_SRC
 
 ** Python-mode
+
 #+BEGIN_SRC emacs-lisp
   (add-hook 'python-mode-hook
             (lambda()
@@ -1302,7 +1304,9 @@ Some very basic config for Typescript.
                 (setup-tide-mode))))
 
 #+END_SRC
+
 ** Other languages/types of text
+
 Finally, a bunch of small hooks for various modes.
 
 #+BEGIN_SRC emacs-lisp
@@ -1964,7 +1968,6 @@ indentation - that is, function/method/class names in a buffer.
      character on column 0. run again to go back."
     (interactive)
     (set-selective-display (if selective-display nil 1)))
-
 #+END_SRC
 
 When I want to do simple arithmetic in the buffer, I write (for
@@ -2059,7 +2062,6 @@ turn off my modem to exit emacs.
     (interactive)
     (message "Function disabled. Use delete-trailing-whitespace instead.")
     )
-
 #+END_SRC
 
 * Helper functions
@@ -2067,7 +2069,6 @@ turn off my modem to exit emacs.
 These functions are called by others.
 
 #+BEGIN_SRC emacs-lisp
-
   (defun file-string (file)
     "Read the contents of a file and return as a string."
     (with-temp-buffer
@@ -2090,7 +2091,6 @@ These functions are called by others.
                              "\\.") "$")
       )
     )
-
 #+END_SRC
 
 * Keybindings
@@ -2182,8 +2182,6 @@ of them should be local too.
   (global-set-key [ end ]             'end-of-buffer )
   (global-set-key [(meta home) ]      'beginning-of-buffer-other-window)
   (global-set-key [(meta end) ]       'end-of-buffer-other-window )
-
-
 #+END_SRC
 
 * lint
@@ -2220,6 +2218,7 @@ point in the future.
   ;;  (insert "</p>\n"))
 
 #+END_SRC
+
 * Things To Do
 
 Last and probably least from your perspective, here's stuff I want to do or test.
@@ -2227,11 +2226,13 @@ Last and probably least from your perspective, here's stuff I want to do or test
 ** Todo
 
 Here's a list of stuff I want to add to my configuration:
+
 *** DONE flycheck-mode
 CLOSED: [2022-08-26 Fri 22:53]
 *** DONE company-mode
 CLOSED: [2022-08-27 Sat 16:31]
 *** TODO lsp-mode
+
 
 ** To test [0/2]
 
