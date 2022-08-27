@@ -1037,52 +1037,51 @@ Dependencies: =shellcheck= (homebrew, apt, etc)
 
 *** Org-mode
 
-   I love org-mode, even if I only use a fraction of its capabilities.
+I love org-mode, even if I only use a fraction of its capabilities.
 
 Some commands I keep on forgetting how to use:
 
-- =C-c C-,= :: (org-insert-structure-template) Insert structure block
+- =C-c C-,= :: =(org-insert-structure-template)= Insert structure block
   (like code, comment, etc). If region is selected, the structure
   will wrap around it.
 
-- =C-c C-'= :: (org-edit-special) If in a structure block, spawns a
+- =C-c C-'= :: =(org-edit-special)= If in a structure block, spawns a
   separate window for editing the contents of the block. If code
   structure block, will set the right major mode. Exit using the same
   =C-c C-'= key sequence.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
+  ;; Basic config of Org
+  (require 'org-install)
+  (setq org-startup-indented t)
+  (setq org-log-done 'time)
 
-     ;; Basic config of Org
-     (require 'org-install)
-     (setq org-startup-indented t)
-     (setq org-log-done 'time)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (visual-line-mode)
+              (flyspell-mode)
+              (auto-fill-mode -1)))
 
-     (add-hook 'org-mode-hook
-               (lambda ()
-                 (visual-line-mode)
-                 (flyspell-mode)
-                 (auto-fill-mode -1)))
+  ;; My notes 
+  (setq org-directory (concat sys/home "/notes/"))
+  (make-directory org-directory 1)
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
 
-     ;; My notes 
-     (setq org-directory (concat sys/home "/notes/"))
-     (make-directory org-directory 1)
-     (setq org-default-notes-file (concat org-directory "/notes.org"))
+  ;; Editing code in Org
+  (setq org-edit-src-content-indentation 2)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
 
-     ;; Editing code in Org
-     (setq org-edit-src-content-indentation 2)
-     (setq org-src-fontify-natively t)
-     (setq org-src-tab-acts-natively t)
+  ;; (setq org-fontify-whole-heading-line t)
+  ;; (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
+  ;;   (font-lock-fontify-buffer))
 
-     ;; (setq org-fontify-whole-heading-line t)
-     ;; (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
-     ;;   (font-lock-fontify-buffer))
+  ;; Change how Org shows bullets
+  (setq org-hide-leading-stars t)           ; remove leading stars in org-mode
+  (setq org-bullets 1)                      ; activate said pretty bullets
+  (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
 
-     ;; Change how Org shows bullets
-     (setq org-hide-leading-stars t)           ; remove leading stars in org-mode
-     (setq org-bullets 1)                      ; activate said pretty bullets
-     (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
-
-   #+END_SRC
+#+END_SRC
 *** Java-mode
    #+BEGIN_SRC emacs-lisp
      (defun my-java-mode-hook ()
