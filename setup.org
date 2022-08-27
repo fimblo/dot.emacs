@@ -80,7 +80,9 @@ Here's a list of stuff I want to add to my configuration:
 
 ** To test [0/2]
 
-Often, when browsing to find a solution to some emacs-related problem, I find new things I want to test. I'll jot them down here so I don't forget.
+Often, when browsing to find a solution to some emacs-related problem,
+I find new things I want to test. I'll jot them down here so I don't
+forget.
 
 - [ ] treemacs 
 - [ ] projectile
@@ -225,12 +227,8 @@ Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/m
   ;; add these sources
   (eval-after-load "package"
     '(progn
-       (add-to-list 'package-archives '("org"       . "http://orgmode.org/elpa/"))
-       (add-to-list 'package-archives '("melpa"     . "http://stable.melpa.org/packages/"))
-
-                                          ;          (add-to-list 'package-archives '("elpa"      . "http://elpa.gnu.org/packages/"))
-                                          ;          (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-                                          ;          (add-to-list 'package-archives '("tromey"    . "http://tromey.com/elpa/"))
+       (add-to-list 'package-archives '("org"   . "http://orgmode.org/elpa/"))
+       (add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/"))
        ))
 
   (setq url-http-attempt-keepalives nil)  ; A package.el bug. Apparently.
@@ -260,7 +258,6 @@ Download these packages if they aren't already downloaded.
 
       ;; Other packages
                                           ; muttrc-mode
-                                          ; omnisharp ;; tested a bit, remove this later prolly
                                           ; twittering-mode
       adoc-mode
       all-the-icons
@@ -551,8 +548,12 @@ Set the face for comments and for the hl-mode row in prog-modes.
 
   ;; make modeline a little nicer
   (require 'spaceline-config)
-  (spaceline-all-the-icons-theme) ; for a slightly fancier theme
-                                          ; (spaceline-emacs-theme) ; for a simpler but nice theme
+
+  ; for a slightly fancier theme
+  (spaceline-all-the-icons-theme) 
+
+  ;; for a simpler but nice theme
+  ;;(spaceline-emacs-theme)
 
   ;; add icons to ivy
   (all-the-icons-ivy-setup)
@@ -857,7 +858,8 @@ I've been using =flymake= for decades, but this one seems
 better. It's smarter about where it shows the errors/warnings for
 one, and feels faster than =flymake=.
 
-When troubleshooting =flycheck=, =flycheck-verify-setup= is a useful command.
+When troubleshooting =flycheck=, =flycheck-verify-setup= is a useful
+command.
 
 *** Basic configuration
 #+BEGIN_SRC emacs-lisp
@@ -1151,8 +1153,8 @@ whistles on, so instead I activate only the stuff I want.
 
 - =cperl-electric-keywords= ::
 
-  If set to =t= some keywords get auto-expanded. E.g. =if=, =while=, =for=,
-  =unless=, =until=.
+  If set to =t= some keywords get auto-expanded. E.g. =if=, =while=,
+  =for=, =unless=, =until=.
 
 - =cperl-electric-linefeed= ::
 
@@ -1175,7 +1177,8 @@ Next, a cperl hook to set some stuff up.
 - The first one is a keybinding which inserts a fat comma on
   =M-,=.
 
-- +The second autoloads =flymake-mode= when cperl is loaded.+ I'm giving flycheck a chance for a while...
+- +The second autoloads =flymake-mode= when cperl is loaded.+ I'm
+  giving flycheck a chance for a while...
 
 - Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
   and its face for arrays and hashes are kind of ugly. Here I
@@ -1247,12 +1250,14 @@ size.
 
 #+BEGIN_SRC emacs-lisp
   (defvar visual-wrap-column nil)
+
   (defun set-visual-wrap-column (new-wrap-column &optional buffer)
     "Force visual line wrap at NEW-WRAP-COLUMN in BUFFER (defaults
-      to current buffer) by setting the right-hand margin on every
-      window that displays BUFFER.  A value of NIL or 0 for
-      NEW-WRAP-COLUMN disables this behavior."
-    (interactive (list (read-number "New visual wrap column, 0 to disable: " (or visual-wrap-column fill-column 0))))
+       to current buffer) by setting the right-hand margin on every
+       window that displays BUFFER.  A value of NIL or 0 for
+       NEW-WRAP-COLUMN disables this behavior."
+    (interactive (list (read-number "New visual wrap column, 0 to disable: "
+                                    (or visual-wrap-column fill-column 0))))
     (if (and (numberp new-wrap-column)
              (zerop new-wrap-column))
         (setq new-wrap-column nil))
@@ -1266,6 +1271,7 @@ size.
             (with-selected-window (car windows)
               (update-visual-wrap-column)))
           (setq windows (cdr windows))))))
+
   (defun update-visual-wrap-column ()
     (if (not visual-wrap-column)
         (set-window-margins nil nil)
