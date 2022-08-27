@@ -6,11 +6,14 @@
 #+BEGIN_COMMENT
 Not exported
 
-Starting a line with '<s' followed by tab auto-inserts
+To create a code block structure, C-c C-, will create the following
+text and place the cursor after the first statement. Typing '<s'
+followed by <tab> should do the same thing, but for some reason it
+doesn't work right now.
 
-#+BEGIN_SRC
-
-#+END_SRC
+  #+BEGIN_SRC
+  
+  #+END_SRC
 
 #+END_COMMENT
 
