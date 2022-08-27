@@ -1041,18 +1041,16 @@ I love org-mode, even if I only use a fraction of its capabilities.
 
 Some commands I keep on forgetting how to use:
 
-- =testin= ::
+- =(org-insert-structure-template)= ::
   
-  =(org-insert-structure-template)= Insert structure block
-  (like code, comment, etc). If region is selected, the structure
-  will wrap around it.
+ Insert structure block with shortcut =C-c C-,= (like code, comment,
+  etc). If region is selected, the structure will wrap around it.
 
-- =C-c C-'= ::
-  
-  =(org-edit-special)= If in a structure block, spawns a
-  separate window for editing the contents of the block. If code
-  structure block, will set the right major mode. Exit using the same
-  =C-c C-'= key sequence.
+- =(org-edit-special)= ::
+
+  If in a structure block, =C-c C-'= spawns a separate window for
+  editing the contents of the block. If code structure block, will set
+  the right major mode. Exit using the same =C-c C-'= key sequence.
 
 #+BEGIN_SRC emacs-lisp
   ;; Basic config of Org
