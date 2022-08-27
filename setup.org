@@ -70,23 +70,6 @@ in the directory =~/.emacs.d=:
   its separated from my own code. I set it up in section
   [[Auto-customization]].
 
-* Things To Do
-** Todo [2/3]
-
-Here's a list of stuff I want to add to my configuration:
-- [X] flycheck-mode
-- [X] company-mode
-- [ ] lsp-mode
-
-** To test [0/2]
-
-Often, when browsing to find a solution to some emacs-related problem,
-I find new things I want to test. I'll jot them down here so I don't
-forget.
-
-- [ ] treemacs 
-- [ ] projectile
-
 * Initial setup
 ** Set up basic environment
 
@@ -2202,3 +2185,25 @@ point in the future.
   ;;  (insert "</p>\n"))
 
 #+END_SRC
+* Things To Do
+
+Last and probably least from your perspective, here's stuff I want to do or test. 
+
+** Todo
+
+Here's a list of stuff I want to add to my configuration:
+*** DONE flycheck-mode
+CLOSED: [2022-08-26 Fri 22:53]
+*** DONE company-mode
+CLOSED: [2022-08-27 Sat 16:31]
+*** TODO lsp-mode
+
+** To test [0/2]
+
+Often, when browsing to find a solution to some emacs-related problem,
+I find new things I want to test. I'll jot them down here so I don't
+forget.
+
+- [ ] treemacs 
+- [ ] projectile
+
