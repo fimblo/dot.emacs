@@ -886,6 +886,10 @@ Dependencies: None
 
 #+BEGIN_SRC emacs-lisp
   (setq-default flycheck-emacs-lisp-load-path 'inherit) ; use load-path's path for flycheck
+
+  ;; Get rid of annoying checkdoc warnings
+  (with-eval-after-load 'flycheck
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 #+END_SRC
 
 *** Flycheck for bash
