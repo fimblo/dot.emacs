@@ -541,6 +541,7 @@ Set the face for comments and for the hl-mode row in prog-modes.
 
 ** Icons and modeline
 
+This is just eye-candy for the most part. But icons in dired and a newer modeline just looks nice.
 
 #+BEGIN_SRC emacs-lisp
   ;; First time, run 'M-x all-the-icons-install-fonts' to download the icons
@@ -702,6 +703,9 @@ etc).
 
 ** Company
 
+This is my initial setup of company-mode, which lets me get a nice
+auto-completion thing going when writing code.
+
 #+BEGIN_SRC emacs-lisp
   (add-hook 'after-init-hook 'global-company-mode)
 
@@ -721,19 +725,20 @@ etc).
 #+END_SRC
 
 ** CUA-mode
+
 Cua-mode is normally used to make emacs act more like Windows
 (control-c to copy, etc). I use a subset so that I can use
 Cua-mode's nice rectangle functions in addition to the normal ones.
 
 Cua's global-mark is really cool. This is what it says in the manual:
 
-#+begin_quote
+#+BEGIN_QUOTE
 CUA mode also has a global mark feature which allows easy moving and
 copying of text between buffers. Use C-S-<SPC> to toggle the global
 mark on and off. When the global mark is on, all text that you kill or
 copy is automatically inserted at the global mark, and text you type
 is inserted at the global mark rather than at the current position.
-#+end_quote
+#+END_QUOTE
 
 Really useful for copying text from one buffer to another.
 
@@ -1282,7 +1287,11 @@ Next, a cperl hook to set some stuff up.
               )
             )
 #+END_SRC
+
 ** For Typescript
+
+Some very basic config for Typescript.
+
 #+BEGIN_SRC emacs-lisp
   (require 'web-mode)
 
@@ -1931,10 +1940,11 @@ These functions allow me to move single lines or entire regions up and down.
   (defun move-line-region-down (start end n)
     (interactive "r\np")
     (if (region-active-p) (move-region-down start end n) (move-line-down n)))
+#+END_SRC
 
+And define some keyboard combo to easily access these functions.
 
-
-
+#+BEGIN_SRC emacs-lisp
   (global-set-key [(meta up)]   'move-line-up)
   (global-set-key [(meta down)] 'move-line-down)
 
