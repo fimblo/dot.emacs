@@ -532,8 +532,8 @@ Set the face for comments and for the hl-mode row in prog-modes.
   ;; make modeline a little nicer
   (require 'spaceline-config)
 
-  ; for a slightly fancier theme
-  (spaceline-all-the-icons-theme) 
+                                          ; for a slightly fancier theme
+  (spaceline-all-the-icons-theme)
 
   ;; for a simpler but nice theme
   ;;(spaceline-emacs-theme)
@@ -648,7 +648,7 @@ Not only is this pretty, it saves some space on the screen :)
   (add-hook 'org-mode-hook 'sm-lambda-mode-hook)
 #+END_SRC
 
-* Modes
+* Modes - Emacs behaviour
 ** Atomic-chrome
 
 A nifty tool which enables me to edit text areas in google chrome
@@ -701,7 +701,6 @@ etc).
      `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
      `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 #+END_SRC
-
 
 ** CUA-mode
 Cua-mode is normally used to make emacs act more like Windows
@@ -945,258 +944,6 @@ A nice list-buffer replacement.
               (longlines-show-hard-newlines)))
 #+END_SRC
 
-** Language specific modes
-*** Mail and Mutt mode
-**** Basics
-
-First some settings to get mail to work.
-
-#+BEGIN_SRC emacs-lisp
-
-  (require 'smtpmail)
-  (require 'starttls)
-
-  ;;(setq smtpmail-auth-credentials '(("smtp.gmail.com" 25 "USERNAME" "PASSWORD")))
-  ;;(setq smtpmail-debug-info t)
-  (setq message-send-mail-function 'smtpmail-send-it)
-  (setq send-mail-function 'smtpmail-send-it)
-  (setq smtpmail-debug-info t)
-  (setq mail-host-address me/mail/mydomain)
-  (setq smtpmail-local-domain me/mail/mydomain)
-  (setq smtpmail-sendto-domain me/mail/mydomain)
-  (setq smtpmail-smtp-server me/mail/smtp-server)
-  (setq smtpmail-auth-credentials me/mail/credentials)
-  (setq smtpmail-smtp-service 587)
-  (setq smtpmail-warn-about-unknown-extensions t)
-  (setq starttls-extra-arguments nil)
-  (setq starttls-use-gnutls t)
-  (setq user-full-name me/fullname)
-  (setq mail-default-headers
-        (concat
-         "CC:\n"
-         "BCC:\n"
-         "X-RefLink: http://tinyurl.com/bprfeg\n"
-         "User-Agent: " (mapconcat 'identity (subseq (split-string (emacs-version) " ") 0 3) " ") "\n"
-         ))
-  (setq mail-signature me/mail/signature)
-#+END_SRC
-
-**** Good to know
-
-Oh and before I forget - when I flub my password, use the following
-to drop all credentials.
-
-#+BEGIN_SRC
-        M-x auth-source-forget-all-cached
-#+END_SRC
-
-**** Mail hook
-A hook to set things up nicely for mutt.
-
-#+BEGIN_SRC emacs-lisp
-  (defun my-mutt-mode-hook ()
-    (visual-line-mode)
-    (orgstruct-mode)
-    )
-  (add-hook 'message-mode-hook 'my-mutt-mode-hook)
-
-  (add-hook 'mail-mode-hook
-            '(lambda ()
-               (define-key mail-mode-map "\C-c\C-w" 'message-replace-sig)
-               ))
-#+END_SRC
-
-*** Adoc-mode-hook
-
-For reading asciidoc files.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'adoc-mode-hook
-            (lambda()
-              (auto-fill-mode -1)
-              (visual-line-mode)))
-#+END_SRC
-
-*** Python-mode
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'python-mode-hook
-            (lambda()
-              (cond ((eq buffer-file-number nil)
-                     (progn (interactive)
-                            (goto-line 1)
-                            (insert "#!/usr/bin/env python\n")
-                            (insert "# -*- tab-width: 4 -*-\n")
-                            )))))
-
-#+END_SRC
-
-*** DNS-mode
-
-A decade or so ago, I manually edited dns zone files a lot, and I
-made frequent use of the $INCLUDE directive - meaning most dns zone
-files didn't have a SOA post to increment. This resulted in an
-error when saving.
-
-I wrote this piece of advice to avoid this problem.
-
-#+BEGIN_SRC emacs-lisp
-  (defadvice dns-mode-soa-maybe-increment-serial (before maybe-set-increment)
-    "if there is a dns soa post, increment it. Otherwise, just save"
-    (save-excursion
-      (beginning-of-buffer)
-      (message "dns-mode-soa-auto-increment-serial %s"
-               (setq dns-mode-soa-auto-increment-serial
-                     (and (search-forward-regexp "IN[ ''\t'']+SOA" nil t)
-                          (not (search-forward-regexp "@SERIAL@" nil t)))
-                     )
-               )
-      )
-    )
-
-  (ad-activate 'dns-mode-soa-maybe-increment-serial)
-#+END_SRC
-
-*** Org-mode
-
-I love org-mode, even if I only use a fraction of its capabilities.
-
-Some commands I keep on forgetting how to use:
-
-- =(org-insert-structure-template)= ::
-
-  Insert structure block with shortcut C-c C-, (like code, comment,
-  etc). If region is selected, the structure will wrap around it.
-
-- =(org-edit-special)= ::
-
-  If in a structure block, C-c C-' spawns a separate window for
-  editing the contents of the block. If code structure block, will set
-  the right major mode. Exit using the same C-c C-' key sequence.
-
-#+BEGIN_SRC emacs-lisp
-  ;; Basic config of Org
-  (require 'org-install)
-  (setq org-startup-indented t)
-  (setq org-log-done 'time)
-
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (visual-line-mode)
-              (flyspell-mode)
-              (auto-fill-mode -1)))
-
-  ;; My notes
-  (setq org-directory (concat sys/home "/notes/"))
-  (make-directory org-directory 1)
-  (setq org-default-notes-file (concat org-directory "/notes.org"))
-
-  ;; Editing code in Org
-  (setq org-edit-src-content-indentation 2)
-  (setq org-src-fontify-natively t)
-  (setq org-src-tab-acts-natively t)
-
-  ;; (setq org-fontify-whole-heading-line t)
-  ;; (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
-  ;;   (font-lock-fontify-buffer))
-
-  ;; Change how Org shows bullets
-  (setq org-hide-leading-stars t)           ; remove leading stars in org-mode
-  (setq org-bullets 1)                      ; activate said pretty bullets
-  (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
-
-#+END_SRC
-*** Java-mode
-#+BEGIN_SRC emacs-lisp
-  (defun my-java-mode-hook ()
-    (c-add-style
-     "my-java"
-     '("java"
-       (c-basic-offset . 2)))
-    (c-set-style "my-java"))
-  (add-hook 'java-mode-hook 'my-java-mode-hook)
-#+END_SRC
-
-
-*** Cperl-mode
-**** Some hairy cperl settings
-
-Cperl-mode has more useful features than plain Perl-mode. Since
-Perl-mode is autoloaded when opening files with perl suffixes, we
-begin below by replacing perl-mode with cperl-mode.
-
-I mentioned lots of useful features right? To turn most of them on,
-set =cperl-hairy= to =t=. But this turns _all_ of the bells and
-whistles on, so instead I activate only the stuff I want.
-
-- =cperl-electric-parens= ::
-
-  Setting this to =t=, I get auto-complete of the following paired
-  symbols: =({[]})= and in special cases, like in the following code,
-  the =<>= too.
-
-- =cperl-electric-keywords= ::
-
-  If set to =t= some keywords get auto-expanded. E.g. =if=, =while=,
-  =for=, =unless=, =until=.
-
-- =cperl-electric-linefeed= ::
-
-  If set to =t=, hitting =C-j= inside of, say, the inner
-  conditional parens will place the cursor inside the curly
-  brackets with the right indentation.
-
-  #+BEGIN_SRC emacs-lisp
-    (defalias 'perl-mode 'cperl-mode)
-    ;;(setq cperl-hairy t)
-    (setq cperl-electric-parens t)
-    (setq cperl-electric-keywords t)
-    (setq cperl-electric-linefeed t)
-  #+END_SRC
-
-**** Cperl-hooks
-
-Next, a cperl hook to set some stuff up.
-
-- The first one is a keybinding which inserts a fat comma on
-  =M-,=.
-
-- +The second autoloads =flymake-mode= when cperl is loaded.+ I'm
-  giving flycheck a chance for a while...
-
-- Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
-  and its face for arrays and hashes are kind of ugly. Here I
-  change it so it's slanted, unbolded and coloured.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'cperl-mode-hook
-            (lambda () (progn
-                         (local-set-key (kbd "M-,") 'insert-fat-comma)
-                         ;;(flymake-mode)
-                         (flycheck-mode)
-
-                         (set-face-italic 'cperl-array-face t)
-                         (set-face-bold 'cperl-array-face nil)
-                         (set-face-foreground 'cperl-array-face "yellow")
-                         (set-face-background 'cperl-array-face nil)
-                         (set-face-italic 'cperl-hash-face t)
-                         (set-face-bold 'cperl-hash-face nil)
-                         (set-face-foreground 'cperl-hash-face "red")
-                         (set-face-background 'cperl-hash-face nil)
-                         )
-              )
-            )
-#+END_SRC
-*** For Typescript
-#+BEGIN_SRC emacs-lisp
-  (require 'web-mode)
-
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
-  (add-hook 'web-mode-hook
-            (lambda ()
-              (when (string-equal "tsx" (file-name-extension buffer-file-name))
-                (setup-tide-mode))))
-
-#+END_SRC
 ** Swiper, Ivy and Counsel
 
 For about six months, I tried Ido-mode and icomplete-mode, and
@@ -1268,7 +1015,258 @@ size.
                               (- current-available visual-wrap-column))))))
 #+END_SRC
 
-** Hooks with no particular home
+* Modes - Language specific
+** Mail and Mutt mode
+*** Basics
+
+First some settings to get mail to work.
+
+#+BEGIN_SRC emacs-lisp
+
+  (require 'smtpmail)
+  (require 'starttls)
+
+  ;;(setq smtpmail-auth-credentials '(("smtp.gmail.com" 25 "USERNAME" "PASSWORD")))
+  ;;(setq smtpmail-debug-info t)
+  (setq message-send-mail-function 'smtpmail-send-it)
+  (setq send-mail-function 'smtpmail-send-it)
+  (setq smtpmail-debug-info t)
+  (setq mail-host-address me/mail/mydomain)
+  (setq smtpmail-local-domain me/mail/mydomain)
+  (setq smtpmail-sendto-domain me/mail/mydomain)
+  (setq smtpmail-smtp-server me/mail/smtp-server)
+  (setq smtpmail-auth-credentials me/mail/credentials)
+  (setq smtpmail-smtp-service 587)
+  (setq smtpmail-warn-about-unknown-extensions t)
+  (setq starttls-extra-arguments nil)
+  (setq starttls-use-gnutls t)
+  (setq user-full-name me/fullname)
+  (setq mail-default-headers
+        (concat
+         "CC:\n"
+         "BCC:\n"
+         "X-RefLink: http://tinyurl.com/bprfeg\n"
+         "User-Agent: " (mapconcat 'identity (subseq (split-string (emacs-version) " ") 0 3) " ") "\n"
+         ))
+  (setq mail-signature me/mail/signature)
+#+END_SRC
+
+*** Good to know
+
+Oh and before I forget - when I flub my password, use the following
+to drop all credentials.
+
+#+BEGIN_SRC
+        M-x auth-source-forget-all-cached
+#+END_SRC
+
+*** Mail hook
+A hook to set things up nicely for mutt.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-mutt-mode-hook ()
+    (visual-line-mode)
+    (orgstruct-mode)
+    )
+  (add-hook 'message-mode-hook 'my-mutt-mode-hook)
+
+  (add-hook 'mail-mode-hook
+            '(lambda ()
+               (define-key mail-mode-map "\C-c\C-w" 'message-replace-sig)
+               ))
+#+END_SRC
+
+** Adoc-mode-hook
+
+For reading asciidoc files.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'adoc-mode-hook
+            (lambda()
+              (auto-fill-mode -1)
+              (visual-line-mode)))
+#+END_SRC
+
+** Python-mode
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'python-mode-hook
+            (lambda()
+              (cond ((eq buffer-file-number nil)
+                     (progn (interactive)
+                            (goto-line 1)
+                            (insert "#!/usr/bin/env python\n")
+                            (insert "# -*- tab-width: 4 -*-\n")
+                            )))))
+
+#+END_SRC
+
+** DNS-mode
+
+A decade or so ago, I manually edited dns zone files a lot, and I
+made frequent use of the $INCLUDE directive - meaning most dns zone
+files didn't have a SOA post to increment. This resulted in an
+error when saving.
+
+I wrote this piece of advice to avoid this problem.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice dns-mode-soa-maybe-increment-serial (before maybe-set-increment)
+    "if there is a dns soa post, increment it. Otherwise, just save"
+    (save-excursion
+      (beginning-of-buffer)
+      (message "dns-mode-soa-auto-increment-serial %s"
+               (setq dns-mode-soa-auto-increment-serial
+                     (and (search-forward-regexp "IN[ ''\t'']+SOA" nil t)
+                          (not (search-forward-regexp "@SERIAL@" nil t)))
+                     )
+               )
+      )
+    )
+
+  (ad-activate 'dns-mode-soa-maybe-increment-serial)
+#+END_SRC
+
+** Org-mode
+
+I love org-mode, even if I only use a fraction of its capabilities.
+
+Some commands I keep on forgetting how to use:
+
+- =(org-insert-structure-template)= ::
+
+  Insert structure block with shortcut C-c C-, (like code, comment,
+  etc). If region is selected, the structure will wrap around it.
+
+- =(org-edit-special)= ::
+
+  If in a structure block, C-c C-' spawns a separate window for
+  editing the contents of the block. If code structure block, will set
+  the right major mode. Exit using the same C-c C-' key sequence.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Basic config of Org
+  (require 'org-install)
+  (setq org-startup-indented t)
+  (setq org-log-done 'time)
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (visual-line-mode)
+              (flyspell-mode)
+              (auto-fill-mode -1)))
+
+  ;; My notes
+  (setq org-directory (concat sys/home "/notes/"))
+  (make-directory org-directory 1)
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+
+  ;; Editing code in Org
+  (setq org-edit-src-content-indentation 2)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+
+  ;; (setq org-fontify-whole-heading-line t)
+  ;; (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
+  ;;   (font-lock-fontify-buffer))
+
+  ;; Change how Org shows bullets
+  (setq org-hide-leading-stars t)           ; remove leading stars in org-mode
+  (setq org-bullets 1)                      ; activate said pretty bullets
+  (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
+
+#+END_SRC
+** Java-mode
+#+BEGIN_SRC emacs-lisp
+  (defun my-java-mode-hook ()
+    (c-add-style
+     "my-java"
+     '("java"
+       (c-basic-offset . 2)))
+    (c-set-style "my-java"))
+  (add-hook 'java-mode-hook 'my-java-mode-hook)
+#+END_SRC
+
+** Cperl-mode
+*** Some hairy cperl settings
+
+Cperl-mode has more useful features than plain Perl-mode. Since
+Perl-mode is autoloaded when opening files with perl suffixes, we
+begin below by replacing perl-mode with cperl-mode.
+
+I mentioned lots of useful features right? To turn most of them on,
+set =cperl-hairy= to =t=. But this turns _all_ of the bells and
+whistles on, so instead I activate only the stuff I want.
+
+- =cperl-electric-parens= ::
+
+  Setting this to =t=, I get auto-complete of the following paired
+  symbols: =({[]})= and in special cases, like in the following code,
+  the =<>= too.
+
+- =cperl-electric-keywords= ::
+
+  If set to =t= some keywords get auto-expanded. E.g. =if=, =while=,
+  =for=, =unless=, =until=.
+
+- =cperl-electric-linefeed= ::
+
+  If set to =t=, hitting =C-j= inside of, say, the inner
+  conditional parens will place the cursor inside the curly
+  brackets with the right indentation.
+
+  #+BEGIN_SRC emacs-lisp
+    (defalias 'perl-mode 'cperl-mode)
+    ;;(setq cperl-hairy t)
+    (setq cperl-electric-parens t)
+    (setq cperl-electric-keywords t)
+    (setq cperl-electric-linefeed t)
+  #+END_SRC
+
+*** Cperl-hooks
+
+Next, a cperl hook to set some stuff up.
+
+- The first one is a keybinding which inserts a fat comma on
+  =M-,=.
+
+- +The second autoloads =flymake-mode= when cperl is loaded.+ I'm
+  giving flycheck a chance for a while...
+
+- Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
+  and its face for arrays and hashes are kind of ugly. Here I
+  change it so it's slanted, unbolded and coloured.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'cperl-mode-hook
+            (lambda () (progn
+                         (local-set-key (kbd "M-,") 'insert-fat-comma)
+                         ;;(flymake-mode)
+                         (flycheck-mode)
+
+                         (set-face-italic 'cperl-array-face t)
+                         (set-face-bold 'cperl-array-face nil)
+                         (set-face-foreground 'cperl-array-face "yellow")
+                         (set-face-background 'cperl-array-face nil)
+                         (set-face-italic 'cperl-hash-face t)
+                         (set-face-bold 'cperl-hash-face nil)
+                         (set-face-foreground 'cperl-hash-face "red")
+                         (set-face-background 'cperl-hash-face nil)
+                         )
+              )
+            )
+#+END_SRC
+** For Typescript
+#+BEGIN_SRC emacs-lisp
+  (require 'web-mode)
+
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                (setup-tide-mode))))
+
+#+END_SRC
+** Other languages/types of text
 Finally, a bunch of small hooks for various modes.
 
 #+BEGIN_SRC emacs-lisp
@@ -2187,7 +2185,7 @@ point in the future.
 #+END_SRC
 * Things To Do
 
-Last and probably least from your perspective, here's stuff I want to do or test. 
+Last and probably least from your perspective, here's stuff I want to do or test.
 
 ** Todo
 
@@ -2204,6 +2202,5 @@ Often, when browsing to find a solution to some emacs-related problem,
 I find new things I want to test. I'll jot them down here so I don't
 forget.
 
-- [ ] treemacs 
+- [ ] treemacs
 - [ ] projectile
-
