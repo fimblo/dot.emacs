@@ -89,7 +89,7 @@ Set some constants on the environment this instance of emacs is
 running in.
 
 #+BEGIN_SRC emacs-lisp
-  (defconst hostname
+  (defconst sys/hostname
     (getenv "HOSTNAME")          "This machine's hostname")
   (defconst sys/home
     (getenv "HOME")              "Home directory")
@@ -137,7 +137,7 @@ anywhere...
 #+BEGIN_SRC emacs-lisp
   (defun my-backup-enable-predicate (name)
     (let (found)
-      (dolist (specialdir '("/home/fimblo/gdrive/"
+      (dolist (specialdir '((concat sys/home "/gdrive/")
                             "/some/other/directory/") found)
         (if (string-prefix-p specialdir name)
             (setq found t)))
