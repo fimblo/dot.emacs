@@ -2204,3 +2204,4 @@ forget.
 
 - [ ] treemacs
 - [ ] projectile
+- See if I can get icons into ibuffer.
