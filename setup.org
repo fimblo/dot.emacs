@@ -1048,7 +1048,7 @@ Some commands I keep on forgetting how to use:
 
 - =(org-edit-special)= ::
 
-  If in a structure block, ~C-c C-~ spawns a separate window for
+  If in a structure block, ~C-c C-'~ spawns a separate window for
   editing the contents of the block. If code structure block, will set
   the right major mode. Exit using the same ~C-c C-'~ key sequence.
 
