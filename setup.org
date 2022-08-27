@@ -144,7 +144,7 @@ Note that the specialdir var is intended to be populated with path
 prefixes - so if you add =/= then emacs won't make backups
 anywhere...
 
-/Note to self - should put the specialdirs into =custom.el= at some point./
+/Note to self - should put the specialdirs into/ =custom.el= /at some point./
 
 #+BEGIN_SRC emacs-lisp
   (defun my-backup-enable-predicate (name)
@@ -160,7 +160,7 @@ anywhere...
   (setq backup-enable-predicate #'my-backup-enable-predicate)
 #+END_SRC
 
-Make _really_ sure that we're using utf-8.
+Make _really_ sure that we're using =utf-8=.
 
 I'm so glad I don't have to fool around with all those old
 character sets anymore - especially the Japanese ones...
