@@ -1196,8 +1196,13 @@ Some commands I keep on forgetting how to use:
   (setq org-bullets 1)                      ; activate said pretty bullets
   (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
 
+  (set-face-attribute 'org-block-begin-line nil :background "grey10")
+  (set-face-attribute 'org-block nil :background "grey16")
+  (set-face-attribute 'org-block-end-line nil :background "grey10")
 #+END_SRC
+
 ** Java-mode
+
 #+BEGIN_SRC emacs-lisp
   (defun my-java-mode-hook ()
     (c-add-style
