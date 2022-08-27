@@ -359,7 +359,7 @@ Configuration basics.
   ;; Look and feel for all programming modes
   (add-hook 'prog-mode-hook
             (lambda ()
-              (fringe-mode '(4 . 4))
+              (fringe-mode '(16 . 1))
               (linum-mode 1)              ; show line number in margin
               (hl-line-mode 1)            ; highlight the current line
               (show-paren-mode t)         ; show matching parens
