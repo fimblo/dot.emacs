@@ -303,6 +303,21 @@ Download these packages if they aren't already downloaded.
                     (mapcar 'car package-archive-contents))))
 #+END_SRC
 
+** Stand-alone elisp things to load
+
+Sometimes, the emacs modules aren't available on melpa, but I have the
+source file. When this happens, I place it in my =elisp/= folder. All
+=.el= files are loaded on startup.
+
+#+begin_src emacs-lisp
+  (defun load-directory (dir)
+    (let ((load-it (lambda (f)
+                     (load-file (concat (file-name-as-directory dir) f)))
+                   ))
+      (mapc load-it (directory-files dir nil "\\.el$"))))
+  (load-directory (concat emacs-root "/elisp/"))
+#+end_src
+
 ** Auto-customization
 
 Move all customization stuff to another file.
