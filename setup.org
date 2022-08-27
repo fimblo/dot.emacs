@@ -1041,11 +1041,15 @@ I love org-mode, even if I only use a fraction of its capabilities.
 
 Some commands I keep on forgetting how to use:
 
-- =C-c C-,= :: =(org-insert-structure-template)= Insert structure block
+- =testin= ::
+  
+  =(org-insert-structure-template)= Insert structure block
   (like code, comment, etc). If region is selected, the structure
   will wrap around it.
 
-- =C-c C-'= :: =(org-edit-special)= If in a structure block, spawns a
+- =C-c C-'= ::
+  
+  =(org-edit-special)= If in a structure block, spawns a
   separate window for editing the contents of the block. If code
   structure block, will set the right major mode. Exit using the same
   =C-c C-'= key sequence.
