@@ -691,7 +691,7 @@ I want to be able to insert the em-dash and the en-dash symbols in my writing.
 
    #+begin_quote
      CUA mode also has a global mark feature which allows easy moving and
-     copying of text between buffers. Use ~C-S-<SPC>~ to toggle the global
+     copying of text between buffers. Use C-S-<SPC> to toggle the global
      mark on and off. When the global mark is on, all text that you kill or
      copy is automatically inserted at the global mark, and text you type
      is inserted at the global mark rather than at the current position.
@@ -1043,14 +1043,14 @@ Some commands I keep on forgetting how to use:
 
 - =(org-insert-structure-template)= ::
   
- Insert structure block with shortcut ~C-c C-,~ (like code, comment,
+ Insert structure block with shortcut C-c C-, (like code, comment,
   etc). If region is selected, the structure will wrap around it.
 
 - =(org-edit-special)= ::
 
-  If in a structure block, ~C-c C-'~ spawns a separate window for
+  If in a structure block, C-c C-' spawns a separate window for
   editing the contents of the block. If code structure block, will set
-  the right major mode. Exit using the same ~C-c C-'~ key sequence.
+  the right major mode. Exit using the same C-c C-' key sequence.
 
 #+BEGIN_SRC emacs-lisp
   ;; Basic config of Org
