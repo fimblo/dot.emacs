@@ -374,7 +374,7 @@ Configuration basics.
   ;; Look and feel for all programming modes
   (add-hook 'prog-mode-hook
             (lambda ()
-              (fringe-mode '(16 . 1))
+              (fringe-mode '(16 . 16))
               (linum-mode 1)              ; show line number in margin
               (hl-line-mode 1)            ; highlight the current line
               (show-paren-mode t)         ; show matching parens
@@ -537,7 +537,14 @@ Set the face for comments and for the hl-mode row in prog-modes.
 
   (eval-after-load "hl-line"
     '(set-face-attribute 'hl-line nil :background "grey10"))
+#+END_SRC
 
+Make the fringe the same colour as the main text area.
+
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'fringe nil
+                      :foreground (face-foreground 'default)
+                      :background (face-background 'default))
 #+END_SRC
 
 ** Icons and modeline
