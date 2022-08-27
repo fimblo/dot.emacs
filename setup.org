@@ -70,6 +70,21 @@ in the directory =~/.emacs.d=:
   its separated from my own code. I set it up in section
   [[Auto-customization]].
 
+* Things To Do
+** Todo [2/3]
+
+Here's a list of stuff I want to add to my configuration:
+- [X] flycheck-mode
+- [X] company-mode
+- [ ] lsp-mode
+
+** To test [0/2]
+
+Often, when browsing to find a solution to some emacs-related problem, I find new things I want to test. I'll jot them down here so I don't forget.
+
+- [ ] treemacs 
+- [ ] projectile
+
 * Initial setup
 ** Set up basic environment
 
@@ -256,6 +271,7 @@ Download these packages if they aren't already downloaded.
       atomic-chrome
       auctex
       column-marker
+      company
       counsel
       dired-subtree
       dumb-jump
@@ -682,6 +698,27 @@ etc).
    )
 #+END_SRC
 
+** Company
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-init-hook 'global-company-mode)
+
+  (setq company-idle-delay 0)            ; no delay when proposing suggestions
+  (setq company-minimum-prefix-length 2) ; two characters before suggesting
+  (setq company-selection-wrap-around t) ; make suggestion list a ring
+
+  (require 'color)
+
+  (let ((bg (face-attribute 'default :background)))
+    (custom-set-faces
+     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+#+END_SRC
+
+
 ** CUA-mode
 Cua-mode is normally used to make emacs act more like Windows
 (control-c to copy, etc). I use a subset so that I can use
@@ -855,7 +892,6 @@ Dependencies: =shellcheck= (homebrew, apt, etc)
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sh-mode-hook 'flycheck-mode)
 #+END_SRC
-
 
 ** Flyspell-mode
 
