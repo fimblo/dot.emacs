@@ -2268,3 +2268,5 @@ forget.
 - [ ] treemacs
 - [ ] projectile
 - See if I can get icons into ibuffer.
+- See if I can get highlighted regions to be in whitespace-mode
+
