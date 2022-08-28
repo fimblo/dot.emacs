@@ -24,7 +24,7 @@ not really. When my emacs instance starts up, it looks for and finds
 a file called =~/.emacs.d/init.el=, which it loads and applies. It
 currently looks like this:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC 
   ;; Minimal config here. The rest will be in setup.org
   (package-initialize)     ; This needs to be early in config
   (require 'org)           ; Load org so we can use babel
