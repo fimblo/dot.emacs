@@ -137,7 +137,7 @@ anywhere...
 #+BEGIN_SRC emacs-lisp
   (defun my-backup-enable-predicate (name)
     (let (found)
-      (dolist (specialdir '((concat sys/home "/gdrive/")
+      (dolist (specialdir '("~/gdrive/"
                             "/some/other/directory/") found)
         (if (string-prefix-p specialdir name)
             (setq found t)))
