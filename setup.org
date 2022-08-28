@@ -2232,6 +2232,7 @@ CLOSED: [2022-08-26 Fri 22:53]
 *** DONE company-mode
 CLOSED: [2022-08-27 Sat 16:31]
 *** TODO lsp-mode
+*** TODO in emacs-lisp buffer, make company propose across hyphens
 
 
 ** To test [0/2]
