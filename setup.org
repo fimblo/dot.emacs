@@ -771,6 +771,8 @@ In dired-mode, show directories first, then regular files. Dotfiles
 before non-dotfiles. Also, open dired-mode in the simple
 view. Toggle between simple and detailed view using =(=.
 
+For more keybindings, see [[Dired keybindings]].
+
 #+BEGIN_SRC emacs-lisp
   (setq dired-listing-switches "-aFhlv --group-directories-first")
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
@@ -818,28 +820,6 @@ By the way, use =C-x C-q= to enter wdired, and =C-c C-c= to exit.
 #+BEGIN_SRC emacs-lisp
   (setq wdired-allow-to-change-permissions t)
   (setq wdired-create-parent-directories t)
-#+END_SRC
-
-*** Dired keybindings
-
-When your cursor is on a directory and you press =i=,
-=dired-maybe-insert-subdir= is called. It adds the subdirectory at
-the bottom of the buffer. Though this is useful, Dired-subtree is
-better - it adds the subdir directly under the dir you opened,
-indented a bit.
-
-Use =<tab>= to expand a dir, and =<tab>= again to close it. If
-you've moved your cursor into the contents of the dir, then
-=shift-tab= will close it for you.
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "dired"
-    '(progn
-       (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
-       (define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
-       (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
-       )
-    )
 #+END_SRC
 
 ** Erc-mode
@@ -995,25 +975,12 @@ somehow they often made me feel more frustrated than helped. I was
 introduced to Swiper and friends at an emacs-meetup, and will give
 it a try for a while.
 
+For keybindings, see: [[Swiper/Ivy/Counsel keybindings]]
+
 #+BEGIN_SRC emacs-lisp
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
-  (global-set-key (kbd "C-S-s") 'swiper)
-  (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  (global-set-key (kbd "<f6>") 'ivy-resume)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  (global-set-key (kbd "C-c g") 'counsel-git)
-  (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-                                          ;(global-set-key (kbd "C-x l") 'counsel-locate)
-                                          ;(global-set-key (kbd "C-c k") 'counsel-ag)
 #+END_SRC
 
 ** Visual-line-mode
@@ -1106,17 +1073,14 @@ to drop all credentials.
 
 A hook to set things up nicely for mutt.
 
+For keybindings, see [[Mail keybindings]].
+
 #+BEGIN_SRC emacs-lisp
   (defun my-mutt-mode-hook ()
     (visual-line-mode)
     (orgstruct-mode)
     )
   (add-hook 'message-mode-hook 'my-mutt-mode-hook)
-
-  (add-hook 'mail-mode-hook
-            #'(lambda ()
-                (define-key mail-mode-map "\C-c\C-w" 'message-replace-sig)
-                ))
 #+END_SRC
 
 ** Adoc-mode-hook
@@ -1244,6 +1208,9 @@ than the default.
 #+END_SRC
 
 ** Cperl-mode
+
+For keybindings, see [[Perl keybindings]].
+
 *** Some hairy cperl settings
 
 Cperl-mode has more useful features than plain Perl-mode. Since
@@ -1283,20 +1250,16 @@ whistles on, so instead I activate only the stuff I want.
 
 Next, a cperl hook to set some stuff up.
 
-- The first one is a keybinding which inserts a fat comma on
-  =M-,=.
-
-- +The second autoloads =flymake-mode= when cperl is loaded.+ I'm
+- +First, load =flymake-mode= when cperl is started.+ I'm
   giving flycheck a chance for a while...
 
-- Lastly, =cperl-mode= has quite aggressive syntax-highlighting,
+- Next, =cperl-mode= has quite aggressive syntax-highlighting,
   and its face for arrays and hashes are kind of ugly. Here I
   change it so it's slanted, unbolded and coloured.
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'cperl-mode-hook
             (lambda () (progn
-                         (local-set-key (kbd "M-,") 'insert-fat-comma)
                          ;;(flymake-mode)
                          (flycheck-mode)
 
@@ -1913,6 +1876,7 @@ presentations.
 ** Moving lines and regions
 
 These functions allow me to move single lines or entire regions up and down.
+For keybindings, see: [[Buffer manipulation]].
 
 #+BEGIN_SRC emacs-lisp
   ;; http://www.emacswiki.org/emacs/MoveLineRegion
@@ -1967,16 +1931,6 @@ These functions allow me to move single lines or entire regions up and down.
   (defun move-line-region-down (start end n)
     (interactive "r\np")
     (if (region-active-p) (move-region-down start end n) (move-line-down n)))
-#+END_SRC
-
-And define some keyboard combo to easily access these functions.
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key [(meta up)]   'move-line-up)
-  (global-set-key [(meta down)] 'move-line-down)
-
-  (global-set-key [(shift meta up)]   'move-line-region-up)
-  (global-set-key [(shift meta down)] 'move-line-region-down)
 #+END_SRC
 
 ** Other functions
@@ -2120,30 +2074,9 @@ These functions are called by others.
 
 Keybindings!
 
-** Mode-specific keybindings
-
-Below, two ways of binding keys in a local context.
-
-1. The first tells emacs to add a key-function mapping to a specific
-   mode-map after it loads the module.
-2. The second adds a lambda where a key is mapped to a function to a
-   mode's hook.
-
-   I /think/ I like the second method more.
-
-   #+BEGIN_SRC emacs-lisp
-     (eval-after-load 'message
-       '(define-key message-mode-map [ f9 ] 'message-replace-sig))
-     (eval-after-load 'message
-       '(define-key message-mode-map [?\C-c ?\C-k] 'kill-to-signature))
-
-     (add-hook 'js-mode-hook
-               (lambda ()
-                 (local-set-key (kbd "M-,") 'insert-fat-comma)))
-
-     ;; make this org-specific later
-     ;; (global-set-key [ f10 ]   'org-show-next-heading-tidily)
-   #+END_SRC
+I split the bindings into global keybindings which work everywhere,
+and local keybindings which work only in buffers with specific
+buffers.
 
 ** Global keybindings
 
@@ -2225,7 +2158,29 @@ of them should be local too.
   (global-set-key (kbd "C-h C-s")     'find-function-at-point)
 #+END_SRC
 
-*** Unused keybindings
+*** Swiper/Ivy/Counsel keybindings
+
+  #+begin_src emacs-lisp
+  (global-set-key (kbd "C-S-s") 'swiper)
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+                                          ;(global-set-key (kbd "C-x l") 'counsel-locate)
+                                          ;(global-set-key (kbd "C-c k") 'counsel-ag)
+  #+end_src
+
+
+
+*** Unused global keybindings
 
 #+BEGIN_EXAMPLE
   (global-set-key "\C-x\C-m"          'execute-extended-command)
@@ -2233,9 +2188,75 @@ of them should be local too.
   (global-set-key "\C-c\C-k"          'kill-buffer)
   (global-set-key "\C-co"             'org-capture)
   (global-set-key "\C-xm"             'mail)
-                                          ;(global-set-key [ f6 ]              'switch-to-todo)
-                                          ;(global-set-key [ S-f6 ]            'add-todo)
+  (global-set-key [ f6 ]              'switch-to-todo)
+  (global-set-key [ S-f6 ]            'add-todo)
+  (global-set-key [ f10 ]             'org-show-next-heading-tidily)
 #+END_EXAMPLE
+
+** Mode-specific keybindings
+
+I use two different ways of assigning mode-local keybindings.
+
+1. The first tells emacs to add a key-function mapping to a specific
+   mode-map after it loads the module (e.g. [[Mail keybindings]]).
+2. The second adds a lambda where a key is mapped to a function to a
+   mode's hook. (e.g. [[Javascript keybindings]]).
+
+   I /think/ I like the second method more.
+
+*** Javascript keybindings
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'js-mode-hook
+            (lambda ()
+              (local-set-key (kbd "M-,") 'insert-fat-comma)))
+
+#+END_SRC
+
+*** Mail keybindings
+
+#+begin_src emacs-lisp
+  (eval-after-load 'message
+    '(define-key message-mode-map [ f9 ] 'message-replace-sig))
+
+  (eval-after-load 'message
+    '(define-key message-mode-map [?\C-c ?\C-k] 'kill-to-signature))
+
+  (add-hook 'mail-mode-hook
+            #'(lambda ()
+                (define-key mail-mode-map "\C-c\C-w" 'message-replace-sig)
+                ))
+#+end_src
+
+*** Perl keybindings
+
+#+begin_src emacs-lisp
+  (add-hook 'cperl-mode-hook
+            (lambda () (progn
+                         (local-set-key (kbd "M-,") 'insert-fat-comma)
+#+end_src
+
+*** Dired keybindings
+
+When your cursor is on a directory and you press =i=,
+=dired-maybe-insert-subdir= is called. It adds the subdirectory at
+the bottom of the buffer. Though this is useful, Dired-subtree is
+better - it adds the subdir directly under the dir you opened,
+indented a bit.
+
+Use =<tab>= to expand a dir, and =<tab>= again to close it. If
+you've moved your cursor into the contents of the dir, then
+=shift-tab= will close it for you.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "dired"
+    '(progn
+       (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
+       (define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
+       (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
+       )
+    )
+#+END_SRC
 
 * lint
 
