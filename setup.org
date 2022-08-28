@@ -303,6 +303,21 @@ Download these packages if they aren't already downloaded.
                     (mapcar 'car package-archive-contents))))
 #+END_SRC
 
+** Load code in vendor/
+
+Sometimes, the emacs modules aren't available on melpa, but I have the
+source file. When this happens, I place it in my =vendor/= folder. All
+=.el= files are loaded on startup.
+
+#+begin_src emacs-lisp
+  (defun load-directory (dir)
+    (let ((load-it (lambda (f)
+                     (load-file (concat (file-name-as-directory dir) f)))
+                   ))
+      (mapc load-it (directory-files dir nil "\\.el$"))))
+  (load-directory (concat emacs-root "/vendor/"))
+#+end_src
+
 ** Auto-customization
 
 Move all customization stuff to another file.
@@ -758,8 +773,8 @@ view. Toggle between simple and detailed view using =(=.
 
 #+BEGIN_SRC emacs-lisp
   (setq dired-listing-switches "-aFhlv --group-directories-first")
-  (add-hook 'dired-mode-hook
-            (lambda () (dired-hide-details-mode 1)))
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  (add-hook 'dired-mode-hook 'toggle-truncate-lines)
 #+END_SRC
 
 This function makes it easy to toggle between showing dotfiles and
@@ -782,6 +797,15 @@ hiding them. I bound it in a section a bit further below to =.=.
             )
           )
     )
+#+END_SRC
+
+*** Date format in Dired
+
+So many worthless date formats. ISO 8601 simplifies things.
+
+#+BEGIN_SRC emacs-lisp
+(setq ls-lisp-format-time-list  '("%Y-%m-%d %H:%M" "%Y-%m-%d %H:%M")
+      ls-lisp-use-localized-time-format t)
 #+END_SRC
 
 *** Wdired modifications
