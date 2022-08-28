@@ -201,9 +201,9 @@ Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/m
 
 #+BEGIN_SRC emacs-lisp
   ;; mkdir these and add them to load path
-  (dolist (path '(  "~/.emacs.d/elpa/"
-                    "~/.emacs.d/el-get/"
-                    "~/.emacs.d/vendor/"))
+  (dolist (path '(  "~/.emacs.d/elpa/"     ;; emacs-lisp package archive
+                    "~/.emacs.d/el-get/"   ;; packages from el-get
+                    "~/.emacs.d/vendor/")) ;; stuff I downloaded myself
     (make-directory path t)
     (let ((default-directory path))
       (normal-top-level-add-subdirs-to-load-path)))
@@ -302,21 +302,6 @@ Download these packages if they aren't already downloaded.
                                      (package-installed-p x)))
                     (mapcar 'car package-archive-contents))))
 #+END_SRC
-
-** Stand-alone elisp things to load
-
-Sometimes, the emacs modules aren't available on melpa, but I have the
-source file. When this happens, I place it in my =elisp/= folder. All
-=.el= files are loaded on startup.
-
-#+begin_src emacs-lisp
-  (defun load-directory (dir)
-    (let ((load-it (lambda (f)
-                     (load-file (concat (file-name-as-directory dir) f)))
-                   ))
-      (mapc load-it (directory-files dir nil "\\.el$"))))
-  (load-directory (concat emacs-root "/elisp/"))
-#+end_src
 
 ** Auto-customization
 
