@@ -115,10 +115,10 @@ constants since I might want to change them during runtime.
   ;; Sice I'm running with org-babel, the variable 'this-file' does not
   ;; contain the file filename.org; the file gets tangled into
   ;; filename.el
-  (setq this-file (or load-file-name (buffer-file-name)))
-  (setq this-file-org (replace-regexp-in-string ".el" ".org" this-file))
+  (defvar this-file (or load-file-name (buffer-file-name)))
+  (defvar this-file-org (replace-regexp-in-string ".el" ".org" this-file))
 
-  (setq emacs-root
+  (defvar emacs-root
         (file-name-directory (or (file-symlink-p this-file) this-file)))
 
   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
@@ -216,7 +216,8 @@ Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/m
        (add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/"))
        ))
 
-  (setq url-http-attempt-keepalives nil)  ; A package.el bug. Apparently.
+  (eval-after-load "url-http"
+    '(setq url-http-attempt-keepalives nil))  ; A package.el bug. Apparently.
 #+END_SRC
 
 ** Packages to install
@@ -478,8 +479,8 @@ The code block below toggles between prose and code mode.
 Noto-serif./
 
 #+BEGIN_SRC emacs-lisp
-  (setq f/write-state "nowrite")
-  (setq f/face-cookie nil)
+  (defvar f/write-state "nowrite")
+  (defvar f/face-cookie nil)
   (defun write-toggle ()
     "Toggles write-state of current buffer.
 
