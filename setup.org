@@ -80,7 +80,6 @@ Before we can go about fixing the fun parts of emacs, we'll need to
 set up some basics.
 
 #+BEGIN_SRC emacs-lisp
-  (require 'cl)                 ; Get access to some more functionality
   (setq message-log-max
         (- (expt 2 15) 1))      ; Make message log big
 #+END_SRC
@@ -1041,9 +1040,8 @@ size.
 First some settings to get mail to work.
 
 #+BEGIN_SRC emacs-lisp
-
   (require 'smtpmail)
-  (require 'starttls)
+  (require 'gnutls)
 
   ;;(setq smtpmail-auth-credentials '(("smtp.gmail.com" 25 "USERNAME" "PASSWORD")))
   ;;(setq smtpmail-debug-info t)
@@ -1065,7 +1063,7 @@ First some settings to get mail to work.
          "CC:\n"
          "BCC:\n"
          "X-RefLink: http://tinyurl.com/bprfeg\n"
-         "User-Agent: " (mapconcat 'identity (subseq (split-string (emacs-version) " ") 0 3) " ") "\n"
+         "User-Agent: " (mapconcat 'identity (cl-subseq (split-string (emacs-version) " ") 0 3) " ") "\n"
          ))
   (setq mail-signature me/mail/signature)
 #+END_SRC
