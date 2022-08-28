@@ -1220,7 +1220,6 @@ Change how Org shows bullets - nice UTF-8 bullets instead of stars.
 #+BEGIN_SRC emacs-lisp
   (setq org-hide-leading-stars t)           ; remove leading stars in org-mode
   (setq org-bullets t)                      ; activate said pretty bullets
-  (setq org-bullets-bullet-list '("◉" "○")) ; make bullets prettier
 #+END_SRC
 
 Make the org-blocks (the code where the emacs-lisp is) a darker colour
