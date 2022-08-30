@@ -2130,7 +2130,8 @@ Change focus to window in the direction of the arrow.
   (global-set-key (kbd "C-x <left>")    'windmove-left)
 #+END_SRC
 
-Swap contents of this window the the window in the direction of the arrow.
+Swap contents of this window the the window in the direction of the
+arrow.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-M-x <down>")  'windmove-swap-states-down)
@@ -2328,24 +2329,61 @@ point in the future.
 
 #+END_SRC
 
-* Things To Do
+* Future stuff
 
-Last and probably least from your perspective, here's stuff I want to do or test.
+Last and probably least from your perspective, here's stuff I want to
+do or test in the (near?) future.
 
-** Todo
+** Todo [3/6]
 
 Here's a list of stuff I want to add to my configuration:
 
-*** DONE flycheck-mode
-CLOSED: [2022-08-26 Fri 22:53]
-*** DONE company-mode
-CLOSED: [2022-08-27 Sat 16:31]
-*** DONE lsp-mode
-CLOSED: [2022-08-30 Tue 20:01]
-*** TODO in emacs-lisp buffer, make company propose across hyphens
-*** TODO integrate projectile into other modes.
-see [[Projectile-mode]].
-*** TODO Just noticed that the date in the modeline doesn't follow iso8601, which annoys me. fix!
+- [X] flycheck-mode
+- [X] company-mode
+- [X] lsp-mode
+- [ ] in emacs-lisp buffer, make company propose across hyphens
+  
+  Seems I can edit company-dabbrev-modes to include the modes I want
+  the hyphens to be included in. Will test later.
+
+  Also, I can set =company-dabbrev-code-everywhere= to =t=.
+  
+- [ ] integrate projectile into other modes.
+  see [[Projectile-mode]].
+
+  I see these when I run =package-list-packages= and run it through =occur <projectile>=:
+
+    #+begin_example
+    365:  counsel-projectile             0.3.2          new          melpa    Ivy integration for Projectile
+    798:  flycheck-projectile            0.2.0          new          melpa    Project-wide errors
+    894:  geben-helm-projectile          0.0.4          new          melpa    Integrate helm-projectile with geben
+    988:  grails-projectile-mode         1.1.2          new          melpa    Grails mode with Projectile for projects management.
+   1101:  helm-projectile                1.0.0          new          melpa    Helm integration for Projectile
+   1174:  ibuffer-projectile             0.3            new          melpa    Group ibuffer's list by projectile root
+   1686:  org-projectile                 1.1.0          new          melpa    Repository todo management for org-mode
+   1687:  org-projectile-helm            1.1.0          new          melpa    helm functions for org-projectile
+   1812:  persp-projectile               1.0.0          new          melpa    Perspective integration with Projectile
+   1891:  projectile-git-autofetch       0.1.2          new          melpa    automatically fetch git repositories
+   1892:  projectile-rails               0.22.0         new          melpa    Minor mode for Rails projects based on projectile-mode
+   1893:  projectile-ripgrep             0.4.0          new          melpa    Run ripgrep with Projectile
+   1894:  projectile-sift                0.2.0          new          melpa    Run a sift with Projectile
+   1895:  projectile-trailblazer         0.2.0          new          melpa    Minor mode for Rails projects using trailblazer
+   1896:  projectile-variable            0.0.2          new          melpa    Store project local variables.
+   2222:  term-projectile                0.1.1          new          melpa    projectile terminal management
+   2276:  treemacs-projectile            2.10           new          melpa    Projectile integration for treemacs
+   3202:  projectile                     2.5.0          installed             Manage and navigate projects in Emacs easily
+    #+end_example
+
+I think of these, I'm most interested in:
+- counsel-projectile
+- flycheck-projectile (?)
+- ibuffer-projectile
+- projectile-ripgrep (?)
+- treemacs-projectile (?)
+
+
+- [ ] Just noticed that the date in the modeline doesn't follow
+  iso8601, which annoys me. fix!
 
 
 ** To test [0/2]
@@ -2355,7 +2393,6 @@ I find new things I want to test. I'll jot them down here so I don't
 forget.
 
 - [ ] treemacs
-- [ ] projectile
 - See if I can get icons into ibuffer.
 - See if I can get highlighted regions to be in whitespace-mode
 
