@@ -2121,14 +2121,32 @@ of them should be local too.
 
 *** Window management
 
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x <down>")  'windmove-down)
-  (global-set-key (kbd "C-x <up>")    'windmove-up)
-  (global-set-key (kbd "C-x <right>") 'windmove-right)
-  (global-set-key (kbd "C-x <left>")  'windmove-left)
+Change focus to window in the direction of the arrow.
 
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x <down>")    'windmove-down)
+  (global-set-key (kbd "C-x <up>")      'windmove-up)
+  (global-set-key (kbd "C-x <right>")   'windmove-right)
+  (global-set-key (kbd "C-x <left>")    'windmove-left)
+#+END_SRC
+
+Swap contents of this window the the window in the direction of the arrow.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-M-x <down>")  'windmove-swap-states-down)
+  (global-set-key (kbd "C-M-x <up>")    'windmove-swap-states-up)
+  (global-set-key (kbd "C-M-x <right>") 'windmove-swap-states-right)
+  (global-set-key (kbd "C-M-x <left>")  'windmove-swap-states-left)
+#+END_SRC
+
+Enlarge/shrink this window vertically or horizontally.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Vertical expand/shrink
   (global-set-key [ f11 ]             #'(lambda () (interactive) (enlarge-window 4 )))
   (global-set-key [ M-f11 ]           #'(lambda () (interactive) (enlarge-window -4)))
+
+  ;; Horizontal expand/shrink
   (global-set-key [ f12 ]             #'(lambda () (interactive) (enlarge-window 4 1)))
   (global-set-key [ M-f12 ]           #'(lambda () (interactive) (enlarge-window -4 1)))
 #+END_SRC
@@ -2136,13 +2154,13 @@ of them should be local too.
 *** Buffer manipulation
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-S-e")       'merge-lines)
+  (global-set-key (kbd "C-S-e")          'merge-lines)
 
   ;; Move lines and regions up and down
-  (global-set-key [(meta up)]         'move-line-up)
-  (global-set-key [(meta down)]       'move-line-down)
-  (global-set-key [(shift meta up)]   'move-line-region-up)
-  (global-set-key [(shift meta down)] 'move-line-region-down)
+  (global-set-key [(meta up)]            'move-line-up)
+  (global-set-key [(meta down)]          'move-line-down)
+  (global-set-key [(shift meta up)]      'move-line-region-up)
+  (global-set-key [(shift meta down)]    'move-line-region-down)
 #+END_SRC
 
 *** Buffer navigation
