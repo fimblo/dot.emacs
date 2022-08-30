@@ -271,6 +271,7 @@ Download these packages if they aren't already downloaded.
       mpg123
       olivetti
       org-bullets
+      projectile
       rainbow-delimiters    ; abyss-theme
       rainbow-mode
       spaceline
@@ -967,6 +968,22 @@ A nice list-buffer replacement.
               (auto-fill-mode -1)
               (longlines-show-hard-newlines)))
 #+END_SRC
+
+** Projectile-mode
+
+Let Emacs become aware of software projects. What this means in
+practice right now is that it looks up the directory hierarchy towards
+root, looking for a VC root of some kind, and sets the project there.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-init-hook #'projectile-mode)
+#+END_SRC
+
+There's a lot to learn here - and integrations to other modes to configure. For example:
+- ivy
+- magit
+- ibuffer
+
 
 ** Swiper, Ivy and Counsel
 
@@ -2306,6 +2323,9 @@ CLOSED: [2022-08-26 Fri 22:53]
 CLOSED: [2022-08-27 Sat 16:31]
 *** TODO lsp-mode
 *** TODO in emacs-lisp buffer, make company propose across hyphens
+*** TODO integrate projectile into other modes.
+see [[Projectile-mode]].
+*** 
 
 
 ** To test [0/2]
