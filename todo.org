@@ -1,6 +1,7 @@
 #+TiTLE:   My emacs todo's
 #+AUTHOR:  Mattias Jansson (fimblo)
-#+STARTUP: show2levels
+#+OPTIONS:    p:t
+#+Startup: show2levels
 
 * Todo's and stuff
 
@@ -64,7 +65,15 @@ CLOSED: [2022-08-30 Tue 22:50]
   Yeah, looked around a bit and it seems this isn't possible. Perhaps
   I'll look around more at some other point in time. For now, =C-c
   <space>= does the trick.
-** 
-  
+** TODO Make emacs run icons command once when installed the first time
+In =setup.org=, I write this under the section 'Icons and modeline'.
+
+#+begin_example
+M-x all-the-icons-install-fonts
+#+end_example
+
+It would be good if I could auto-detect this and run it manually. I
+think there was another section which also required me to run once
+after install.
 
 
