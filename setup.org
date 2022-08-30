@@ -2321,11 +2321,12 @@ Here's a list of stuff I want to add to my configuration:
 CLOSED: [2022-08-26 Fri 22:53]
 *** DONE company-mode
 CLOSED: [2022-08-27 Sat 16:31]
-*** TODO lsp-mode
+*** DONE lsp-mode
+CLOSED: [2022-08-30 Tue 20:01]
 *** TODO in emacs-lisp buffer, make company propose across hyphens
 *** TODO integrate projectile into other modes.
 see [[Projectile-mode]].
-*** 
+*** TODO Just noticed that the date in the modeline doesn't follow iso8601, which annoys me. fix!
 
 
 ** To test [0/2]
