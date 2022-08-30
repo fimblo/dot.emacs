@@ -1,6 +1,7 @@
 #+TITLE:      My Emacs setup
 #+AUTHOR:     Mattias Jansson (fimblo)
 #+EMAIL:      fimblo@yanson.org
+#+OPTIONS:    toc:2
 #+STARTUP:    fold
 
 #+BEGIN_COMMENT
