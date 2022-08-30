@@ -919,46 +919,13 @@ A nice list-buffer replacement.
 #+BEGIN_SRC emacs-lisp
   (require 'ibuffer)
 
-  ;; Don't show empty filter groups - they clutter the buffer
-  (setq ibuffer-show-empty-filter-groups nil)
+  (add-hook 'ibuffer-hook #'all-the-icons-ibuffer-mode)
 
-  (setq ibuffer-saved-filter-groups
-        (quote (("default"
-                 ("Dired"
-                  (and (mode . dired-mode)
-                       (not (filename . "ssh:"))))
-
-                 ("Remote" (filename . "ssh:"))
-
-                 ("Projects"
-                  (and (filename . "wc/")
-                       (not (or (name . "magit-diff:")
-                                (name . "magit-process:")
-                                (name . "magit:")
-                                (mode . magit-mode)))))
-                 ("Dropbox" (filename . "Dropbox/"))
-                 ("Shell" (or (mode . term-mode)
-                              (mode . eshell-mode)))
-                 ("Org" (mode . org-mode))
-                 ("Emacs lisp" (mode . emacs-lisp-mode))
-                 ("Perl" (or
-                          (mode . cperl-mode)
-                          (mode . perl-mode)))
-                 ("Mail" (or
-                          (mode . message-mode)
-                          (mode . mail-mode)
-                          (mode . mutt-mode)))
-                 ("Magit"
-                  (or (name . "magit-diff:")
-                      (name . "magit-process:")
-                      (name . "magit:")
-                      (mode . magit-mode))
-                  )))))
-
-  (add-hook 'ibuffer-mode-hook
+  (add-hook 'ibuffer-hook
             (lambda ()
-              (ibuffer-switch-to-saved-filter-groups "default")))
-  (setq ibuffer-default-sorting-mode 'major-mode)
+              (ibuffer-projectile-set-filter-groups)
+              (unless (eq ibuffer-sorting-mode 'alphabetic)
+                (ibuffer-do-sort-by-alphabetic))))
 #+END_SRC
 
 ** Longlines-mode
