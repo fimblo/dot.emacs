@@ -20,7 +20,7 @@ CLOSED: [2022-08-30 Tue 20:01]
   Also, I can set =company-dabbrev-code-everywhere= to =t=.
 ** DONE integrate projectile into other modes.
 CLOSED: [2022-08-30 Tue 22:40]
-  see [[Projectile-mode]].
+  see [[./setup.org::#Projectile-mode]]
 
 
 
