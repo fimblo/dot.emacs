@@ -257,7 +257,12 @@ Download these packages if they aren't already downloaded.
       column-marker
       company
       counsel
+      counsel-tramp
       dired-subtree
+                                          ; docker
+                                          ; docker-compose-mode
+      dockerfile-mode
+                                          ; docker-tramp
       dumb-jump
       edit-server
       flycheck
@@ -606,6 +611,7 @@ Auto-set mode for these file suffixes.
   (setq auto-mode-alist
         (append
          (list
+          '("Dockerfile"            . dockerfile-mode      )
           '("\\.xml"                . xml-mode             )
           '("\\.pp"                 . puppet-mode          )
           '("\\.html"               . html-mode            )
