@@ -77,3 +77,23 @@ think there was another section which also required me to run once
 after install.
 
 
+
+** TODO Tramp is laggy
+
+Something in the setup is making tramp terribly slow. Just noticed
+today. Opening a file on a remote host, like =C-x C-f
+/ssh:hostname:foo.txt= causes emacs to slow down visibly.
+
+Maxing debug verbosity makes it even slower.
+#+begin_src
+(setq tramp-verbose 10)
+#+end_src
+
+I suspect it's some combination of =projectile=, =tramp= or
+something. I think it's constantly scanning the remote filesystem or
+something.
+
+Very frustrating.
+
+I tried starting emacs with no config with shell command =$(which
+emacs) -Q=, and the problem wasn't there.
