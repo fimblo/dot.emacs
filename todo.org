@@ -97,3 +97,207 @@ Very frustrating.
 
 I tried starting emacs with no config with shell command =$(which
 emacs) -Q=, and the problem wasn't there.
+
+
+
+* Notes, experiments, and stuff
+** Some notes on ivy
+
+#+begin_src emacs-lisp
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq ivy-count-format "(%d/%d) ")
+
+
+
+(setq enable-recursive-minibuffers t)
+(global-set-key (kbd "C-S-s") 'swiper)
+(global-set-key (kbd "C-s") 'swiper-isearch)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "<f6>") 'ivy-resume)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+;(global-set-key (kbd "C-x l") 'counsel-locate)
+;(global-set-key (kbd "C-c k") 'counsel-ag)
+
+
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired t
+        insert-directory-program "/opt/homebrew/bin/gls"
+        dired-listing-switches "-aBhl --group-directories-first"))
+
+
+(setq gls  ;; find gls, strip the trailing nl
+      (substring
+       (shell-command-to-string "which gdls || echo noop")
+       0 -1))
+
+(setq ls-lisp-use-insert-directory-program nil)
+
+
+(setq dired-use-ls-dired t)
+(setq insert-directory-program "/opt/homebrew/bin/gls")
+
+
+(setq dired-use-ls-dired nil)
+(setq insert-directory-program "/bin/ls")
+#+end_src
+
+** Some notes on how to get lsp to work.
+
+#+begin_src
+(setq lsp-keymap-prefix "s-l")
+
+(require 'lsp-mode)
+
+;; generic version
+(add-hook 'prog-mode-hook #'lsp)
+
+;; specific for each language, for example
+;(add-hook 'cperl-mode-hook #'lsp)
+
+;; deferred server start (till window opens)
+;(add-hook 'prog-mode-hook #'lsp-deferred)
+
+;; Language servers
+
+
+;; Perl
+;; Many to choose from. I chose Perl::LanguageServer
+;; This needs to be installed via cpan
+#+end_src
+
+** Some notes on getting csharp to work
+Start by installing stuff 
+
+
+#+begin_src 
+package-install lsp-mode
+package-install lsp-ui
+package-install csharp-mode
+#+end_src
+
+** Now install omnisharp using lsp-install-server.
+#+begin_src 
+lsp-install-server <ret> omnisharp
+#+end_src
+
+
+** Configure emacs to use lsp for csharp.
+
+#+begin_src emacs-lisp
+(setq lsp-keymap-prefix "s-l")
+(require 'lsp-mode)
+(add-hook 'csharp-mode-hook #'lsp)
+#+end_src
+
+After opening a csharp file, you'll get this in the minibuffer:
+
+#+begin_example
+Unable to find installed server supporting this file. The following servers could be installed automatically:
+csharp
+#+end_example
+
+Hit enter to download support for csharp.
+
+In the minibuffer, you'll see the following:
+
+#+begin_example
+LSP :: Download csharp started.
+LSP :: Starting to download https://github.com/omnisharp/....
+LSP :: Finished downloading /Users/fimblo/.emacs.d/.cache/lsp/omnisharp-roslyn/latest/omnisharp-roslyn.zip...
+(Shell command succeeded with no output)
+LSP :: Server csharp downloaded, auto-starting in 1 buffers.
+LSP :: Yasnippet is not installed, but `lsp-enable-snippet' is set to `t'. You must either install yasnippet, or disable snippet support.
+LSP :: Connected to [csharp:48644/starting].
+LSP :: csharp:48644 initialized successfully in folders: (/Users/fimblo/Projects/firstProjectwHk/Assets)
+#+end_example
+
+Now write some csharp code:
+
+First let's make a dotnet project:
+#+begin_example
+
+$ dotnet new console -n MyApp
+
+Welcome to .NET 6.0!
+---------------------
+SDK Version: 6.0.400
+
+Telemetry
+---------
+The .NET tools collect usage data in order to help us improve your experience. It is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_CLI_TELEMETRY_OPTOUT environment variable to '1' or 'true' using your favorite shell.
+
+Read more about .NET CLI Tools telemetry: https://aka.ms/dotnet-cli-telemetry
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate run 'dotnet dev-certs https --trust' (Windows and macOS only).
+Learn about HTTPS: https://aka.ms/dotnet-https
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+The template "Console App" was created successfully.
+
+Processing post-creation actions...
+Running 'dotnet restore' on /Users/fimblo/Projects/MyApp/MyApp.csproj...
+  Determining projects to restore...
+  Restored /Users/fimblo/Projects/MyApp/MyApp.csproj (in 40 ms).
+Restore succeeded.
+#+end_example
+
+Copy this text into the file MyApp/Program.cs:
+
+#+begin_src csharp
+namespace HelloWorld {
+    class Hello {
+        static void Main(string[] args) {
+            System.Console.WritLine("hello world");
+
+        }
+    }
+}
+#+end_src
+
+And it should warn you about the error if all works as it should.
+
+
+Next you want to run it. Try =dotnet run=.
+
+#+begin_example
+$ dotnet run
+hello world
+#+end_example
+
+
+Now let's tune lsp. Use =M-x lsp-doctor= to start the diagnostic tool. I got this:
+
+#+begin_example
+Checking for Native JSON support: OK
+Check emacs supports `read-process-output-max': OK
+Check `read-process-output-max' default has been changed from 4k: ERROR
+Byte compiled against Native JSON (recompile lsp-mode if failing when Native JSON available): OK
+`gc-cons-threshold' increased?: ERROR
+Using gccemacs with emacs lisp native compilation (https://akrl.sdf.org/gccemacs.html): NOT AVAILABLE (OPTIONAL)
+#+end_example
+
+#+begin_src emacs-lisp
+;; To fix 'gc-cons-threshold', add this snippet:
+(setq gc-cons-threshold 100000000)
+
+;; Increase read-process-output-max from 4k to 1M
+(setq read-process-output-max (* 1024 1024))
+#+end_src
+
