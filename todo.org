@@ -7,6 +7,8 @@
 
 Here's a list of stuff I want to add to my configuration:
 
+** DONE omnisharp - completion
+was a little outdated, and people seem to be using lsp. But perhaps this is the best tool for csharp??
 ** DONE flycheck-mode
 CLOSED: [2022-08-26 Fri 22:53]
 ** DONE company-mode
@@ -56,9 +58,8 @@ CLOSED: [2022-08-30 Tue 22:40]
   - treemacs-projectile (?)
 
   After looking at counsel-projectile, I don't think I need it just yet. But Ibuffer-projectile looked nice, so I installed it.
-** TODO Just noticed that the date in the modeline doesn't follow
-  iso8601, which annoys me. fix!
-** TODO  treemacs
+** TODO Make modeline date follow iso8601.                             :bug:
+** TODO treemacs                                                  :lookinto:
 ** DONE See if I can get highlighted regions to be in whitespace-mode
 CLOSED: [2022-08-30 Tue 22:50]
 
@@ -77,8 +78,7 @@ think there was another section which also required me to run once
 after install.
 
 
-
-** TODO Tramp is laggy
+** TODO Tramp is laggy                                                 :bug:
 
 Something in the setup is making tramp terribly slow. Just noticed
 today. Opening a file on a remote host, like =C-x C-f
@@ -98,6 +98,10 @@ Very frustrating.
 I tried starting emacs with no config with shell command =$(which
 emacs) -Q=, and the problem wasn't there.
 
+
+** TODO flymakecursor - display message in minibuffer             :lookinto:
+** TODO rfringe - display buffer-relative locations in fringe.    :lookinto:
+** 
 
 
 * Notes, experiments, and stuff
