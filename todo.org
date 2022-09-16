@@ -1,9 +1,9 @@
-#+TiTLE:   My emacs todo's
+#+TITLE:   Notes and Todos
 #+AUTHOR:  Mattias Jansson (fimblo)
 #+OPTIONS:    p:t
 #+Startup: show2levels
 
-* Todo's and stuff
+* Things I want to do or to test
 
 Here's a list of stuff I want to add to my configuration:
 
