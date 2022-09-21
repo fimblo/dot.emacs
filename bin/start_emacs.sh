@@ -1,74 +1,26 @@
 #!/bin/bash
 
-# --------------------------------------------------
-# Add this to .bashrc or whereever
-# --------------------------------------------------
+source "$ENVDIR/non-interactive-functions.lib.sh"
 
-# emacs () 
-# { 
-#   d=$HOME/.emacs.d/bin
-#     if [ $DISPLAY ] && [ -e $d/start_emacs.sh ] ; then
-#       $d/start_emacs.sh $@
-#     elif [ -e $d/start_emacs_tty.sh ] ; then
-#       $d/start_emacs_tty.sh
-#     else
-#         $(which emacs) $@;
-#     fi
-# }
+if ! which -s emacs ; then
+    echo "Can't find 'emacs' in PATH. Starting vim instead."
 
+    vimterm='xterm -e'
+    ! which -s xterm && vimterm=''
 
-# dereference symlinks
-deref () {
-    arg=$1
-    if [ -h "$arg" ] ; then
-	l=$(readlink "$arg")
-	if echo "$l" | grep -q ^/ ; then
-      deref "$l"
-	else
-	    p=$(dirname "$arg")
-        deref "$p/$l"
-	fi
+    probablyWindowManager="${DISPLAY}${ITERM_PROFILE}"
+    if [[ -n $probablyWindowManager ]] ; then
+      $vimterm vi "$@" &
     else
-	echo "$arg"
+      vi "$@"
     fi
-}
 
-if ! which emacs > /dev/null 2>&1 ; then
-    echo "I dont think you've installed emacs. Starting vim instead"
-    if [ "$DISPLAY" ] ; then
-        xterm -e vim "$@" &
-        echo "Emacs was not installed. I ran vim instead."
-    else
-      echo "Emacs is not installed."
-    fi
     exit
 fi
 
-emacsbin=$(deref "$(which emacs)")
-emacsclientbin=$(deref "$(which emacsclient)")
+emc=$(deref "$(which emacsclient)") # location of emacsclient
+emc="${emc} -c"                      # create new frame
+emc="${emc} -n"                      # don't wait for emacs to return
+emc="${emc} -a ''"                   # set alternate to empty string to start a daemon
 
-myVersion="GNU Emacs 28"
-if ! $emacsbin --version | grep -q "$myVersion" ; then
-    echo "This is not version '$myVersion'. Starting whatever version and not starting server."
-    $emacsbin "$@" &
-    exit 0 
-fi
-
-
-# Start emacs daemon if it hasnt already been started.
-! ps -ef |grep -v "gpg-agent" | grep "[eE]macs.*--daemon" > /dev/null 2>&1 && \
-  $emacsbin --daemon
-
-
-# If this script was called by name containing string "wait" then we
-# wait till user hits 'c-x 5 0' before exiting.
-nowait=" -n "
-[[ "$(basename "$0")" =~ "wait" ]] && unset nowait
-
-# If this script was called by name containing string 'tty' then start
-# emacs in the current tty. Otherwise, start in new X window.
-displaymode=" -c "
-[[ "$(basename "$0")" =~ "tty" ]] && displaymode=' -t ' && unset nowait
-
-$emacsclientbin "$nowait" "$displaymode" "$@"
-
+${emc} "$@"
