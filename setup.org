@@ -1234,44 +1234,36 @@ than the default.
   (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
 #+end_src
 
-With the above configuration, I can run shell commands in my org-mode files. Like this:
-
-#+begin_quote
-#+BEGIN_SRC shell :results output :exports results
-   echo hello
- #+END_SRC
-#+end_quote
-
-
+With the above configuration, I can run shell commands in my org-mode files. All examples below prefixed with a =.= to force the interpreter of this doc to _not_ evaluate it...
 
 #+begin_example
- #+BEGIN_SRC shell :results output :exports results
-   echo hello
- #+END_SRC
+.#+BEGIN_SRC shell :results output :exports results
+.  echo hello
+.#+END_SRC
 #+end_example
 
 ... or even this:
 
 #+begin_example
-\#+BEGIN_SRC shell :results output :exports results
-  ping -c 1 ping.sunet.se
-\#+END_SRC
+.#+BEGIN_SRC shell :results output :exports results
+. ping -c 1 ping.sunet.se
+.#+END_SRC
 #+end_example
 
 To execute the code, move the cursor into the block and hit =C-c=. It will ask you if you really want to do this, then the output (marked with =#RESULTS:=) will be placed immediately below the shell block.
 
 #+begin_example
-#+BEGIN_SRC shell :results output :exports results
-  ping -c 1 ping.sunet.se
-#+END_SRC
-
-#+RESULTS:
-: PING ping.sunet.se (192.36.125.18): 56 data bytes
-: 64 bytes from 192.36.125.18: icmp_seq=0 ttl=251 time=16.815 ms
-: 
-: --- ping.sunet.se ping statistics ---
-: 1 packets transmitted, 1 packets received, 0.0% packet loss
-: round-trip min/avg/max/stddev = 16.815/16.815/16.815/0.000 ms
+.#+BEGIN_SRC shell :results output :exports results
+.  ping -c 1 ping.sunet.se
+.#+END_SRC
+.
+.#+RESULTS:
+.: PING ping.sunet.se (192.36.125.18): 56 data bytes
+.: 64 bytes from 192.36.125.18: icmp_seq=0 ttl=251 time=16.815 ms
+.: 
+.: --- ping.sunet.se ping statistics ---
+.: 1 packets transmitted, 1 packets received, 0.0% packet loss
+.: round-trip min/avg/max/stddev = 16.815/16.815/16.815/0.000 ms
 #+end_example
 
 
