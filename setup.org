@@ -883,7 +883,7 @@ root of a project directory) and applies the rules for all buffers
 belonging to said project. Oh and afaict it's buffer-local, so that's
 nice.
 
-#+begin_comment
+#+begin_example
 root = true
 
 [*]
@@ -895,7 +895,7 @@ insert_final_newline = true
 max_line_length = 120
 tab_width = 4
 trim_trailing_whitespace = true
-#+end_comment
+#+end_example
 
 
 ** Flycheck
@@ -1237,23 +1237,23 @@ than the default.
 
 With the above configuration, I can run shell commands in my org-mode files. Like this:
 
-#+begin_comment
+#+begin_example
 #+BEGIN_SRC shell :results output :exports results
   echo hello
 #+END_SRC
-#+end_comment
+#+end_example
 
 ... or even this:
 
-#+begin_comment
+#+begin_example
 #+BEGIN_SRC shell :results output :exports results
   ping -c 1 ping.sunet.se
 #+END_SRC
-#+end_comment
+#+end_example
 
 To execute the code, move the cursor into the block and hit =C-c=. It will ask you if you really want to do this, then the output (marked with =#RESULTS:=) will be placed immediately below the shell block.
 
-#+begin_comment
+#+begin_example
 #+BEGIN_SRC shell :results output :exports results
   ping -c 1 ping.sunet.se
 #+END_SRC
@@ -1265,7 +1265,7 @@ To execute the code, move the cursor into the block and hit =C-c=. It will ask y
 : --- ping.sunet.se ping statistics ---
 : 1 packets transmitted, 1 packets received, 0.0% packet loss
 : round-trip min/avg/max/stddev = 16.815/16.815/16.815/0.000 ms
-#+end_comment
+#+end_example
 
 
 ** Java-mode
