@@ -1236,12 +1236,13 @@ than the default.
 
 With the above configuration, I can run shell commands in my org-mode files. Like this:
 
-
-#+begin_export ascii
+#+begin_quote
 #+BEGIN_SRC shell :results output :exports results
   echo hello
 #+END_SRC
-#+end_export
+#+end_quote
+
+
 
 #+begin_example
 #+BEGIN_SRC shell :results output :exports results
