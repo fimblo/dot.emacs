@@ -265,6 +265,7 @@ Download these packages if they aren't already downloaded.
                                           ; docker-tramp
       dumb-jump
       edit-server
+      editorconfig
       flycheck
       gmail-message-mode
       graphviz-dot-mode
@@ -866,6 +867,36 @@ I don't use IRC as much nowadays, but used this config when I did.
     (setq erc-autojoin-channels-alist me/erc/autojoin-alist)
     )
 #+END_SRC
+
+** Editorconfig
+
+Enable support for .editorconfig files as specified by
+[[https://editorconfig.org/][editorconfig.org]].
+
+#+begin_src emacs-lisp
+  (require 'editorconfig)
+  (add-hook 'prog-mode-hook 'editorconfig-mode)
+#+end_src
+
+Once enabled, emacs looks for a =.editorconfig= file (typically at the
+root of a project directory) and applies the rules for all buffers
+belonging to said project. Oh and afaict it's buffer-local, so that's
+nice.
+
+#+begin_comment
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+max_line_length = 120
+tab_width = 4
+trim_trailing_whitespace = true
+#+end_comment
+
 
 ** Flycheck
 
