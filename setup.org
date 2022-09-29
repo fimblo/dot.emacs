@@ -1237,7 +1237,7 @@ than the default.
 With the above configuration, I can run shell commands in my org-mode files. Like this:
 
 #+begin_quote
- #+BEGIN_SRC shell :results output :exports results
+#+BEGIN_SRC shell :results output :exports results
    echo hello
  #+END_SRC
 #+end_quote
@@ -1253,9 +1253,9 @@ With the above configuration, I can run shell commands in my org-mode files. Lik
 ... or even this:
 
 #+begin_example
-#+BEGIN_SRC shell :results output :exports results
+\#+BEGIN_SRC shell :results output :exports results
   ping -c 1 ping.sunet.se
-#+END_SRC
+\#+END_SRC
 #+end_example
 
 To execute the code, move the cursor into the block and hit =C-c=. It will ask you if you really want to do this, then the output (marked with =#RESULTS:=) will be placed immediately below the shell block.
