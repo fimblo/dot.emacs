@@ -897,7 +897,6 @@ tab_width = 4
 trim_trailing_whitespace = true
 #+end_example
 
-
 ** Flycheck
 
 I've been using =flymake= for decades, but this one seems
@@ -1236,6 +1235,13 @@ than the default.
 #+end_src
 
 With the above configuration, I can run shell commands in my org-mode files. Like this:
+
+
+#+begin_export ascii
+#+BEGIN_SRC shell :results output :exports results
+  echo hello
+#+END_SRC
+#+end_export
 
 #+begin_example
 #+BEGIN_SRC shell :results output :exports results
