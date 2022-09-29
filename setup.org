@@ -1135,7 +1135,7 @@ I wrote this piece of advice to avoid this problem.
 
 I love org-mode, even if I only use a fraction of its capabilities.
 
-Some commands I keep on forgetting how to use:
+*** Some commands I keep on forgetting how to use:
 
 - =(org-insert-structure-template)= ::
 
@@ -1147,6 +1147,8 @@ Some commands I keep on forgetting how to use:
   If in a structure block, C-c C-' spawns a separate window for
   editing the contents of the block. If code structure block, will set
   the right major mode. Exit using the same C-c C-' key sequence.
+
+*** Basic configuration
 
 #+BEGIN_SRC emacs-lisp
   ;; Basic config of Org
@@ -1176,12 +1178,16 @@ Some commands I keep on forgetting how to use:
   ;;   (font-lock-fontify-buffer))
 #+END_SRC
 
+*** Org-bullets
+
 Change how Org shows bullets - nice UTF-8 bullets instead of stars.
 
 #+BEGIN_SRC emacs-lisp
   (setq org-hide-leading-stars t)           ; remove leading stars in org-mode
   (setq org-bullets t)                      ; activate said pretty bullets
 #+END_SRC
+
+*** Look and feel of org-blocks
 
 Make the org-blocks (the code where the emacs-lisp is) a darker colour
 than the default.
@@ -1191,6 +1197,45 @@ than the default.
   (set-face-attribute 'org-block nil :background "grey16")
   (set-face-attribute 'org-block-end-line nil :background "grey10")
 #+END_SRC
+
+*** Executing code in shell blocks
+
+#+begin_src emacs-lisp
+  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
+#+end_src
+
+With the above configuration, I can run shell commands in my org-mode files. Like this:
+
+#+begin_comment
+#+BEGIN_SRC shell :results output :exports results
+  echo hello
+#+END_SRC
+#+end_comment
+
+... or even this:
+
+#+begin_comment
+#+BEGIN_SRC shell :results output :exports results
+  ping -c 1 ping.sunet.se
+#+END_SRC
+#+end_comment
+
+To execute the code, move the cursor into the block and hit =C-c=. It will ask you if you really want to do this, then the output (marked with =#RESULTS:=) will be placed immediately below the shell block.
+
+#+begin_comment
+#+BEGIN_SRC shell :results output :exports results
+  ping -c 1 ping.sunet.se
+#+END_SRC
+
+#+RESULTS:
+: PING ping.sunet.se (192.36.125.18): 56 data bytes
+: 64 bytes from 192.36.125.18: icmp_seq=0 ttl=251 time=16.815 ms
+: 
+: --- ping.sunet.se ping statistics ---
+: 1 packets transmitted, 1 packets received, 0.0% packet loss
+: round-trip min/avg/max/stddev = 16.815/16.815/16.815/0.000 ms
+#+end_comment
+
 
 ** Java-mode
 
