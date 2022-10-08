@@ -223,6 +223,16 @@ Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/m
 
 ** Packages to install
 
+If this is a clean install of emacs, then it will update the package list. This updating it from the various sources takes time, we skip it otherwise.
+
+Note to self: If this isn't a clean install but instead a major upgrade (like I just did from emacs26 to emacs28) you might need to call =package-refresh-contents= manually once. Or do a =M-x package-list-packages= then push =U= to update.
+
+#+begin_src emacs-lisp
+  (if (not package-archive-contents)
+      (package-refresh-contents))
+#+end_src
+
+
 Download these packages if they aren't already downloaded.
 
 #+BEGIN_SRC emacs-lisp
@@ -290,9 +300,6 @@ Download these packages if they aren't already downloaded.
       )
     "These packages are installed if necessary."
     )
-
-  (if (not package-archive-contents)
-      (package-refresh-contents))
 
   (dolist (pkg elpa-packages)
     (when (and (not (package-installed-p pkg))
