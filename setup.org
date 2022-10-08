@@ -736,21 +736,33 @@ This is my initial setup of company-mode, which lets me get a nice
 auto-completion thing going when writing code.
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'prog-mode-hook 'company-mode)
+    (add-hook 'prog-mode-hook 'company-mode)
 
-  (setq company-idle-delay 0)            ; no delay when proposing suggestions
-  (setq company-minimum-prefix-length 2) ; two characters before suggesting
-  (setq company-selection-wrap-around t) ; make suggestion list a ring
+    (setq company-idle-delay 0)            ; no delay when proposing suggestions
+    (setq company-minimum-prefix-length 2) ; two characters before suggesting
+    (setq company-selection-wrap-around t) ; make suggestion list a ring
 
-  (require 'color)
+    (require 'color)
 
-  (let ((bg (face-attribute 'default :background)))
-    (custom-set-faces
-     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+    ;; (let ((bg (face-attribute 'default :background)))
+    ;;   (custom-set-faces
+    ;;    `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+    ;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+    ;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+    ;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+    ;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+
+
+  (custom-set-faces
+   '(company-scrollbar-bg ((t (:background "#000000"))))
+   '(company-scrollbar-fg ((t (:background "#332222"))))
+   '(company-tooltip ((t (:inherit default :background "grey10"))))
+   '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
+   '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+   )
+
+
+  
 #+END_SRC
 
 ** CUA-mode
@@ -1015,6 +1027,16 @@ For keybindings, see: [[Swiper/Ivy/Counsel keybindings]]
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
+
+
+  (custom-set-faces
+   '(ivy-current-match ((t (:background "black"))))
+   '(ivy-minibuffer-match-face-1 ((t (:background "black" :foreground "#887733"))))
+   '(ivy-minibuffer-match-face-2 ((t (:background "grey10" :foreground "#887733"))))
+   '(ivy-minibuffer-match-face-3 ((t (:background "grey18" :foreground "#887733"))))
+   )
+
+
 #+END_SRC
 
 ** Visual-line-mode
