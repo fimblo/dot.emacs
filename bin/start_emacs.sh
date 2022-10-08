@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$ENVDIR/non-interactive-functions.lib.sh"
+source "$ENVDIR/functions.lib.sh"
 
 if ! which -s emacs ; then
     echo "Can't find 'emacs' in PATH. Starting vim instead."
