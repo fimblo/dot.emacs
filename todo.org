@@ -101,8 +101,16 @@ emacs) -Q=, and the problem wasn't there.
 
 ** TODO flymakecursor - display message in minibuffer             :lookinto:
 ** TODO rfringe - display buffer-relative locations in fringe.    :lookinto:
-** 
+** DONE clean old modes out
+CLOSED: [2022-10-18 Tue 11:34]
+There's a few modes I don't use anymore, and they are cluttering the
+config. Remove them or comment them away.
+** DONE fix parenthesis highlighting
+CLOSED: [2022-10-18 Tue 12:03]
+rainbow-delimiters isn't working. Figure out.
 
+Found highlight-parentheses-mode, which is easier to configure than
+rainbow-delimiters. Swapped and configured. works nicely now.
 
 * Notes, experiments, and stuff
 ** Some notes on ivy
