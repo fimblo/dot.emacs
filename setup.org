@@ -284,7 +284,7 @@ Download these packages if they aren't already downloaded.
       olivetti
       org-bullets
       projectile
-      rainbow-delimiters    ; abyss-theme
+      highlight-parentheses
       rainbow-mode
       spaceline
       spaceline-all-the-icons
@@ -591,6 +591,28 @@ The first time you run this on your system, you'll need to run this command manu
 #+begin_example
 M-x all-the-icons-install-fonts
 #+end_example
+
+** Highlight parens
+
+In all programming modes, make parenthesis pairs stand out.
+
+#+begin_src emacs-lisp
+  (defun my-highlight-parenthesis-hook ()
+    (highlight-parentheses-mode)
+    (setq highlight-parentheses-colors '("green"
+                                         "gold"
+                                         "red"
+                                         "medium spring green"
+                                         "cyan"
+                                         "dark orange"
+                                         "deep pink"))
+    (custom-set-faces
+     `(highlight-parentheses-highlight ((t (:weight bold)))))
+    )
+
+  (add-hook 'prog-mode-hook 'my-highlight-parenthesis-hook)
+#+end_src
+
 
 ** External stuff
 
