@@ -261,9 +261,8 @@ Download these packages if they aren't already downloaded.
       all-the-icons-dired
       all-the-icons-ibuffer
       all-the-icons-ivy
-      apache-mode
-      atomic-chrome
-      auctex
+                                          ; apache-mode
+                                          ; auctex
       column-marker
       company
       counsel
@@ -274,17 +273,13 @@ Download these packages if they aren't already downloaded.
       dockerfile-mode
                                           ; docker-tramp
       dumb-jump
-      edit-server
       editorconfig
       flycheck
-      gmail-message-mode
       graphviz-dot-mode
-      highlight-tail
       htmlize
       json-mode
       load-theme-buffer-local
       magit
-      mediawiki
       mpg123
       olivetti
       org-bullets
@@ -297,6 +292,13 @@ Download these packages if they aren't already downloaded.
       swiper
       web-mode
       yaml-mode
+
+      ;; Modes for editing chrome textboxes in emacs.
+                                          ; atomic-chrome
+                                          ; gmail-message-mode
+                                          ; edit-server
+
+
       )
     "These packages are installed if necessary."
     )
@@ -705,10 +707,10 @@ install [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaa
 there's another extension you could use for firefox too.
 
 #+BEGIN_SRC emacs-lisp
-  (require 'atomic-chrome)
-  (atomic-chrome-start-server)
-  (setq atomic-chrome-buffer-open-style 'frame)
-  (setq atomic-chrome-extension-type-list '(atomic-chrome))
+  ;; (require 'atomic-chrome)
+  ;; (atomic-chrome-start-server)
+  ;; (setq atomic-chrome-buffer-open-style 'frame)
+  ;; (setq atomic-chrome-extension-type-list '(atomic-chrome))
   ;;(setq atomic-chrome-default-major-mode 'markdown-mode)
 #+END_SRC
 
