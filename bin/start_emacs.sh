@@ -11,6 +11,5 @@ fi
 emc=$(deref "$(which emacsclient)") # location of emacsclient
 emc="${emc} -c"                      # create new frame
 emc="${emc} -n"                      # don't wait for emacs to return
-emc="${emc} -a ''"                   # set alternate to empty string to start a daemon
 
-${emc} "$@"
+${emc} -a '' "$@"
