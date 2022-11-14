@@ -4,19 +4,7 @@ source "$ENVDIR/functions.lib.sh"
 
 if ! which emacs > /dev/null 2>&1 ; then
     echo "Can't find 'emacs' in PATH. Starting vim instead."
-
-    vimterm='xterm -e'
-
-    ! which xterm  > /dev/null 2>&1 && vimterm=''
-
-
-    probablyWindowManager="${DISPLAY}${ITERM_PROFILE}"
-    if [[ -n $probablyWindowManager ]] ; then
-      $vimterm vi "$@" &
-    else
-      vi "$@"
-    fi
-
+    vim "$@"
     exit
 fi
 
