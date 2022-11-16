@@ -1366,8 +1366,8 @@ whistles on, so instead I activate only the stuff I want.
   #+BEGIN_SRC emacs-lisp
     (defalias 'perl-mode 'cperl-mode)
     ;;(setq cperl-hairy t)
-    (setq cperl-electric-parens t)
-    (setq cperl-electric-keywords t)
+    (setq cperl-electric-parens nil)
+    (setq cperl-electric-keywords nil)
     (setq cperl-electric-linefeed t)
   #+END_SRC
 
