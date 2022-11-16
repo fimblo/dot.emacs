@@ -267,6 +267,7 @@ Download these packages if they aren't already downloaded.
       company
       counsel
       counsel-tramp
+      csv-mode
       dired-subtree
                                           ; docker
                                           ; docker-compose-mode
