@@ -1,0 +1,10 @@
+*~
+\#*#
+/session.*
+/setup.el
+/tramp
+/transient
+/recentf
+/elpa
+/custom.el
+/projectile-bookmarks.eld
