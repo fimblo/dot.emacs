@@ -1338,6 +1338,39 @@ To execute the code, move the cursor into the block and hit =C-c=. It will ask y
 
 For keybindings, see [[Perl keybindings]].
 
+*** Cperl indentation
+
+Generally, I like how indentation is done in cperl, but one thing
+which drives me nuts is when cperl decides that my one-line code like:
+#+begin_example cperl
+  if ( $a == 1 ) { print "hello"; }
+#+end_example
+
+Should be spaced out in the traditional way:
+
+#+begin_example cperl
+  if ( $a == 1 ) {
+    print "hello";
+  }
+#+end_example
+
+Of course I understand that one-liners can be jarring, but it's useful
+at times. And I really don't want my editor to join the invisible
+throngs of people who have opinions about my coding style.
+
+So let's kill this behaviour before it gets out of hand.
+
+#+begin_src emacs-lisp
+  (setq cperl-break-one-line-blocks-when-indent nil)
+#+end_src
+
+It's useful to auto-indent when I press semicolon.
+
+  #+begin_src emacs-lisp
+  (setq cperl-autoindent-on-semi t)
+  #+end_src
+
+
 *** Some hairy cperl settings
 
 Cperl-mode has more useful features than plain Perl-mode. Since
