@@ -284,6 +284,7 @@ Download these packages if they aren't already downloaded.
       mpg123
       olivetti
       org-bullets
+      perl-doc
       projectile
       highlight-parentheses
       rainbow-mode
