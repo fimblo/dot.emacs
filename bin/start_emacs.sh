@@ -1,15 +1,17 @@
 #!/bin/bash
 
 source "$ENVDIR/functions.lib.sh"
+ME=$(basename $0)
 
-if ! which emacs > /dev/null 2>&1 ; then
-    echo "Can't find 'emacs' in PATH. Starting vim instead."
+if ! which emacsclient > /dev/null 2>&1 ; then
+    echo "Can't find 'emacsclient' in PATH. Starting vim instead."
     vim "$@"
     exit
 fi
 
-emc=$(deref "$(which emacsclient)") # location of emacsclient
-emc="${emc} -c"                      # create new frame
-emc="${emc} -n"                      # don't wait for emacs to return
+client=$(deref "$(which emacsclient)")      # location of emacsclient
+[[ $ME == "emc" ]] && client="${client} -c" # create new frame
+client="${client} -n"                       # don't wait for emacs to return
 
-${emc} -a '' "$@"
+# -a with empty string to auto-start emacs daemon
+${client} -a '' "$@"
