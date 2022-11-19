@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$ENVDIR/functions.lib.sh"
+source "$DENV/functions.lib.sh"
 ME=$(basename $0)
 
 if ! which emacsclient > /dev/null 2>&1 ; then
