@@ -1476,14 +1476,15 @@ and unix. Note: assumes =HOSTNAME= is exported.
   (defun create_title_format (user host)
     "Creates a window title string which works for both win and unix"
     (interactive)
-    (list (getenv user) "@" (getenv host) ":"
-          '(:eval
-            (if buffer-file-name
-                (replace-regexp-in-string
-                 sys/home
-                 "~"
-                 (buffer-file-name))
-              (buffer-name))))
+    (list
+     "<Emacs> " (getenv user) "@" (getenv host) ":"
+     '(:eval
+       (if buffer-file-name
+           (replace-regexp-in-string
+            sys/home
+            "~"
+            (buffer-file-name))
+         (buffer-name))))
     )
 
   ;; Set window and icon title.
