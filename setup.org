@@ -2437,6 +2437,29 @@ you've moved your cursor into the contents of the dir, then
     )
 #+END_SRC
 
+* Other stuff
+** On Etags
+
+For some reason, I haven't used etags (or any other tag functionality)
+over all these years. Kind of strange. Anyway, here's how to set up
+etags for a project.
+
+First, run this command to create the etags table. Stand in the root
+of the project in question, since the etags file (called =TAGS=) will
+be created there. The pattern you specify depends on what language
+you're creating the tags for.
+
+#+begin_example shell
+  find . -name '<pattern>' -exec etags -a {} \;
+#+end_example
+
+For perl, one could have the pattern: =*.p[lm]= to capture both =.pl=
+and =.pm= files. For emacs-lisp it would be =*.el=. Etc.
+
+Next, open one of the files in that directory, and load it with =M-x
+visit-tags-table=. After this, you can find the definition of a
+function or variable using =M-.= and jump back to where you were with
+=M-,=.
 * lint
 
 Here some pocket lint which I don't use but might want to at some
