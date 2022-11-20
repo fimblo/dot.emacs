@@ -2389,7 +2389,7 @@ I use two different ways of assigning mode-local keybindings.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'js-mode-hook
             (lambda ()
-              (local-set-key (kbd "M-,") 'insert-fat-comma)))
+              (local-set-key (kbd "C-M-,") 'insert-fat-comma)))
 
 #+END_SRC
 
@@ -2412,7 +2412,7 @@ I use two different ways of assigning mode-local keybindings.
 
 #+begin_src emacs-lisp
   (add-hook 'cperl-mode-hook
-            #'(lambda () (local-set-key (kbd "M-,") 'insert-fat-comma)))
+            #'(lambda () (local-set-key (kbd "C-M-,") 'insert-fat-comma)))
 #+end_src
 
 *** Dired keybindings
