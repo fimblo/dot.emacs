@@ -764,7 +764,7 @@ auto-completion thing going when writing code.
 #+BEGIN_SRC emacs-lisp
     (add-hook 'prog-mode-hook 'company-mode)
 
-    (setq company-idle-delay 0)            ; no delay when proposing suggestions
+    (setq company-idle-delay 2)            ; no delay when proposing suggestions
     (setq company-minimum-prefix-length 2) ; two characters before suggesting
     (setq company-selection-wrap-around t) ; make suggestion list a ring
 
