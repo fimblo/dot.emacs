@@ -8,3 +8,5 @@
 /elpa
 /custom.el
 /projectile-bookmarks.eld
+/eshell/history
+/eshell/lastdir
