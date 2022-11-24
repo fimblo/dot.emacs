@@ -136,7 +136,8 @@ Note that the specialdir var is intended to be populated with path
 prefixes - so if you add =/= then emacs won't make backups
 anywhere...
 
-/Note to self - should put the specialdirs into/ =custom.el= /at some point./
+/Note to self - should put the specialdirs into/ =custom.el= /at some
+point./
 
 #+BEGIN_SRC emacs-lisp
   (defun my-backup-enable-predicate (name)
@@ -227,9 +228,14 @@ Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/m
 
 ** Packages to install
 
-If this is a clean install of emacs, then it will update the package list. This updating it from the various sources takes time, we skip it otherwise.
+If this is a clean install of emacs, then it will update the package
+list. This updating it from the various sources takes time, we skip it
+otherwise.
 
-Note to self: If this isn't a clean install but instead a major upgrade (like I just did from emacs26 to emacs28) you might need to call =package-refresh-contents= manually once. Or do a =M-x package-list-packages= then push =U= to update.
+Note to self: If this isn't a clean install but instead a major
+upgrade (like I just did from emacs26 to emacs28) you might need to
+call =package-refresh-contents= manually once. Or do a =M-x
+package-list-packages= then push =U= to update.
 
 #+begin_src emacs-lisp
   (if (not package-archive-contents)
@@ -588,7 +594,8 @@ Make the fringe the same colour as the main text area.
 
 ** Icons and modeline
 
-This is just eye-candy for the most part. But icons in dired and a newer modeline just looks nice.
+This is just eye-candy for the most part. But icons in dired and a
+newer modeline just looks nice.
 
 #+BEGIN_SRC emacs-lisp
   (require 'all-the-icons)
@@ -608,7 +615,8 @@ This is just eye-candy for the most part. But icons in dired and a newer modelin
 #+END_SRC
 
 
-The first time you run this on your system, you'll need to run this command manually:
+The first time you run this on your system, you'll need to run this
+command manually:
 
 #+begin_example
 M-x all-the-icons-install-fonts
@@ -706,7 +714,8 @@ mapping =(perl . cperl-mode)= in the =interpreter-mode-alist=.
 
 ** Em and En-dash
 
-I want to be able to insert the em-dash and the en-dash symbols in my writing.
+I want to be able to insert the em-dash and the en-dash symbols in my
+writing.
 
 #+BEGIN_SRC emacs-lisp
   (defun insert-em-dash ()
@@ -1054,7 +1063,8 @@ root, looking for a VC root of some kind, and sets the project there.
   (add-hook 'after-init-hook #'projectile-mode)
 #+END_SRC
 
-There's a lot to learn here - and integrations to other modes to configure. For example:
+There's a lot to learn here - and integrations to other modes to
+configure. For example:
 - ivy
 - magit
 - ibuffer
@@ -1309,7 +1319,9 @@ than the default.
   (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
 #+end_src
 
-With the above configuration, I can run shell commands in my org-mode files. All examples below prefixed with a =.= to force the interpreter of this doc to _not_ evaluate it...
+With the above configuration, I can run shell commands in my org-mode
+files. All examples below prefixed with a =.= to force the interpreter
+of this doc to _not_ evaluate it...
 
 #+begin_example
 .#+BEGIN_SRC shell :results output :exports results
@@ -1325,7 +1337,9 @@ With the above configuration, I can run shell commands in my org-mode files. All
 .#+END_SRC
 #+end_example
 
-To execute the code, move the cursor into the block and hit =C-c=. It will ask you if you really want to do this, then the output (marked with =#RESULTS:=) will be placed immediately below the shell block.
+To execute the code, move the cursor into the block and hit =C-c=. It
+will ask you if you really want to do this, then the output (marked
+with =#RESULTS:=) will be placed immediately below the shell block.
 
 #+begin_example
 .#+BEGIN_SRC shell :results output :exports results
@@ -2071,8 +2085,8 @@ presentations.
 
 ** Moving lines and regions
 
-These functions allow me to move single lines or entire regions up and down.
-For keybindings, see: [[Buffer manipulation]].
+These functions allow me to move single lines or entire regions up and
+down.  For keybindings, see: [[Buffer manipulation]].
 
 #+BEGIN_SRC emacs-lisp
   ;; http://www.emacswiki.org/emacs/MoveLineRegion
