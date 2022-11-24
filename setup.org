@@ -441,6 +441,20 @@ interaction to be as non-intrusive as possible.
 
 #+END_SRC
 
+Link X's primary selection and clipboard to interplay with emacs.
+
+#+begin_src emacs-lisp
+  (if sys/linux-x-p
+      (progn
+        ;; after copy Ctrl+c in Linux X11, you can paste by `yank' in emacs
+        (setq select-enable-clipboard t)
+        ;; after mouse selection in X11, you can paste by `yank' in emacs
+        (setq select-enable-primary t)
+        )
+    )
+#+end_src
+
+
 ** Mouse behaviour
 
 Get the mouse to work in emacs instances running in a terminal, and
