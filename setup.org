@@ -1924,7 +1924,7 @@ ways.
       (insert (format-time-string "%Y/%m/%d-%H:%M:%S"))))
 
   (defun iwb ()
-    "indent whole buffer"
+    "indent and untabify whole buffer"
     (interactive)
     (delete-trailing-whitespace)
     (indent-region (point-min) (point-max) nil)
