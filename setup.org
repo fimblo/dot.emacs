@@ -1898,15 +1898,30 @@ ways.
   (fset 'add_separator
         [?\C-a return up ?\C-5 ?\C-0 ?- ?\C-  ?\C-a ?\M-x ?c ?o ?m ?m ?e ?n ?t ?  ?r ?e ?g ?i ?o ?n return down])
 
+
   (defun insert-time ()
-    "Insert date/time at point"
+    "Insert time at point in format %H:%M:%S. If universal-argument
+     is set, use format %H%M%S instead."
     (interactive)
-    (insert (format-time-string "%Y/%m/%d-%R")))
+    (if current-prefix-arg
+        (insert (format-time-string "%H%M%S"))
+      (insert (format-time-string "%H:%M:%S"))))
 
   (defun insert-date ()
-    "Insert date at point"
+    "Insert date at point in format %Y/%m/%d. If universal-argument
+     is set, use format %Y%m%d instead."
     (interactive)
-    (insert (format-time-string "%Y%m%d")))
+    (if current-prefix-arg
+        (insert (format-time-string "%Y%m%d"))
+      (insert (format-time-string "%Y/%m/%d"))))
+
+  (defun insert-datetime ()
+    "Insert datetime at point in format %Y/%m/%d-%H:%M:%S. If
+     universal-argument is set, use format %Y%m%d-%H%M%S instead."
+    (interactive)
+    (if current-prefix-arg
+        (insert (format-time-string "%Y%m%d-%H%M%S"))
+      (insert (format-time-string "%Y/%m/%d-%H:%M:%S"))))
 
   (defun iwb ()
     "indent whole buffer"
