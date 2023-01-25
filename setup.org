@@ -1092,19 +1092,39 @@ For keybindings, see: [[Swiper/Ivy/Counsel keybindings]]
 
 #+BEGIN_SRC emacs-lisp
   (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-
+  (setq ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t
+        ivy-count-format "%d/%d "
+        )
 
   (custom-set-faces
-   '(ivy-current-match ((t (:background "black"))))
-   '(ivy-minibuffer-match-face-1 ((t (:background "black" :foreground "#887733"))))
-   '(ivy-minibuffer-match-face-2 ((t (:background "grey10" :foreground "#887733"))))
-   '(ivy-minibuffer-match-face-3 ((t (:background "grey18" :foreground "#887733"))))
+   '(ivy-current-match ((t (:background "black" :foreground "green1"))))
+   '(ivy-minibuffer-match-face-1 ((t (:background "grey20" :slant italic :foreground "light green" ))))
+   '(ivy-minibuffer-match-face-2 ((t (:background "grey20" :slant italic :foreground "light green" ))))
+   '(ivy-minibuffer-match-face-3 ((t (:background "grey20" :slant italic :foreground "light green" ))))
+   '(ivy-minibuffer-match-highlight ((t (:background "black" :slant italic ))))
    )
-
-
 #+END_SRC
+
+Since Ivy, Counsel and Swiper always come together, their individual
+functionality always confuses me a bit. Here's what they do:
+- Ivy ::  This is a completion framework. Given a list, it will
+  present them and let you limit what is shown and ultimately select
+  one item from the list.
+
+  Here's an example from the docs. Evaluate the following code:
+  #+begin_example
+   (ivy-read "My buffers: " (mapcar #'buffer-name (buffer-list)))
+  #+end_example
+
+- Counsel :: A library which provides things to choose from. Like
+  =counsel-find-file= or =counsel-describe-function=, which in turn
+  uses Ivy to present the alternatives to me.
+
+- Swiper :: A tool to search through the current buffer, replacing
+  built-in functions like =isearch-forward=.
+
+
 
 ** Treemacs
 
