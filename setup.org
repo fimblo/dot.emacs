@@ -1059,8 +1059,15 @@ practice right now is that it looks up the directory hierarchy towards
 root, looking for a VC root of some kind, and sets the project there.
 
 #+BEGIN_SRC emacs-lisp
+
+  ;; auto-load projectile upon startup
   (add-hook 'after-init-hook #'projectile-mode)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+  ;; set projectile keybindings on load of projectile
+  (add-hook 'projectile-mode-hook
+            (lambda()
+              (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+              ))
 #+END_SRC
 
 There's a lot to learn here - and integrations to other modes to
