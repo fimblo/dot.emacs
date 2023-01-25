@@ -313,3 +313,17 @@ Using gccemacs with emacs lisp native compilation (https://akrl.sdf.org/gccemacs
 (setq read-process-output-max (* 1024 1024))
 #+end_src
 
+
+** sr-speedbar
+
+ #+begin_src emacs-lisp
+   (require 'sr-speedbar)
+   (global-set-key (kbd "s-s") 'sr-speedbar-toggle)
+   (setq sr-speedbar-right-side nil)
+   (setq speedbar-show-unknown-files t)
+   (setq speedbar-use-images t)
+   (setq sr-speedbar-width 30) 
+   (setq sr-speedbar-max-width 30) 
+ #+end_src
+ 
+ 
