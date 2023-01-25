@@ -59,7 +59,8 @@ CLOSED: [2022-08-30 Tue 22:40]
 
   After looking at counsel-projectile, I don't think I need it just yet. But Ibuffer-projectile looked nice, so I installed it.
 ** TODO Make modeline date follow iso8601.                             :bug:
-** TODO treemacs                                                  :lookinto:
+** DONE treemacs                                                  :lookinto:
+CLOSED: [2023-01-25 Wed 15:47]
 Installed the following:
 #+begin_quote
  treemacs                       A tree style file explorer package
