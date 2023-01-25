@@ -1061,6 +1061,7 @@ root, looking for a VC root of some kind, and sets the project there.
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'after-init-hook #'projectile-mode)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 #+END_SRC
 
 There's a lot to learn here - and integrations to other modes to
