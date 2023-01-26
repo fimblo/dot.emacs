@@ -2428,8 +2428,6 @@ Enlarge/shrink this window vertically or horizontally.
 *** Buffer navigation
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [ f1 ]              'treemacs)
-
   (global-set-key "\C-c\C-g"          'goto-line)
 
   ;; move the buffer contents up and down without moving the cursor
@@ -2478,7 +2476,11 @@ Enlarge/shrink this window vertically or horizontally.
                                           ;(global-set-key (kbd "C-c k") 'counsel-ag)
   #+end_src
 
+*** Treemacs keybindings
 
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<f1> <SPC>") 'treemacs)
+#+end_src
 
 *** Unused global keybindings
 
