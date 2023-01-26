@@ -2365,19 +2365,19 @@ of them should be local too.
 *** General keybindings
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key "\C-cc"             'compile)
-  (global-set-key "\C-cd"             'gdb)
-  (global-set-key "\C-cn"             'next-error)
-  (global-set-key "\C-c\C-d"          'insert-date)
-  (global-set-key (kbd "M-0")         'add_separator)
-  (global-set-key [ \C-tab ]          'hippie-expand)
-  (global-set-key [ f6 ]              'toggle-selective-display)
-  (global-set-key "\C-x\C-y"          'toggle-truncate-lines)
-  (global-set-key [ f7 ]              'my-ansi-term)
-  (global-set-key [ f8 ]              'hl-line-mode)
-  (global-set-key [ M-f8 ]            'linum-mode)
-  (global-set-key (kbd "M-%")         'query-replace-regexp)
-  (global-set-key (kbd "C-x SPC")     'whitespace-mode)
+  (global-set-key "\C-cc"               'compile)
+  (global-set-key "\C-cd"               'gdb)
+  (global-set-key "\C-cn"               'next-error)
+  (global-set-key "\C-c\C-d"            'insert-date)
+  (global-set-key (kbd "M-0")           'add_separator)
+  (global-set-key [ \C-tab ]            'hippie-expand)
+  (global-set-key [ f6 ]                'toggle-selective-display)
+  (global-set-key "\C-x\C-y"            'toggle-truncate-lines)
+  (global-set-key [ f7 ]                'my-ansi-term)
+  (global-set-key [ f8 ]                'hl-line-mode)
+  (global-set-key [ M-f8 ]              'linum-mode)
+  (global-set-key (kbd "M-%")           'query-replace-regexp)
+  (global-set-key (kbd "C-x SPC")       'whitespace-mode)
 #+END_SRC
 
 *** Window management
@@ -2405,72 +2405,72 @@ Enlarge/shrink this window vertically or horizontally.
 
 #+BEGIN_SRC emacs-lisp
   ;; Vertical expand/shrink
-  (global-set-key [ f11 ]             #'(lambda () (interactive) (enlarge-window 4 )))
-  (global-set-key [ M-f11 ]           #'(lambda () (interactive) (enlarge-window -4)))
+  (global-set-key [ f11 ]               #'(lambda () (interactive) (enlarge-window 4 )))
+  (global-set-key [ M-f11 ]             #'(lambda () (interactive) (enlarge-window -4)))
 
   ;; Horizontal expand/shrink
-  (global-set-key [ f12 ]             #'(lambda () (interactive) (enlarge-window 4 1)))
-  (global-set-key [ M-f12 ]           #'(lambda () (interactive) (enlarge-window -4 1)))
+  (global-set-key [ f12 ]               #'(lambda () (interactive) (enlarge-window 4 1)))
+  (global-set-key [ M-f12 ]             #'(lambda () (interactive) (enlarge-window -4 1)))
 #+END_SRC
 
 *** Buffer manipulation
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-S-e")          'merge-lines)
+  (global-set-key (kbd "C-S-e")         'merge-lines)
 
   ;; Move lines and regions up and down
-  (global-set-key [(meta up)]            'move-line-up)
-  (global-set-key [(meta down)]          'move-line-down)
-  (global-set-key [(shift meta up)]      'move-line-region-up)
-  (global-set-key [(shift meta down)]    'move-line-region-down)
+  (global-set-key [(meta up)]           'move-line-up)
+  (global-set-key [(meta down)]         'move-line-down)
+  (global-set-key [(shift meta up)]     'move-line-region-up)
+  (global-set-key [(shift meta down)]   'move-line-region-down)
 #+END_SRC
 
 *** Buffer navigation
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key "\C-c\C-g"          'goto-line)
+  (global-set-key "\C-c\C-g"            'goto-line)
 
   ;; move the buffer contents up and down without moving the cursor
-  (global-set-key [(meta ?n)]         #'(lambda () (interactive) (scroll-up 3)))
-  (global-set-key [(meta ?p)]         #'(lambda () (interactive) (scroll-down 3)))
-  (global-set-key [(shift meta ?n)]   #'(lambda () (interactive) (scroll-other-window 3)))
-  (global-set-key [(shift meta ?p)]   #'(lambda () (interactive) (scroll-other-window -3)))
+  (global-set-key [(meta ?n)]           #'(lambda () (interactive) (scroll-up 3)))
+  (global-set-key [(meta ?p)]           #'(lambda () (interactive) (scroll-down 3)))
+  (global-set-key [(shift meta ?n)]     #'(lambda () (interactive) (scroll-other-window 3)))
+  (global-set-key [(shift meta ?p)]     #'(lambda () (interactive) (scroll-other-window -3)))
 
   ;; Jump to top and bottom of a buffer or the other one
   ;; The last two are default keybindings. But I added them here to remind me of them.
-  (global-set-key [ home ]            'beginning-of-buffer)
-  (global-set-key [ end ]             'end-of-buffer )
-  (global-set-key [(meta home) ]      'beginning-of-buffer-other-window)
-  (global-set-key [(meta end) ]       'end-of-buffer-other-window )
+  (global-set-key [ home ]              'beginning-of-buffer)
+  (global-set-key [ end ]               'end-of-buffer )
+  (global-set-key [(meta home) ]        'beginning-of-buffer-other-window)
+  (global-set-key [(meta end) ]         'end-of-buffer-other-window )
 #+END_SRC
 
 *** Opening new buffers
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [ f5 ]              'switch-to-scratch)
-  (global-set-key [ M-f5 ]            'open-dot-emacs)
+  (global-set-key [ f5 ]                'switch-to-scratch)
+  (global-set-key [ M-f5 ]              'open-dot-emacs)
 
-  (global-set-key (kbd "C-x C-b")     'ibuffer)
+  (global-set-key (kbd "C-x C-b")       'ibuffer)
 
-  (global-set-key "\C-x\C-g"          'find-file-at-point)
-  (global-set-key (kbd "C-h C-s")     'find-function-at-point)
+  (global-set-key "\C-x\C-g"            'find-file-at-point)
+  (global-set-key (kbd "C-h C-s")       'find-function-at-point)
 #+END_SRC
 
 *** Swiper/Ivy/Counsel keybindings
 
   #+begin_src emacs-lisp
-  (global-set-key (kbd "C-S-s") 'swiper)
-  (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  (global-set-key (kbd "<f6>") 'ivy-resume)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  (global-set-key (kbd "C-c g") 'counsel-git)
-  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (global-set-key (kbd "C-S-s")         'swiper)
+  (global-set-key (kbd "C-c C-r")       'ivy-resume)
+  (global-set-key (kbd "<f6>")          'ivy-resume)
+  (global-set-key (kbd "M-x")           'counsel-M-x)
+  (global-set-key (kbd "C-x C-f")       'counsel-find-file)
+  (global-set-key (kbd "<f1> f")        'counsel-describe-function)
+  (global-set-key (kbd "<f1> v")        'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l")        'counsel-find-library)
+  (global-set-key (kbd "<f2> i")        'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u")        'counsel-unicode-char)
+  (global-set-key (kbd "C-c g")         'counsel-git)
+  (global-set-key (kbd "C-c j")         'counsel-git-grep)
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
                                           ;(global-set-key (kbd "C-x l") 'counsel-locate)
                                           ;(global-set-key (kbd "C-c k") 'counsel-ag)
@@ -2479,20 +2479,20 @@ Enlarge/shrink this window vertically or horizontally.
 *** Treemacs keybindings
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<f1> <SPC>") 'treemacs)
+  (global-set-key (kbd "<f1> <SPC>")    'treemacs)
 #+end_src
 
 *** Unused global keybindings
 
 #+BEGIN_EXAMPLE
-  (global-set-key "\C-x\C-m"          'execute-extended-command)
-  (global-set-key "\C-c\C-m"          'execute-extended-command)
-  (global-set-key "\C-c\C-k"          'kill-buffer)
-  (global-set-key "\C-co"             'org-capture)
-  (global-set-key "\C-xm"             'mail)
-  (global-set-key [ f6 ]              'switch-to-todo)
-  (global-set-key [ S-f6 ]            'add-todo)
-  (global-set-key [ f10 ]             'org-show-next-heading-tidily)
+  (global-set-key "\C-x\C-m"            'execute-extended-command)
+  (global-set-key "\C-c\C-m"            'execute-extended-command)
+  (global-set-key "\C-c\C-k"            'kill-buffer)
+  (global-set-key "\C-co"               'org-capture)
+  (global-set-key "\C-xm"               'mail)
+  (global-set-key [ f6 ]                'switch-to-todo)
+  (global-set-key [ S-f6 ]              'add-todo)
+  (global-set-key [ f10 ]               'org-show-next-heading-tidily)
 #+END_EXAMPLE
 
 ** Mode-specific keybindings
@@ -2552,9 +2552,9 @@ you've moved your cursor into the contents of the dir, then
 #+BEGIN_SRC emacs-lisp
   (eval-after-load "dired"
     '(progn
-       (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
+       (define-key dired-mode-map (kbd "<tab>")     'dired-subtree-toggle)
        (define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
-       (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
+       (define-key dired-mode-map (kbd ".")         'dired-dotfiles-toggle)
        )
     )
 #+END_SRC
