@@ -1129,23 +1129,29 @@ functionality always confuses me a bit. Here's what they do:
 ** Treemacs
 
 When mob-programming over video, it's easier for others to follow
-where I am if I have a sidebar like in many other editors. Giving
-treemacs a try.
+where I am if I have a sidebar showing where I am like in many other
+editors. Giving treemacs a try.
+
+There's many, many more options to modify should I want to, and they
+can be found here.
+- https://github.com/Alexander-Miller/treemacs#installation
+
 
 #+begin_src emacs-lisp
   (require 'treemacs)
-  (setq treemacs-hide-dot-git-directory          nil)
 
-  ;; See all other settable variables here:
-  ;; https://github.com/Alexander-Miller/treemacs#installation
+  (setq treemacs-hide-dot-git-directory     nil
+        treemacs-recenter-after-file-follow t
+        treemacs-recenter-after-tag-follow  t
+        )
+
 
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)
-
   (treemacs-fringe-indicator-mode 'always)
-  (when treemacs-python-executable
-    (treemacs-git-commit-diff-mode t))
 
+
+  (when treemacs-python-executable (treemacs-git-commit-diff-mode t))
   (pcase (cons (not (null (executable-find "git")))
                (not (null treemacs-python-executable)))
     (`(t . t)
@@ -1154,7 +1160,6 @@ treemacs a try.
      (treemacs-git-mode 'simple)))
 
   (treemacs-hide-gitignored-files-mode nil)
-
 #+end_src
 
 
