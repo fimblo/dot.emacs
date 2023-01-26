@@ -143,7 +143,8 @@ Will require it, then configure it.
 
 #+end_src
 
-
+*** toggle treemacs on and off without losing focus on current buffer
+Current behaviour is that turning on treemacs with F1 keybinding will move focus to the treemacs buffer. I don't like that.
 ** DONE See if I can get highlighted regions to be in whitespace-mode
 CLOSED: [2022-08-30 Tue 22:50]
 
