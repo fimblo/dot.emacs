@@ -197,6 +197,7 @@ rainbow-delimiters isn't working. Figure out.
 Found highlight-parentheses-mode, which is easier to configure than
 rainbow-delimiters. Swapped and configured. works nicely now.
 
+** TODO Update browser in emacs from chromium to chrome
 * Notes, experiments, and stuff
 ** Some notes on ivy
 
