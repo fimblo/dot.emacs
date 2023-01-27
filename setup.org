@@ -1163,7 +1163,25 @@ can be found here.
   (treemacs-hide-gitignored-files-mode nil)
 #+end_src
 
+It's the little things. Quickly, I got really tired of how invoking treemacs-mode moved the cursor (and window focus) away from whatever I was doing and into the treemacs window. I understand that normally, the reason for opening treemacs was to be able to navigate the tree, and that having the cursor auto-moved there accomplishes this. But in my case, I want it open mostly for my colleagues - as a hint of where I am in the project space.
 
+So this little function changes the default behaviour to keep the focus in place.
+
+#+begin_src emacs-lisp
+  (defun f/toggle-treemacs ()
+    "Invoking treemacs moves the window selection to the treemacs
+  window and away from whatever I was doing. I want the sidebar to
+  just appear without any other changes."
+
+    (interactive)
+    (let ((old-win (selected-window)))
+      (treemacs)
+      (select-window old-win)
+      )
+    )
+#+end_src
+
+Treemacs keybindings can be found here: [[Treemacs keybindings]].
 
 ** Visual-line-mode
 
@@ -2480,7 +2498,7 @@ Enlarge/shrink this window vertically or horizontally.
 *** Treemacs keybindings
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<f1> 1")        'treemacs)
+  (global-set-key (kbd "<f1> 1")        'f/toggle-treemacs)
 #+end_src
 
 *** Unused global keybindings
