@@ -403,6 +403,7 @@ Configuration basics.
   (setq cursor-type 'bar)                 ; make cursor thin
   (tool-bar-mode -1)
   (menu-bar-mode -1)
+  (context-menu-mode 1)                   ; right-click to get menu
   (fringe-mode nil)                       ; set default fringe
 
   (if (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
