@@ -13,10 +13,6 @@ text and place the cursor after the first statement. Typing '<s'
 followed by <tab> should do the same thing, but for some reason it
 doesn't work right now.
 
-  #+BEGIN_SRC
-  
-  #+END_SRC
-
 To narrow to the code block, go into it and hit C-c '. Given that you
 specified a language after the text #+BEGIN_SRC, you will get that
 major mode with all bells and whistles you're used to.
