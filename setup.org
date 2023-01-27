@@ -200,7 +200,8 @@ included in version control.
 
 ** Package.el configuration
 
-This needs to be in place before any configurations of installed packages.
+This needs to be in place before any configurations of installed
+packages.
 
 Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/master/emacs.d/emacs.org][emacs setup]]. Thanks @jeekl!
 
@@ -779,7 +780,8 @@ process - like the shell, or a database user interface (sqsh, isql,
 etc).
 
 #+BEGIN_SRC emacs-lisp
-  (ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes in shell output windows
+  (ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes 
+                                          ; in shell output windows
   (custom-set-variables
    '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
    '(comint-scroll-to-bottom-on-output t) ; always add output at the bottom
@@ -1009,7 +1011,8 @@ Dependencies: =Perl::Critic::= (cpan)
 Dependencies: None
 
 #+BEGIN_SRC emacs-lisp
-  (setq-default flycheck-emacs-lisp-load-path 'inherit) ; use load-path's path for flycheck
+  ;; Use load-path's path for flycheck
+  (setq-default flycheck-emacs-lisp-load-path 'inherit)
 
   ;; Get rid of annoying checkdoc warnings
   (with-eval-after-load 'flycheck
@@ -1163,9 +1166,16 @@ can be found here.
   (treemacs-hide-gitignored-files-mode nil)
 #+end_src
 
-It's the little things. Quickly, I got really tired of how invoking treemacs-mode moved the cursor (and window focus) away from whatever I was doing and into the treemacs window. I understand that normally, the reason for opening treemacs was to be able to navigate the tree, and that having the cursor auto-moved there accomplishes this. But in my case, I want it open mostly for my colleagues - as a hint of where I am in the project space.
+It's the little things. Quickly, I got really tired of how invoking
+treemacs-mode moved the cursor (and window focus) away from whatever I
+was doing and into the treemacs window. I understand that normally,
+the reason for opening treemacs was to be able to navigate the tree,
+and that having the cursor auto-moved there accomplishes this. But in
+my case, I want it open mostly for my colleagues - as a hint of where
+I am in the project space.
 
-So this little function changes the default behaviour to keep the focus in place.
+So this little function changes the default behaviour to keep the
+focus in place.
 
 #+begin_src emacs-lisp
   (defun f/toggle-treemacs ()
