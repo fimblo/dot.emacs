@@ -1613,7 +1613,7 @@ Create a reasonable titlebar for emacs, which works on both windows
 and unix. Note: assumes =HOSTNAME= is exported.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-create_title_format (user host)
+  (defun ff-create-title-format (user host)
     "Creates a window title string which works for both win and unix"
     (interactive)
     (list
@@ -1629,8 +1629,8 @@ and unix. Note: assumes =HOSTNAME= is exported.
 
   ;; Set window and icon title.
   (if (eq system-type 'windows-nt)
-      (setq frame-title-format (ff-create_title_format "USERNAME" "COMPUTERNAME"))
-    (setq frame-title-format (ff-create_title_format "USER" "HOSTNAME")))
+      (setq frame-title-format (ff-create-title-format "USERNAME" "COMPUTERNAME"))
+    (setq frame-title-format (ff-create-title-format "USER" "HOSTNAME")))
 #+END_SRC
 
 ** Buffer navigation functions
