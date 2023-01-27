@@ -2480,7 +2480,7 @@ Enlarge/shrink this window vertically or horizontally.
 *** Treemacs keybindings
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<f1> <SPC>")    'treemacs)
+  (global-set-key (kbd "<f1> 1")        'treemacs)
 #+end_src
 
 *** Unused global keybindings
