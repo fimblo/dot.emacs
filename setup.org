@@ -291,6 +291,7 @@ Download these packages if they aren't already downloaded.
       load-theme-buffer-local
       magit
       mpg123
+      markdown-mode
       olivetti
       org-bullets
       perl-doc
@@ -678,6 +679,7 @@ Auto-set mode for these file suffixes.
         (append
          (list
           '("Dockerfile"            . dockerfile-mode      )
+          '("\\.md"                 . markdown-mode        )
           '("\\.xml"                . xml-mode             )
           '("\\.pp"                 . puppet-mode          )
           '("\\.html"               . html-mode            )
