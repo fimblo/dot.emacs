@@ -212,10 +212,11 @@ Looks like system default is chromium. Can I change it locally in emacs to googl
 - look into treemacs-commit-diff-mode to show if I'm ahead or behind origin
 - treemacs-indent-guide-mode to draw lines? The lines were ugly.
 ** TODO set up for work
+*** DONE Tide
+CLOSED: [2023-02-14 Tue 22:51]
 https://www.youtube.com/watch?v=0zuYCEzrchk
-
+*** TODO Other modes
 - rjsx-mode (major mode for editing jsx files)
-- tide
 - prettier-js (opinionated js formatter/linter)
 * Notes, experiments, and stuff
 ** Some notes on ivy
