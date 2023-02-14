@@ -1626,7 +1626,7 @@ configuration I want in the following sections.
   (add-hook 'js-mode-hook #'setup-tide-mode)
   
   ;; configure javascript-tide checker to run after your default javascript checker
-  (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+  ;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
 #+end_src
 
 *** Tide-mode for JSX
@@ -1636,12 +1636,13 @@ configuration I want in the following sections.
   (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
   (add-hook 'web-mode-hook
             (lambda ()
+              ;; configure jsx-tide checker to run after your default jsx checker
+              (flycheck-add-mode 'javascript-eslint 'web-mode)
+              (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+
               (when (string-equal "jsx" (file-name-extension buffer-file-name))
                 (setup-tide-mode))))
 
-  ;; configure jsx-tide checker to run after your default jsx checker
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-  (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
 #+end_src
 
 *** Tide-mode for TSX
@@ -1651,10 +1652,10 @@ configuration I want in the following sections.
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-hook 'web-mode-hook
             (lambda ()
+              ;; enable typescript-tslint checker
+              (flycheck-add-mode 'typescript-tslint 'web-mode)
               (when (string-equal "tsx" (file-name-extension buffer-file-name))
                 (setup-tide-mode))))
-  ;; enable typescript-tslint checker
-  (flycheck-add-mode 'typescript-tslint 'web-mode)
 #+end_src
 
 ** Other languages/types of text
