@@ -288,6 +288,7 @@ Download these packages if they aren't already downloaded.
       htmlize
       iedit
       json-mode
+      js2-mode
       load-theme-buffer-local
       magit
       mpg123
@@ -302,10 +303,12 @@ Download these packages if they aren't already downloaded.
       spaceline-all-the-icons
       ssh-config-mode
       swiper
+      tide
       treemacs                       ; A tree style file explorer package
       treemacs-all-the-icons         ; all-the-icons integration for treemacs
       treemacs-magit                 ; Magit integration for treemacs
       treemacs-projectile            ; Projectile integration for treemacs
+      typescript-mode
 
       web-mode
       yaml-mode
@@ -798,21 +801,23 @@ This is my initial setup of company-mode, which lets me get a nice
 auto-completion thing going when writing code.
 
 #+BEGIN_SRC emacs-lisp
-    (add-hook 'prog-mode-hook 'company-mode)
+  (add-hook 'prog-mode-hook 'company-mode)
 
-    (setq company-idle-delay 2)            ; no delay when proposing suggestions
-    (setq company-minimum-prefix-length 2) ; two characters before suggesting
-    (setq company-selection-wrap-around t) ; make suggestion list a ring
+  (setq company-idle-delay 1)                ; small delay when proposing suggestions
+  (setq company-minimum-prefix-length 2)     ; two characters before suggesting
+  (setq company-selection-wrap-around t)     ; make suggestion list a ring
+  (setq company-tooltip-align-annotations t) ; aligns annotation to the right hand side
+  
 
-    (require 'color)
+  (require 'color)
 
-    ;; (let ((bg (face-attribute 'default :background)))
-    ;;   (custom-set-faces
-    ;;    `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-    ;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-    ;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-    ;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-    ;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+  ;; (let ((bg (face-attribute 'default :background)))
+  ;;   (custom-set-faces
+  ;;    `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+  ;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+  ;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+  ;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+  ;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 
 
   (custom-set-faces
@@ -824,7 +829,7 @@ auto-completion thing going when writing code.
    )
 
 
-  
+
 #+END_SRC
 
 ** CUA-mode
@@ -1459,6 +1464,13 @@ with =#RESULTS:=) will be placed immediately below the shell block.
 .: round-trip min/avg/max/stddev = 16.815/16.815/16.815/0.000 ms
 #+end_example
 
+** Javascript-mode
+
+See [[Tide-mode for Javascript]] or [[Tide-mode for JSX]] for more configuration stuff.
+
+#+begin_src emacs-lisp
+  (add-hook 'js-mode-hook 'js2-minor-mode)
+#+end_src
 
 ** Java-mode
 
@@ -1574,20 +1586,76 @@ Next, a cperl hook to set some stuff up.
             )
 #+END_SRC
 
-** For Typescript
+** Tide-mode (Typescript, Javascript, jsx and tsx)
 
-Some very basic config for Typescript.
+I'll be re-using this function to initialise tide-mode with the
+configuration I want in the following sections.
+
+#+begin_src emacs-lisp
+  (defun setup-tide-mode ()
+    (interactive)
+    (tide-setup)
+    (flycheck-mode 1)           ; enable flycheck
+    (setq flycheck-check-syntax-automatically '(save mode-enabled))
+    (eldoc-mode 1)              ; show language item at point in the echo area
+    (tide-hl-identifier-mode 1) ; highlight identical strings
+    (company-mode 1)            ; turn on company mode
+    )
+#+end_src
+
+*** Tide-mode for Typescript
 
 #+BEGIN_SRC emacs-lisp
-  (require 'web-mode)
+  ;; Associate typescript-mode with .ts files
+  (add-to-list 'auto-mode-alist '("\\.ts\\'"  . typescript-mode))
 
+  ;; When starting up typescript-mode:
+  (add-hook 'typescript-mode-hook #'setup-tide-mode)
+  (add-hook 'typescript-mode-hook
+            (lambda ()
+              (setq company-idle-delay 0.5)
+              (local-set-key (kbd "C-M-,") 'ff-insert-fat-comma)))
+
+  ;; formats the buffer before saving
+  (add-hook 'before-save-hook 'tide-format-before-save)
+#+END_SRC
+
+*** Tide-mode for Javascript
+
+#+begin_src emacs-lisp
+  (add-hook 'js-mode-hook #'setup-tide-mode)
+  
+  ;; configure javascript-tide checker to run after your default javascript checker
+  (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+#+end_src
+
+*** Tide-mode for JSX
+
+#+begin_src emacs-lisp
+  (require 'web-mode)
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (string-equal "jsx" (file-name-extension buffer-file-name))
+                (setup-tide-mode))))
+
+  ;; configure jsx-tide checker to run after your default jsx checker
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+#+end_src
+
+*** Tide-mode for TSX
+
+#+begin_src emacs-lisp
+  (require 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-hook 'web-mode-hook
             (lambda ()
               (when (string-equal "tsx" (file-name-extension buffer-file-name))
                 (setup-tide-mode))))
-
-#+END_SRC
+  ;; enable typescript-tslint checker
+  (flycheck-add-mode 'typescript-tslint 'web-mode)
+#+end_src
 
 ** Other languages/types of text
 
