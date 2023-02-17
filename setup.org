@@ -469,7 +469,6 @@ Link X's primary selection and clipboard to interplay with emacs.
     )
 #+end_src
 
-
 ** Mouse behaviour
 
 Get the mouse to work in emacs instances running in a terminal, and
@@ -530,9 +529,47 @@ like.
     "Clear existing theme settings instead of layering them"
     (mapc #'disable-theme custom-enabled-themes))
 
-                                          ;     (load-theme 'gruvbox)
   (load-theme 'tsdh-dark)
 #+END_SRC
+
+The default look and feel of the theme I use (=tsdh-dark=) has a few
+details which I think doesn't look quite right. Fixing it here.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Make background color a bit lighter..
+  (set-face-attribute 'default nil :background "gray21")
+
+  ;; so that the region face can be set to black
+  (set-face-attribute 'region nil :extend t :background "black")
+
+  ;; and the highlight face can also be black
+  (set-face-attribute 'highlight nil :background "black")
+
+  ;; For some reason, when searching with isearch, the highlighted color
+  ;; is pink. Making it, and the secondary highlight (all the other
+  ;; instances of the same search string outside of the currently
+  ;; selected one) a bit less... interesting.
+  (set-face-attribute 'isearch nil
+                      :background "saddle brown"
+                      :foreground "white smoke")
+  (set-face-attribute 'lazy-highlight nil :background "LightSalmon4")
+
+  ;; comments in italics
+  (set-face-attribute font-lock-comment-face nil :slant 'italic)
+
+  ;; Fringe in the same color as default.
+  (set-face-attribute 'fringe nil
+                      :foreground (face-foreground 'default)
+                      :background (face-background 'default))
+#+END_SRC
+
+Make the highlighted line a tad darker than the default background.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "hl-line"
+    '(set-face-attribute 'hl-line nil :background "grey10"))
+#+END_SRC
+
 
 For the longest time, I've for some reason enjoyed writing much
 more in traditional word processors like Google Docs, Openoffice,
@@ -584,22 +621,7 @@ Noto-serif./
         (setq ff-write-state "write"))))
 #+END_SRC
 
-Set the face for comments and for the hl-mode row in prog-modes.
 
-#+BEGIN_SRC emacs-lisp
-  (set-face-attribute font-lock-comment-face nil :slant 'italic)
-
-  (eval-after-load "hl-line"
-    '(set-face-attribute 'hl-line nil :background "grey10"))
-#+END_SRC
-
-Make the fringe the same colour as the main text area.
-
-#+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'fringe nil
-                      :foreground (face-foreground 'default)
-                      :background (face-background 'default))
-#+END_SRC
 
 ** Icons and modeline
 
@@ -636,20 +658,20 @@ M-x all-the-icons-install-fonts
 In all programming modes, make parenthesis pairs stand out.
 
 #+begin_src emacs-lisp
-  (defun ff-highlight-parenthesis-hook ()
-    (highlight-parentheses-mode)
-    (setq highlight-parentheses-colors '("green"
-                                         "gold"
-                                         "red"
-                                         "medium spring green"
-                                         "cyan"
-                                         "dark orange"
-                                         "deep pink"))
-    (custom-set-faces
-     `(highlight-parentheses-highlight ((t (:weight bold)))))
-    )
+  (setq highlight-parentheses-colors '("green"
+                                       "gold"
+                                       "red"
+                                       "medium spring green"
+                                       "cyan"
+                                       "dark orange"
+                                       "deep pink"))
 
-  (add-hook 'prog-mode-hook 'ff-highlight-parenthesis-hook)
+
+  (add-hook 'prog-mode-hook 'highlight-parentheses-mode)
+
+  (eval-after-load "highlight-parentheses-mode"
+    '(set-face-attribute 'highlight-parentheses-highlight nil :weight bold))
+
 #+end_src
 
 ** External stuff
@@ -801,34 +823,33 @@ This is my initial setup of company-mode, which lets me get a nice
 auto-completion thing going when writing code.
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'prog-mode-hook 'company-mode)
+  (defun ff-setup-company-mode ()
+    (company-mode)
+    (setq company-idle-delay 1)                ; small delay when proposing suggestions
+    (setq company-minimum-prefix-length 2)     ; two characters before suggesting
+    (setq company-selection-wrap-around t)     ; make suggestion list a ring
+    (setq company-tooltip-align-annotations t) ; aligns annotation to the right hand side
 
-  (setq company-idle-delay 1)                ; small delay when proposing suggestions
-  (setq company-minimum-prefix-length 2)     ; two characters before suggesting
-  (setq company-selection-wrap-around t)     ; make suggestion list a ring
-  (setq company-tooltip-align-annotations t) ; aligns annotation to the right hand side
-  
+    (set-face-attribute 'company-scrollbar-bg nil :background "#000000")
+    (set-face-attribute 'company-scrollbar-fg nil :background "#332222")
 
-  (require 'color)
+    (set-face-attribute 'company-tooltip nil
+                      :foreground (face-foreground 'default)
+                      :background "grey10")
 
-  ;; (let ((bg (face-attribute 'default :background)))
-  ;;   (custom-set-faces
-  ;;    `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-  ;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-  ;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-  ;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-  ;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
-
-
-  (custom-set-faces
-   '(company-scrollbar-bg ((t (:background "#000000"))))
-   '(company-scrollbar-fg ((t (:background "#332222"))))
-   '(company-tooltip ((t (:inherit default :background "grey10"))))
-   '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
-   '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-   )
+    (set-face-attribute 'company-tooltip-common nil ; the text I entered, common to all tips
+                        :inherit font-lock-constant-face
+                        )
+    (set-face-attribute 'company-tooltip-selection nil ; the part which is selected
+                        :inherit font-lock-function-name-face
+                        :foreground "black")
+    )
 
 
+    (add-hook 'prog-mode-hook 'ff-setup-company-mode)
+
+
+    (require 'color)
 
 #+END_SRC
 
@@ -1106,19 +1127,29 @@ it a try for a while.
 For keybindings, see: [[Swiper/Ivy/Counsel keybindings]]
 
 #+BEGIN_SRC emacs-lisp
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t
-        enable-recursive-minibuffers t
-        ivy-count-format "%d/%d "
-        )
+  (add-hook 'ivy-mode-hook
+            (lambda()
+              (setq ivy-use-virtual-buffers t
+                    enable-recursive-minibuffers t
+                    ivy-count-format "%d/%d ")
 
-  (custom-set-faces
-   '(ivy-current-match ((t (:background "black" :foreground "green1"))))
-   '(ivy-minibuffer-match-face-1 ((t (:background "grey20" :slant italic :foreground "light green" ))))
-   '(ivy-minibuffer-match-face-2 ((t (:background "grey20" :slant italic :foreground "light green" ))))
-   '(ivy-minibuffer-match-face-3 ((t (:background "grey20" :slant italic :foreground "light green" ))))
-   '(ivy-minibuffer-match-highlight ((t (:background "black" :slant italic ))))
-   )
+              (set-face-attribute 'ivy-current-match nil
+                                  :background "black")
+              (set-face-attribute 'ivy-minibuffer-match-face-1 nil
+                                  :background "black"
+                                  :foreground "#887733")
+              (set-face-attribute 'ivy-minibuffer-match-face-2 nil
+                                  :background "grey10"
+                                  :foreground "#887733")
+              (set-face-attribute 'ivy-minibuffer-match-face-3 nil
+                                  :background "grey18"
+                                  :foreground "#887733")
+              (set-face-attribute 'ivy-minibuffer-match-highlight nil
+                                  :background "black"
+                                  :slant 'italic)
+              )
+            )
+  (ivy-mode 1)
 #+END_SRC
 
 Since Ivy, Counsel and Swiper always come together, their individual
