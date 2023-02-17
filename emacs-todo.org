@@ -218,6 +218,26 @@ https://www.youtube.com/watch?v=0zuYCEzrchk
 *** TODO Other modes
 - rjsx-mode (major mode for editing jsx files)
 - prettier-js (opinionated js formatter/linter)
+** TODO Try to figure out how to show Org-mode headers at top of buffer window
+#+begin_quote
+ * main header
+ ** second header
+ *** third 1 header
+ ** second 2 header
+ *** some header
+      <-- cursor here
+#+end_quote
+
+This would show something like
+#+begin_quote
+ * main header
+ ** second 2 header
+ *** some header
+     <--- cursor here
+#+end_quote
+
+This way I can keep track of where I am.
+
 * Notes, experiments, and stuff
 ** Some notes on ivy
 
