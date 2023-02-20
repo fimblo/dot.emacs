@@ -842,7 +842,7 @@ auto-completion thing going when writing code.
                         )
     (set-face-attribute 'company-tooltip-selection nil ; the part which is selected
                         :inherit font-lock-function-name-face
-                        :foreground "black")
+                        :foreground "light salmon")
     )
 
 
