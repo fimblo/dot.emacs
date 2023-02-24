@@ -2506,7 +2506,7 @@ of them should be local too.
   (global-set-key "\C-c\C-d"            'ff-insert-date)
   (global-set-key (kbd "M-0")           'add-separator)
   (global-set-key [ \C-tab ]            'hippie-expand)
-  (global-set-key [ f6 ]                'toggle-selective-display)
+  (global-set-key [ f6 ]                'ff-toggle-selective-display)
   (global-set-key "\C-x\C-y"            'toggle-truncate-lines)
   (global-set-key [ f7 ]                'ff-ansi-term)
   (global-set-key [ f8 ]                'hl-line-mode)
