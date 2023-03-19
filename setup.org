@@ -62,18 +62,18 @@ in the directory =~/.emacs.d=:
   extracted and placed in =setup.el=. This is what is actually
   loaded behind the scenes. I only look at this file when debugging.
 
-- =.secret.el= ::
-
-  I put all personal info here, and this file is not checked into my
-  repository. The variables I set in =.secret.el= are declared in
-  this file in section [[Declare personal variables]].
-
 - =custom.el= ::
 
   Sometimes I'm lazy and I use emacs itself to customise its
   behaviour. These kinds of customisations end up in this file where
   its separated from my own code. I set it up in section
   [[Auto-customization]].
+
+- =EMACS_SECRETSFILE= ::
+
+  This environment variable points at the file where I put all
+  personal info. The variables are declared in section [[Declare
+  personal variables]].
 
 * Initial setup
 ** Set up basic environment
@@ -168,10 +168,13 @@ character sets anymore - especially the Japanese ones...
 ** Declare personal variables
 
 Here are the variables which are private to me, and are assigned in
-the =~/.emacs.d/.secret.el= file (which for obvious reasons aren't
-included in version control.
+the file pointed at by the environment variable
+=EMACS_SECRETSFILE=. No, this file is not in my vc.
 
 #+BEGIN_SRC emacs-lisp
+  (defconst me/emacs/secrets
+    (getenv "EMACS_SECRETSFILE")       "Personal info goes here")
+
   (defvar me/fullname              nil "My full name.")
   (defvar me/nick                  nil "My nickname.")
   (defvar me/mail/credentials      nil "Where I store my credentials.")
@@ -183,16 +186,21 @@ included in version control.
   (defvar me/erc/nick              nil "My nick")
   (defvar me/erc/pass              nil "My password")
   (defvar me/erc/autojoin-alist    nil "Association list of channels to join.
-                                        For example:
-                                        ((\"chat.freenode.net\" \"#emacs\" \"#cooking\")
-                                         (\"another.server.org\" \"#foo\" \"#bar\" \"#baz\"))
-                                        ")
+					For example:
+					((\"chat.freenode.net\" \"#emacs\" \"#cooking\")
+					 (\"another.server.org\" \"#foo\" \"#bar\" \"#baz\"))
+					")
   (defvar me/erc/pass-query-string nil "How should ERC ask for the password?
-                                        Useful if you have multiple servers to connect to.")
+					Useful if you have multiple servers to connect to.")
 
-  (let ((secret.el (expand-file-name ".secret.el" user-emacs-directory)))
-    (when (file-exists-p secret.el)
-      (load secret.el)))
+  ;; If me/emacs/secrets has a value, check if it points at a file. If
+  ;; it exists, then load it.
+  (when me/emacs/secrets
+      (when (file-exists-p me/emacs/secrets)
+	(load me/emacs/secrets)
+	)
+      )
+
 #+END_SRC
 
 ** Package.el configuration
