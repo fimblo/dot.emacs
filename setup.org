@@ -1738,7 +1738,7 @@ myself wanting to jot something down in some trash buffer.
 
 #+BEGIN_SRC emacs-lisp
   (defun ff-switch-to-scratch ()
-    "Switch to scratch buffer. Create one in `emacs-lisp-mode' if not exists."
+    "Switch to scratch buffer. Create one in `org-mode' if not exists."
     (interactive)
     (let ((previous (get-buffer "*scratch*")))
       (switch-to-buffer "*scratch*")
