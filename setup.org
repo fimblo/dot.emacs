@@ -69,7 +69,7 @@ in the directory =~/.emacs.d=:
   its separated from my own code. I set it up in section
   [[Auto-customization]].
 
-- =EMACS_SECRETSFILE= ::
+- =EMACS_PERSONAL_DATA= ::
 
   This environment variable points at the file where I put all
   personal info. The variables are declared in section [[Declare
@@ -172,8 +172,8 @@ the file pointed at by the environment variable
 =EMACS_SECRETSFILE=. No, this file is not in my vc.
 
 #+BEGIN_SRC emacs-lisp
-  (defconst me/emacs/secrets
-    (getenv "EMACS_SECRETSFILE")       "Personal info goes here")
+  (defconst me/emacs/personal-data
+    (getenv "EMACS_PERSONAL_DATA")     "Personal info goes here")
 
   (defvar me/fullname              nil "My full name.")
   (defvar me/nick                  nil "My nickname.")
@@ -193,11 +193,11 @@ the file pointed at by the environment variable
   (defvar me/erc/pass-query-string nil "How should ERC ask for the password?
 					Useful if you have multiple servers to connect to.")
 
-  ;; If me/emacs/secrets has a value, check if it points at a file. If
+  ;; If me/emacs/personal-data has a value, check if it points at a file. If
   ;; it exists, then load it.
-  (when me/emacs/secrets
-      (when (file-exists-p me/emacs/secrets)
-	(load me/emacs/secrets)
+  (when me/emacs/personal-data
+      (when (file-exists-p me/emacs/personal-data)
+	(load me/emacs/personal-data)
 	)
       )
 
