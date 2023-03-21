@@ -137,7 +137,7 @@ anywhere...
 point./
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-my-backup-enable-predicate (name)
+  (defun me/my-backup-enable-predicate (name)
     (let (found)
       (dolist (specialdir '("~/gdrive/"
                             "/some/other/directory/") found)
@@ -147,7 +147,7 @@ point./
           nil
         (normal-backup-enable-predicate name))))
 
-  (setq backup-enable-predicate #'ff-my-backup-enable-predicate)
+  (setq backup-enable-predicate #'me/my-backup-enable-predicate)
 #+END_SRC
 
 Make _really_ sure that we're using =utf-8=.
@@ -336,7 +336,7 @@ Download these packages if they aren't already downloaded.
                (assoc pkg package-archive-contents))
       (package-install pkg)))
 
-  (defun ff-package-list-unaccounted-packages ()
+  (defun me/package-list-unaccounted-packages ()
     "Like `package-list-packages', but shows only the packages that
     are installed and are not in `elpa-packages'.  Useful for
     cleaning out unwanted packages."
@@ -355,12 +355,12 @@ source file. When this happens, I place it in my =vendor/= folder. All
 =.el= files are loaded on startup.
 
 #+begin_src emacs-lisp
-  (defun ff-load-directory (dir)
+  (defun me/load-directory (dir)
     (let ((load-it (lambda (f)
                      (load-file (concat (file-name-as-directory dir) f)))
                    ))
       (mapc load-it (directory-files dir nil "\\.el$"))))
-  (ff-load-directory (concat emacs-root "/vendor/"))
+  (me/load-directory (concat emacs-root "/vendor/"))
 #+end_src
 
 ** Auto-customization
@@ -452,8 +452,8 @@ something I just told it to do. And if it must, I want that
 interaction to be as non-intrusive as possible.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-dummy-ring-bell-function () nil)    ; replace beep with visible bell
-  (setq ring-bell-function `ff-dummy-ring-bell-function)
+  (defun me/dummy-ring-bell-function () nil)    ; replace beep with visible bell
+  (setq ring-bell-function `me/dummy-ring-bell-function)
 
   (fset 'yes-or-no-p 'y-or-n-p)                 ; y or n instead of yes or no
   (setq confirm-nonexistent-file-or-buffer nil) ; just open new buffers
@@ -593,9 +593,9 @@ The code block below toggles between prose and code mode.
 Noto-serif./
 
 #+BEGIN_SRC emacs-lisp
-  (defvar ff-write-state "nowrite")
-  (defvar ff-face-cookie nil)
-  (defun ff-write-toggle ()
+  (defvar me/write-state "nowrite")
+  (defvar me/face-cookie nil)
+  (defun me/write-toggle ()
     "Toggles write-state of current buffer.
 
      Write-state defaults to nil, but when activated, does the following:
@@ -607,26 +607,26 @@ Noto-serif./
      Toggling again reverts the changes."
 
     (interactive)
-    (if (string= ff-write-state "write")
+    (if (string= me/write-state "write")
         (progn
           (message "write-state")
           (setq cursor-type 'bar)
           (variable-pitch-mode 0)
-          (face-remap-remove-relative ff-face-cookie) ; revert to old face
+          (face-remap-remove-relative me/face-cookie) ; revert to old face
           (hl-line-mode 1)
           (olivetti-mode -1)
-          (setq ff-write-state "nowrite"))
+          (setq me/write-state "nowrite"))
       (progn
         (message "not write-state")
         (setq cursor-type '(hbar . 2))
         (variable-pitch-mode 1)
-        (setq ff-face-cookie              ; when changing face, save old
+        (setq me/face-cookie              ; when changing face, save old
               (face-remap-add-relative   ; face in a cookie.
                'default
                '(:family "Noto Serif")))
         (hl-line-mode -1)
         (olivetti-mode 1)
-        (setq ff-write-state "write"))))
+        (setq me/write-state "write"))))
 #+END_SRC
 
 
@@ -757,12 +757,12 @@ I want to be able to insert the em-dash and the en-dash symbols in my
 writing.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-insert-em-dash ()
+  (defun me/insert-em-dash ()
     "Insert an em-dash"
     (interactive)
     (insert "—"))
 
-  (defun ff-insert-en-dash ()
+  (defun me/insert-en-dash ()
     "Insert an em-dash"
     (interactive)
     (insert "–"))
@@ -831,7 +831,7 @@ This is my initial setup of company-mode, which lets me get a nice
 auto-completion thing going when writing code.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-setup-company-mode ()
+  (defun me/setup-company-mode ()
     (company-mode)
     (setq company-idle-delay 1)                ; small delay when proposing suggestions
     (setq company-minimum-prefix-length 2)     ; two characters before suggesting
@@ -854,7 +854,7 @@ auto-completion thing going when writing code.
     )
 
 
-    (add-hook 'prog-mode-hook 'ff-setup-company-mode)
+    (add-hook 'prog-mode-hook 'me/setup-company-mode)
 
 
     (require 'color)
@@ -913,13 +913,13 @@ This function makes it easy to toggle between showing dotfiles and
 hiding them. I bound it in a section a bit further below to =.=.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar ff-dired-dotfiles-shown t "helper var for dired-dotfiles-toggle function." )
-  (defun ff-dired-dotfiles-toggle ()
+  (defvar me/dired-dotfiles-shown t "helper var for dired-dotfiles-toggle function." )
+  (defun me/dired-dotfiles-toggle ()
     "Toggle for displaying or hiding hidden files."
 
     (interactive)
-    (setq ff-dired-dotfiles-shown
-          (if ff-dired-dotfiles-shown
+    (setq me/dired-dotfiles-shown
+          (if me/dired-dotfiles-shown
               (progn
                 (dired-sort-other "-Fhlv --group-directories-first")
                 nil)
@@ -969,7 +969,7 @@ I don't use IRC as much nowadays, but used this config when I did.
             (erc-propertize (concat "ERC>")
                             'read-only t 'rear-nonsticky t 'front-nonsticky t))))
 
-  (defun ff-start-irc ()
+  (defun me/start-irc ()
     "Connect to IRC."
     (interactive)
     (require 'erc)
@@ -1228,7 +1228,7 @@ So this little function changes the default behaviour to keep the
 focus in place.
 
 #+begin_src emacs-lisp
-  (defun ff-toggle-treemacs ()
+  (defun me/toggle-treemacs ()
     "Invoking treemacs moves the window selection to the treemacs
   window and away from whatever I was doing. I want the sidebar to
   just appear without any other changes."
@@ -1336,11 +1336,11 @@ A hook to set things up nicely for mutt.
 For keybindings, see [[Mail keybindings]].
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-mutt-mode-hook ()
+  (defun me/mutt-mode-hook ()
     (visual-line-mode)
     (orgstruct-mode)
     )
-  (add-hook 'message-mode-hook 'ff-mutt-mode-hook)
+  (add-hook 'message-mode-hook 'me/mutt-mode-hook)
 #+END_SRC
 
 ** Adoc-mode-hook
@@ -1514,13 +1514,13 @@ See [[Tide-mode for Javascript]] or [[Tide-mode for JSX]] for more configuration
 ** Java-mode
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-java-mode-hook ()
+  (defun me/java-mode-hook ()
     (c-add-style
      "my-java"
      '("java"
        (c-basic-offset . 2)))
     (c-set-style "my-java"))
-  (add-hook 'java-mode-hook 'ff-java-mode-hook)
+  (add-hook 'java-mode-hook 'me/java-mode-hook)
 #+END_SRC
 
 ** Cperl-mode
@@ -1653,7 +1653,7 @@ configuration I want in the following sections.
   (add-hook 'typescript-mode-hook
             (lambda ()
               (setq company-idle-delay 0.5)
-              (local-set-key (kbd "C-M-,") 'ff-insert-fat-comma)))
+              (local-set-key (kbd "C-M-,") 'me/insert-fat-comma)))
 
   ;; formats the buffer before saving
   (add-hook 'before-save-hook 'tide-format-before-save)
@@ -1719,7 +1719,7 @@ Create a reasonable titlebar for emacs, which works on both windows
 and unix. Note: assumes =HOSTNAME= is exported.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-create-title-format (user host)
+  (defun me/create-title-format (user host)
     "Creates a window title string which works for both win and unix"
     (interactive)
     (list
@@ -1735,8 +1735,8 @@ and unix. Note: assumes =HOSTNAME= is exported.
 
   ;; Set window and icon title.
   (if (eq system-type 'windows-nt)
-      (setq frame-title-format (ff-create-title-format "USERNAME" "COMPUTERNAME"))
-    (setq frame-title-format (ff-create-title-format "USER" "HOSTNAME")))
+      (setq frame-title-format (me/create-title-format "USERNAME" "COMPUTERNAME"))
+    (setq frame-title-format (me/create-title-format "USER" "HOSTNAME")))
 #+END_SRC
 
 ** Buffer navigation functions
@@ -1745,7 +1745,7 @@ This function has been really useful for me, since I often find
 myself wanting to jot something down in some trash buffer.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-switch-to-scratch ()
+  (defun me/switch-to-scratch ()
     "Switch to scratch buffer. Create one in `org-mode' if not exists."
     (interactive)
     (let ((previous (get-buffer "*scratch*")))
@@ -1767,7 +1767,7 @@ doesn't open the file, but call me melodramatic - this name reminds
 me of those other times. :)
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-open-dot-emacs ()
+  (defun me/open-dot-emacs ()
     "Opens my main emacs configuration file."
     (interactive)
     (find-file emacs-root)
@@ -1784,7 +1784,7 @@ for different purposes, I replaced the query for what shell I want
 with a name for the ansi-term buffer.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-ansi-term()
+  (defun me/ansi-term()
     "Starts an ansi-term with optional buffer name"
 
     (interactive)
@@ -1800,13 +1800,13 @@ with a name for the ansi-term buffer.
 
 ** DNS-related functions
 
-The functions ff-generate-ptr-records and ff-sort-A-records were really
+The functions me/generate-ptr-records and me/sort-A-records were really
 useful for me back when I managed Spotify's DNS manually in the
 bad-old-days (which were in fact really good old days despite
 having to deal with our chaos that was DNS :))
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-generate-ptr-records (start-pos end-pos)
+  (defun me/generate-ptr-records (start-pos end-pos)
     "Finds DNS A-records in region, and for each one, creates a PTR
      record in a temporary buffer.
 
@@ -1918,7 +1918,7 @@ having to deal with our chaos that was DNS :))
       )
     )
 
-  (defun ff-sort-A-records (start-pos end-pos)
+  (defun me/sort-A-records (start-pos end-pos)
     "Given a DNS buffer containing a bunch of A-records, this
   function finds all records inside a region and sorts them by ip
   address. The output is placed in a temporary buffer called
@@ -2022,16 +2022,16 @@ These functions are from before 2009, and I'm not 100% sure that
 bitrot hasn't set in.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-random-quote ()
+  (defun me/random-quote ()
     "Gets a random quote"
     (load "fimblo-quotes" nil t)
     (aref fimblo-quotes
           (random (- (length fimblo-quotes) 1)))
     )
 
-  (defun ff-generate-sig ()
+  (defun me/generate-sig ()
     (with-temp-buffer
-      (insert (ff-random-quote))
+      (insert (me/random-quote))
       (goto-char (point-min))
       (fill-paragraph)
       (insert (concat
@@ -2045,7 +2045,7 @@ bitrot hasn't set in.
       )
     )
 
-  (defun ff-kill-signature ()
+  (defun me/kill-signature ()
     "Delete current sig"
     (interactive)
     (end-of-buffer)
@@ -2057,16 +2057,16 @@ bitrot hasn't set in.
           (delete-region start (point))))
     )
 
-  (defun ff-message-replace-sig ()
+  (defun me/message-replace-sig ()
     "Replaces signature with new sig"
     (interactive)
-    (ff-kill-signature)
+    (me/kill-signature)
     (end-of-buffer)
     (delete-char -1)
-    (insert (ff-generate-sig))
+    (insert (me/generate-sig))
     )
 
-  (defun ff-kill-to-signature ()
+  (defun me/kill-to-signature ()
     "Delete all text between text and signature."
     (interactive)
     (setq start (point))
@@ -2080,7 +2080,7 @@ bitrot hasn't set in.
     (previous-line 2)
     )
 
-  (defun ff-mail-snip (b e summ)
+  (defun me/mail-snip (b e summ)
     "remove selected lines, and replace it with [snip:summary (n lines)]"
     (interactive "r\nsSummary: ")
     (let ((n (count-lines b e)))
@@ -2098,7 +2098,7 @@ ways.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun ff-insert-fat-comma ()
+  (defun me/insert-fat-comma ()
     "Inserts a ' => ' at point.
 
      Used in Perl and Javascript."
@@ -2106,7 +2106,7 @@ ways.
     (insert " => ")
     )
 
-  (defun ff-merge-lines ()
+  (defun me/merge-lines ()
     "Make paragraph I am in right now into one line."
     (interactive)
     (let (p)
@@ -2125,7 +2125,7 @@ ways.
         [?\C-a return up ?\C-5 ?\C-0 ?- ?\C-  ?\C-a ?\M-x ?c ?o ?m ?m ?e ?n ?t ?  ?r ?e ?g ?i ?o ?n return down])
 
 
-  (defun ff-insert-time ()
+  (defun me/insert-time ()
     "Insert time at point in format %H:%M:%S. If universal-argument
      is set, use format %H%M%S instead."
     (interactive)
@@ -2133,7 +2133,7 @@ ways.
         (insert (format-time-string "%H%M%S"))
       (insert (format-time-string "%H:%M:%S"))))
 
-  (defun ff-insert-date ()
+  (defun me/insert-date ()
     "Insert date at point in format %Y/%m/%d. If universal-argument
      is set, use format %Y%m%d instead."
     (interactive)
@@ -2141,7 +2141,7 @@ ways.
         (insert (format-time-string "%Y%m%d"))
       (insert (format-time-string "%Y/%m/%d"))))
 
-  (defun ff-insert-datetime ()
+  (defun me/insert-datetime ()
     "Insert datetime at point in format %Y/%m/%d-%H:%M:%S. If
      universal-argument is set, use format %Y%m%d-%H%M%S instead."
     (interactive)
@@ -2149,6 +2149,7 @@ ways.
         (insert (format-time-string "%Y%m%d-%H%M%S"))
       (insert (format-time-string "%Y/%m/%d-%H:%M:%S"))))
 
+  ;; skipping the 'me/' prefix since this needs to be short
   (defun iwb ()
     "indent and untabify whole buffer"
     (interactive)
@@ -2156,7 +2157,7 @@ ways.
     (indent-region (point-min) (point-max) nil)
     (untabify (point-min) (point-max)))
 
-  (defun ff-wrap-text (start end)
+  (defun me/wrap-text (start end)
     "Asks for two strings, which will be placed before and after a
      selected region"
     (interactive "r")
@@ -2171,7 +2172,7 @@ ways.
         (insert suffix)
         )))
 
-  (defun ff-wrap-region (start end)
+  (defun me/wrap-region (start end)
     "Given a prefix and a suffix, this function will wrap each line
   in the region such that they are prefixed with the prefix and
   suffixed with the suffix.
@@ -2248,19 +2249,19 @@ For a couple of years I put all my todos into an org-file called
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun ff-switch-to-todo ()
+  (defun me/switch-to-todo ()
     "Switch to todo buffer. Open file if necessary"
     (interactive)
     (find-file-other-window (concat sys/home "/todo.org"))
     (goto-char (point-min)))
 
-  (defun ff-add-todo ()
+  (defun me/add-todo ()
     "Add a todo to the todo buffer."
     (interactive)
-    (ff-add-todo-helper (read-from-minibuffer "Todo: "))
+    (me/add-todo-helper (read-from-minibuffer "Todo: "))
     )
 
-  (defun ff-add-todo-helper (msg)
+  (defun me/add-todo-helper (msg)
     (save-current-buffer
       (set-buffer (find-file-noselect (concat sys/home "/todo.org")))
       (goto-char (point-min))
@@ -2303,7 +2304,7 @@ down.  For keybindings, see: [[Buffer manipulation]].
 #+BEGIN_SRC emacs-lisp
   ;; http://www.emacswiki.org/emacs/MoveLineRegion
 
-  (defun ff-move-line (&optional n)
+  (defun me/move-line (&optional n)
     "Move current line N (1) lines up/down leaving point in place."
     (interactive "p")
     (when (null n)
@@ -2316,17 +2317,17 @@ down.  For keybindings, see: [[Buffer manipulation]].
       (forward-char col))
     (indent-according-to-mode))
 
-  (defun ff-move-line-up (n)
+  (defun me/move-line-up (n)
     "Moves current line N (1) lines up leaving point in place."
     (interactive "p")
-    (ff-move-line (if (null n) -1 (- n))))
+    (me/move-line (if (null n) -1 (- n))))
 
-  (defun ff-move-line-down (n)
+  (defun me/move-line-down (n)
     "Moves current line N (1) lines down leaving point in place."
     (interactive "p")
-    (ff-move-line (if (null n) 1 n)))
+    (me/move-line (if (null n) 1 n)))
 
-  (defun ff-move-region (start end n)
+  (defun me/move-region (start end n)
     "Move the current region up or down by N lines."
     (interactive "r\np")
     (let ((line-text (delete-and-extract-region start end)))
@@ -2336,23 +2337,23 @@ down.  For keybindings, see: [[Buffer manipulation]].
         (setq deactivate-mark nil)
         (set-mark start))))
 
-  (defun ff-move-region-up (start end n)
+  (defun me/move-region-up (start end n)
     "Move the current region up by N lines."
     (interactive "r\np")
-    (ff-move-region start end (if (null n) -1 (- n))))
+    (me/move-region start end (if (null n) -1 (- n))))
 
-  (defun ff-move-region-down (start end n)
+  (defun me/move-region-down (start end n)
     "Move the current region down by N lines."
     (interactive "r\np")
-    (ff-move-region start end (if (null n) 1 n)))
+    (me/move-region start end (if (null n) 1 n)))
 
-  (defun ff-move-line-region-up (start end n)
+  (defun me/move-line-region-up (start end n)
     (interactive "r\np")
-    (if (region-active-p) (ff-move-region-up start end n) (ff-move-line-up n)))
+    (if (region-active-p) (me/move-region-up start end n) (me/move-line-up n)))
 
-  (defun ff-move-line-region-down (start end n)
+  (defun me/move-line-region-down (start end n)
     (interactive "r\np")
-    (if (region-active-p) (ff-move-region-down start end n) (ff-move-line-down n)))
+    (if (region-active-p) (me/move-region-down start end n) (me/move-line-down n)))
 #+END_SRC
 
 ** Other functions
@@ -2362,7 +2363,7 @@ This function is useful to toggle selective-display, which is often
 indentation - that is, function/method/class names in a buffer.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-toggle-selective-display ()
+  (defun me/toggle-selective-display ()
     "Run this to show only lines in buffer with a non-whitespace
      character on column 0. run again to go back."
     (interactive)
@@ -2375,7 +2376,7 @@ run =eval-and-replace= which replaces the expression with its
 output.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-eval-and-replace ()
+  (defun me/eval-and-replace ()
     "Replace the preceding sexp with its value."
     (interactive)
     (backward-kill-sexp)
@@ -2427,7 +2428,7 @@ keeping it mostly as an example of how to use prefix arguments in
 =(interactive "p")=.
 
 #+BEGIN_SRC emacs-lisp
-  (defun ff-match-paren (arg)
+  (defun me/match-paren (arg)
     "Go to the matching paren if on a paren; otherwise insert %."
     (interactive "p")
     (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
@@ -2511,12 +2512,12 @@ of them should be local too.
   (global-set-key "\C-cc"               'compile)
   (global-set-key "\C-cd"               'gdb)
   (global-set-key "\C-cn"               'next-error)
-  (global-set-key "\C-c\C-d"            'ff-insert-date)
+  (global-set-key "\C-c\C-d"            'me/insert-date)
   (global-set-key (kbd "M-0")           'add-separator)
   (global-set-key [ \C-tab ]            'hippie-expand)
-  (global-set-key [ f6 ]                'ff-toggle-selective-display)
+  (global-set-key [ f6 ]                'me/toggle-selective-display)
   (global-set-key "\C-x\C-y"            'toggle-truncate-lines)
-  (global-set-key [ f7 ]                'ff-ansi-term)
+  (global-set-key [ f7 ]                'me/ansi-term)
   (global-set-key [ f8 ]                'hl-line-mode)
   (global-set-key [ M-f8 ]              'linum-mode)
   (global-set-key (kbd "M-%")           'query-replace-regexp)
@@ -2561,13 +2562,13 @@ Enlarge/shrink this window vertically or horizontally.
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-:")           'iedit-mode)
 
-  (global-set-key (kbd "C-S-e")         'ff-merge-lines)
+  (global-set-key (kbd "C-S-e")         'me/merge-lines)
 
   ;; Move lines and regions up and down
-  (global-set-key [(meta up)]           'ff-move-line-up)
-  (global-set-key [(meta down)]         'ff-move-line-down)
-  (global-set-key [(shift meta up)]     'ff-move-line-region-up)
-  (global-set-key [(shift meta down)]   'ff-move-line-region-down)
+  (global-set-key [(meta up)]           'me/move-line-up)
+  (global-set-key [(meta down)]         'me/move-line-down)
+  (global-set-key [(shift meta up)]     'me/move-line-region-up)
+  (global-set-key [(shift meta down)]   'me/move-line-region-down)
 #+END_SRC
 
 *** Buffer navigation
@@ -2592,8 +2593,8 @@ Enlarge/shrink this window vertically or horizontally.
 *** Opening new buffers
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key [ f5 ]                'ff-switch-to-scratch)
-  (global-set-key [ M-f5 ]              'ff-open-dot-emacs)
+  (global-set-key [ f5 ]                'me/switch-to-scratch)
+  (global-set-key [ M-f5 ]              'me/open-dot-emacs)
 
   (global-set-key (kbd "C-x C-b")       'ibuffer)
 
@@ -2624,7 +2625,7 @@ Enlarge/shrink this window vertically or horizontally.
 *** Treemacs keybindings
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<f1> 1")        'ff-toggle-treemacs)
+  (global-set-key (kbd "<f1> 1")        'me/toggle-treemacs)
 #+end_src
 
 *** Unused global keybindings
@@ -2635,9 +2636,9 @@ Enlarge/shrink this window vertically or horizontally.
   (global-set-key "\C-c\C-k"            'kill-buffer)
   (global-set-key "\C-co"               'org-capture)
   (global-set-key "\C-xm"               'mail)
-  (global-set-key [ f6 ]                'ff-switch-to-todo)
-  (global-set-key [ S-f6 ]              'ff-add-todo)
-  (global-set-key [ f10 ]               'ff-org-show-next-heading-tidily)
+  (global-set-key [ f6 ]                'me/switch-to-todo)
+  (global-set-key [ S-f6 ]              'me/add-todo)
+  (global-set-key [ f10 ]               'me/org-show-next-heading-tidily)
 #+END_EXAMPLE
 
 ** Mode-specific keybindings
@@ -2656,7 +2657,7 @@ I use two different ways of assigning mode-local keybindings.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'js-mode-hook
             (lambda ()
-              (local-set-key (kbd "C-M-,") 'ff-insert-fat-comma)))
+              (local-set-key (kbd "C-M-,") 'me/insert-fat-comma)))
 
 #+END_SRC
 
@@ -2664,14 +2665,14 @@ I use two different ways of assigning mode-local keybindings.
 
 #+begin_src emacs-lisp
   (eval-after-load 'message
-    '(define-key message-mode-map [ f9 ] 'ff-message-replace-sig))
+    '(define-key message-mode-map [ f9 ] 'me/message-replace-sig))
 
   (eval-after-load 'message
-    '(define-key message-mode-map [?\C-c ?\C-k] 'ff-kill-to-signature))
+    '(define-key message-mode-map [?\C-c ?\C-k] 'me/kill-to-signature))
 
   (add-hook 'mail-mode-hook
             #'(lambda ()
-                (define-key mail-mode-map "\C-c\C-w" 'ff-message-replace-sig)
+                (define-key mail-mode-map "\C-c\C-w" 'me/message-replace-sig)
                 ))
 #+end_src
 
@@ -2679,7 +2680,7 @@ I use two different ways of assigning mode-local keybindings.
 
 #+begin_src emacs-lisp
   (add-hook 'cperl-mode-hook
-            #'(lambda () (local-set-key (kbd "C-M-,") 'ff-insert-fat-comma)))
+            #'(lambda () (local-set-key (kbd "C-M-,") 'me/insert-fat-comma)))
 #+end_src
 
 *** Dired keybindings
@@ -2699,7 +2700,7 @@ you've moved your cursor into the contents of the dir, then
     '(progn
        (define-key dired-mode-map (kbd "<tab>")     'dired-subtree-toggle)
        (define-key dired-mode-map (kbd "<backtab>") 'dired-subtree-remove)
-       (define-key dired-mode-map (kbd ".")         'ff-dired-dotfiles-toggle)
+       (define-key dired-mode-map (kbd ".")         'me/dired-dotfiles-toggle)
        )
     )
 #+END_SRC
