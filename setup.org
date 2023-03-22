@@ -436,15 +436,18 @@ The first section above was how emacs presents things to me. This
 section is how it reacts to some of my commands.
 
 #+BEGIN_SRC emacs-lisp
-  (setq case-fold-search t)              ; ignore case in searches
-  (setq compilation-ask-about-save 0)    ; dont ask to save when compiling
-  (setq apropos-do-all t)                ; show all funcs/vars in help
-  (put 'downcase-region 'disabled nil)   ; allow downcase-region commands
-  (put 'upcase-region 'disabled nil)     ; allow downcase-region commands
+  (setq case-fold-search t)           ; ignore case in searches
+  (setq compilation-ask-about-save 0) ; dont ask to save when compiling
+  (setq apropos-do-all t)             ; show all funcs/vars in help
+  (put 'downcase-region 'disabled nil); allow downcase-region commands
+  (put 'upcase-region 'disabled nil)  ; allow downcase-region commands
 
-  (setq next-line-add-newlines t)        ; C-n at eob opens new lines.
-  (setq scroll-step 1)                   ; Moving cursor down at bottom
-                                          ; scrolls only a single line
+  (setq next-line-add-newlines t)     ; C-n at eob opens new lines.
+  (setq scroll-step 1)                ; Moving cursor down at bottom
+                                      ; scrolls only a single line
+  (setq sentence-end-double-space nil); I don't add two spaces after a
+                                      ; period, this makes M-a and M-e
+                                      ; work as intended.
 #+END_SRC
 
 Generally, I don't like programs asking me if I /really/ want to do
