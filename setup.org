@@ -169,7 +169,7 @@ character sets anymore - especially the Japanese ones...
 
 Here are the variables which are private to me, and are assigned in
 the file pointed at by the environment variable
-=EMACS_SECRETSFILE=. No, this file is not in my vc.
+=EMACS_PERSONAL_DATA=. No, this file is not in my vc.
 
 #+BEGIN_SRC emacs-lisp
   (defconst me/emacs/personal-data
