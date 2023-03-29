@@ -632,7 +632,26 @@ Noto-serif./
         (setq me/write-state "write"))))
 #+END_SRC
 
+** Display key bindings
 
+=which-key= is a minor mode which shows the key bindings following any
+incomplete key command in a pop-up.
+
+To page between options, hit =C-h=, then you can see options in the
+mini-buffer.
+
+#+begin_src emacs-lisp
+  (require 'which-key)
+
+  (setq which-key-idle-delay 1.5)
+
+  ;; With this option, I can hit ctrl-h to get which-key to activate
+  ;; earlier than the delay timer
+  (setq which-key-show-early-on-C-h t)
+
+  (which-key-mode)
+  (which-key-setup-side-window-right-bottom)
+#+end_src
 
 ** Icons and modeline
 
