@@ -501,6 +501,13 @@ Get emacs to display time and date.
   (setq display-time-24hr-format t)
 #+END_SRC
 
+I want weeks to start on Mondays rather than Sundays in =M-x calendar=.
+
+#+begin_src emacs-lisp
+  (setq calendar-week-start-day 1)
+#+end_src
+
+
 ** Indentation
 
 Generally, get emacs to indent in multiples of 2 or 4
