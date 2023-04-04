@@ -507,7 +507,6 @@ I want weeks to start on Mondays rather than Sundays in =M-x calendar=.
   (setq calendar-week-start-day 1)
 #+end_src
 
-
 ** Indentation
 
 Generally, get emacs to indent in multiples of 2 or 4
