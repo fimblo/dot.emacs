@@ -491,7 +491,7 @@ other mouse configuration.
   (setq mouse-wheel-follow-mouse t)     ; scrolls mouse pointer position, not pointer
 #+END_SRC
 
-** Time display
+** Time and date
 
 Get emacs to display time and date.
 
