@@ -1695,7 +1695,8 @@ configuration I want in the following sections.
               (local-set-key (kbd "C-M-,") 'me/insert-fat-comma)))
 
   ;; formats the buffer before saving
-  (add-hook 'before-save-hook 'tide-format-before-save)
+  ;; - TODO commented since it interferes with editorconfig
+  ;;  (add-hook 'before-save-hook 'tide-format-before-save)
 #+END_SRC
 
 *** Tide-mode for Javascript
