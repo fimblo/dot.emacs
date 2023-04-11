@@ -10,8 +10,21 @@ if ! which emacsclient > /dev/null 2>&1 ; then
 fi
 
 client=$(deref "$(which emacsclient)")      # location of emacsclient
-[[ $ME == "emc" ]] && client="${client} -c" # create new frame
-client="${client} -n"                       # don't wait for emacs to return
+
+# run in terminal if called as emt
+if [[ $ME == "emt" ]] ; then
+  $client -a '' -t "$@"
+  exit 0
+fi
+
+# create new frame if run as emc
+if [[ $ME == "emc" ]] ; then
+  client="${client} -c"
+fi
+
+
+# don't wait for emacs to return
+client="${client} -n"
 
 # -a with empty string to auto-start emacs daemon
 ${client} -a '' "$@"
