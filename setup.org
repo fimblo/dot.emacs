@@ -1703,8 +1703,7 @@ configuration I want in the following sections.
               ))
 
   ;; formats the buffer before saving
-  ;; - TODO commented since it interferes with editorconfig
-  ;;  (add-hook 'before-save-hook 'tide-format-before-save)
+  (add-hook 'before-save-hook 'tide-format-before-save)
 #+END_SRC
 
 *** Tide-mode for Javascript
