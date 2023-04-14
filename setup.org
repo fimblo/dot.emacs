@@ -1692,7 +1692,15 @@ configuration I want in the following sections.
   (add-hook 'typescript-mode-hook
             (lambda ()
               (setq company-idle-delay 0.5)
-              (local-set-key (kbd "C-M-,") 'me/insert-fat-comma)))
+              (local-set-key (kbd "C-M-,") 'me/insert-fat-comma)
+
+              ;; I noticed that if I don't add editorconfig-apply after
+              ;; setup-tide-mode, the editorconfig rules of the project
+              ;; are overruled by what tide-mode thinks is good-looking
+              ;; code. Very annoying. 
+
+              (editorconfig-apply)
+              ))
 
   ;; formats the buffer before saving
   ;; - TODO commented since it interferes with editorconfig
