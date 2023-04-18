@@ -317,7 +317,7 @@ Download these packages if they aren't already downloaded.
       treemacs-magit                 ; Magit integration for treemacs
       treemacs-projectile            ; Projectile integration for treemacs
       typescript-mode
-
+      which-key
       web-mode
       yaml-mode
 
