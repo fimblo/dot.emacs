@@ -573,10 +573,7 @@ details which I think doesn't look quite right. Fixing it here.
   ;; and the highlight face can also be black
   (set-face-attribute 'highlight nil :background "black")
 
-  ;; For some reason, when searching with isearch, the highlighted color
-  ;; is pink. Making it, and the secondary highlight (all the other
-  ;; instances of the same search string outside of the currently
-  ;; selected one) a bit less... interesting.
+  ;; The highlight color for isearch
   (set-face-attribute 'isearch nil
                       :background "saddle brown"
                       :foreground "white smoke")
