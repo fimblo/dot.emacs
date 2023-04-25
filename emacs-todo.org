@@ -218,6 +218,10 @@ https://www.youtube.com/watch?v=0zuYCEzrchk
 *** TODO Other modes
 - rjsx-mode (major mode for editing jsx files)
 - prettier-js (opinionated js formatter/linter)
+** TODO write function which:
+- converts easily from words with whitespace separators
+- into lowerCamelCase or UpperCamelCase.
+- Something like set mark, then write, then run function
 * Notes, experiments, and stuff
 ** Some notes on ivy
 
@@ -307,7 +311,6 @@ package-install csharp-mode
 #+begin_src 
 lsp-install-server <ret> omnisharp
 #+end_src
-
 
 ** Configure emacs to use lsp for csharp.
 
@@ -418,7 +421,6 @@ Using gccemacs with emacs lisp native compilation (https://akrl.sdf.org/gccemacs
 ;; Increase read-process-output-max from 4k to 1M
 (setq read-process-output-max (* 1024 1024))
 #+end_src
-
 
 ** sr-speedbar
 
