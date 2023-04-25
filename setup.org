@@ -567,8 +567,8 @@ details which I think doesn't look quite right. Fixing it here.
   ;; Make background color a bit lighter..
   (set-face-attribute 'default nil :background "gray21")
 
-  ;; so that the region face can be set to black
-  (set-face-attribute 'region nil :extend t :background "black")
+  ;; .. make the region a light gray
+  (set-face-attribute 'region nil :extend t :background "gray26")
 
   ;; and the highlight face can also be black
   (set-face-attribute 'highlight nil :background "black")
