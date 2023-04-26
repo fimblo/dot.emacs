@@ -2190,8 +2190,43 @@ bitrot hasn't set in.
 
 ** Simple text manipulation
 
-A bunch of small functions which help me modify text in different
-ways.
+Here's a bunch of small functions which help me modify text in
+different ways.
+
+First off, some interactive functions to convert strings into
+camelCase. I bound it to =M-s-c= over in [[Buffer manipulation]].
+
+
+#+begin_src emacs-lisp
+  (defun me/upper-camelcase-region (beg end)
+    "Convert region to upper camelCase."
+    (interactive "r")
+    (let ((str (buffer-substring-no-properties beg end)))
+      (delete-region beg end)
+      (insert (mapconcat 'capitalize (split-string str) ""))))
+
+  (defun me/lower-camelcase-region (beg end)
+    "Convert region to lower camelCase."
+    (interactive "r")
+    (let* ((str (buffer-substring-no-properties beg end))
+           (words (split-string str))
+           (first-word (car words))
+           (rest-words (cdr words)))
+      (delete-region beg end)
+      (insert (concat (downcase first-word)
+                      (mapconcat 'capitalize rest-words "")))))
+
+  (defun me/camelcase-region (beg end &optional upperCamelCase)
+    "Transform words in region to camelCase.
+
+  If the universal argument is given, transform words in region to upperCamelCase."
+    (interactive "rP")
+    (if (equal current-prefix-arg '(4))
+        (me/upper-camelcase-region beg end)
+      (me/lower-camelcase-region beg end)))
+#+end_src
+
+Then the rest which I've written some time in the past.
 
 #+BEGIN_SRC emacs-lisp
 
@@ -2660,6 +2695,7 @@ Enlarge/shrink this window vertically or horizontally.
   (global-set-key (kbd "C-:")           'iedit-mode)
 
   (global-set-key (kbd "C-S-e")         'me/merge-lines)
+  (global-set-key [(shift meta ?c)]     'me/camelcase-region)
 
   ;; Move lines and regions up and down
   (global-set-key [(meta up)]           'me/move-line-up)
