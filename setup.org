@@ -2219,7 +2219,8 @@ camelCase. I bound it to =M-s-c= over in [[Buffer manipulation]].
   (defun me/camelcase-region (beg end &optional upperCamelCase)
     "Transform words in region to camelCase.
 
-  If the universal argument is given, transform words in region to upperCamelCase."
+    If the universal argument is given, transform words instead
+    to upperCamelCase."
     (interactive "rP")
     (if (equal current-prefix-arg '(4))
         (me/upper-camelcase-region beg end)
