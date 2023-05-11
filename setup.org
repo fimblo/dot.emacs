@@ -294,7 +294,7 @@ Download these packages if they aren't already downloaded.
       flycheck
       graphviz-dot-mode
       htmlize
-      iedit
+      iedit                               ; for renaming symbols
       json-mode
       js2-mode
       load-theme-buffer-local
