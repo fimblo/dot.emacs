@@ -731,8 +731,14 @@ How emacs interacts with the world outside of it.
       (setq browse-url-browser-function 'browse-url-default-macosx-browser)
     )
 
-  ;; Use Emacs built-in lisp ls so dired works on all platforms (bsd, gnu, etc)
-  (setq ls-lisp-use-insert-directory-program nil)
+  ;; Use correct 'ls' program regardless of systemm
+  (setq ls-lisp-use-insert-directory-program
+        (if sys/macp  "gls"   ; mac
+          (if sys/linuxp "ls" ; linux
+            nil               ; win or other
+            )))
+  ;; Send the --dired flag to ls if it is supported
+  (setq dired-use-ls-dired "unspecified")
 
   ;; make scripts executable if they aren't already
   (add-hook 'after-save-hook
