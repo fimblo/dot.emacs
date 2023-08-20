@@ -1451,7 +1451,7 @@ I love org-mode, even if I only use a fraction of its capabilities.
 
 #+BEGIN_SRC emacs-lisp
   ;; Basic config of Org
-  (require 'org-install)
+  (require 'org)
   (setq org-startup-indented t)
   (setq org-log-done 'time)
 
