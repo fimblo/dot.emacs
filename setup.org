@@ -726,8 +726,8 @@ How emacs interacts with the world outside of it.
   (setq tramp-default-method "ssh")
   (setq browse-url-browser-function 'browse-url-chromium)
 
-  ;; If on MacOS
-  (if (eq system-type 'darwin)
+  ;; use correct browser on Mac
+  (if sys/macp
       (setq browse-url-browser-function 'browse-url-default-macosx-browser)
     )
 
