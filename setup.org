@@ -421,6 +421,7 @@ Configuration basics.
 
 
   ;; Look and feel for all programming modes
+  (require 'linum)                        ; necessary in newer emacsen
   (add-hook 'prog-mode-hook
             (lambda ()
               (linum-mode 1)              ; show line number in margin
