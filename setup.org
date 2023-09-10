@@ -1,4 +1,4 @@
-
+# -*- mode: org; eval: (diff-hl-mode 1); -*-
 #+TITLE:      My Emacs setup
 #+AUTHOR:     Mattias Jansson (fimblo)
 #+EMAIL:      fimblo@yanson.org
