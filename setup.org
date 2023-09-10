@@ -67,13 +67,13 @@ in the directory =~/.emacs.d=:
   Sometimes I'm lazy and I use emacs itself to customise its
   behaviour. These kinds of customisations end up in this file where
   its separated from my own code. I set it up in section
-  [[Auto-customization]].
+  [[#auto-customization][Auto-customization]].
 
 - =EMACS_PERSONAL_DATA= ::
 
   This environment variable points at the file where I put all
-  personal info. The variables are declared in section [[Declare
-  personal variables]].
+  personal info. The variables are declared in section
+  [[#declare-personal-variables][Declare personal variables]].
 
 * Initial setup
 ** Set up basic environment
@@ -959,7 +959,7 @@ In dired-mode, show directories first, then regular files. Dotfiles
 before non-dotfiles. Also, open dired-mode in the simple
 view. Toggle between simple and detailed view using =(=.
 
-For more keybindings, see [[Dired keybindings]].
+For more keybindings, see [[#dired-keybindings][Dired keybindings]].
 
 #+BEGIN_SRC emacs-lisp
   (setq dired-listing-switches "-aFhlv --group-directories-first")
@@ -1190,7 +1190,7 @@ somehow they often made me feel more frustrated than helped. I was
 introduced to Swiper and friends at an emacs-meetup, and will give
 it a try for a while.
 
-For keybindings, see: [[Swiper/Ivy/Counsel keybindings]]
+For keybindings, see: [[#swiperivycounsel-keybindings][Swiper/Ivy/Counsel keybindings]]
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'ivy-mode-hook
@@ -1299,7 +1299,7 @@ focus in place.
     )
 #+end_src
 
-Treemacs keybindings can be found here: [[Treemacs keybindings]].
+Treemacs keybindings can be found here: [[#treemacs-keybindings][Treemacs keybindings]].
 
 ** Visual-line-mode
 
@@ -1391,7 +1391,7 @@ to drop all credentials.
 
 A hook to set things up nicely for mutt.
 
-For keybindings, see [[Mail keybindings]].
+For keybindings, see [[#mail-keybindings][Mail keybindings]].
 
 #+BEGIN_SRC emacs-lisp
   (defun me/mutt-mode-hook ()
@@ -1563,7 +1563,7 @@ with =#RESULTS:=) will be placed immediately below the shell block.
 
 ** Javascript-mode
 
-See [[Tide-mode for Javascript]] or [[Tide-mode for JSX]] for more configuration stuff.
+See [[#tide-mode-for-javascript][Tide-mode for Javascript]] or [[#tide-mode-for-jsx][Tide-mode for JSX]] for more configuration stuff.
 
 #+begin_src emacs-lisp
   (add-hook 'js-mode-hook 'js2-minor-mode)
@@ -1583,7 +1583,7 @@ See [[Tide-mode for Javascript]] or [[Tide-mode for JSX]] for more configuration
 
 ** Cperl-mode
 
-For keybindings, see [[Perl keybindings]].
+For keybindings, see [[#perl-keybindings][Perl keybindings]].
 
 *** Cperl indentation
 
@@ -2216,7 +2216,7 @@ Here's a bunch of small functions which help me modify text in
 different ways.
 
 First off, some interactive functions to convert strings into
-camelCase. I bound it to =M-s-c= over in [[Buffer manipulation]].
+camelCase. I bound it to =M-s-c= over in [[#buffer-manipulation][Buffer manipulation]].
 
 
 #+begin_src emacs-lisp
@@ -2454,7 +2454,7 @@ presentations.
 ** Moving lines and regions
 
 These functions allow me to move single lines or entire regions up and
-down.  For keybindings, see: [[Buffer manipulation]].
+down.  For keybindings, see: [[#buffer-manipulation][Buffer manipulation]].
 
 #+BEGIN_SRC emacs-lisp
   ;; http://www.emacswiki.org/emacs/MoveLineRegion
@@ -2803,9 +2803,9 @@ Enlarge/shrink this window vertically or horizontally.
 I use two different ways of assigning mode-local keybindings.
 
 1. The first tells emacs to add a key-function mapping to a specific
-   mode-map after it loads the module (e.g. [[Mail keybindings]]).
+   mode-map after it loads the module (e.g. [[#mail-keybindings][Mail keybindings]]).
 2. The second adds a lambda where a key is mapped to a function to a
-   mode's hook. (e.g. [[Javascript keybindings]]).
+   mode's hook. (e.g. [[#javascript-keybindings][Javascript keybindings]]).
 
    I /think/ I like the second method more.
 
