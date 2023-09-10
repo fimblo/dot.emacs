@@ -284,6 +284,7 @@ Download these packages if they aren't already downloaded.
       counsel
       counsel-tramp
       csv-mode
+      diff-hl
       dired-subtree
                                           ; docker
                                           ; docker-compose-mode
@@ -415,7 +416,7 @@ Configuration basics.
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (context-menu-mode 1)                   ; right-click to get menu
-  (fringe-mode nil)                       ; set default fringe
+  (fringe-mode '(12 . 0))                 ; set default fringe
 
   (if (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
@@ -427,6 +428,7 @@ Configuration basics.
               (linum-mode 1)              ; show line number in margin
               (hl-line-mode 1)            ; highlight the current line
               (show-paren-mode t)         ; show matching parens
+              (turn-on-diff-hl-mode)      ; show changes
               )
             )
 #+END_SRC
@@ -585,8 +587,8 @@ details which I think doesn't look quite right. Fixing it here.
 
   ;; Fringe in the same color as default.
   (set-face-attribute 'fringe nil
-                      :foreground (face-foreground 'default)
-                      :background (face-background 'default))
+                      :foreground "white"
+                      :background "black")
 #+END_SRC
 
 Make the highlighted line a tad darker than the default background.
@@ -936,6 +938,16 @@ Really useful for copying text from one buffer to another.
   ;;(setq cua-overwrite-cursor-color "red")      ; in Overwrite mode, cursor is red
   ;;(setq cua-global-mark-cursor-color "yellow") ; in Global mark mode, cursor is yellow
 #+END_SRC
+** Diff-hl-mode
+
+Fix the fringe symbols so that they are more visible.
+#+begin_src emacs-lisp
+  ;; (setq diff-hl-fringe-indicator-alist
+  ;;     '((insert . ("+" . diff-hl-insert))
+  ;;       (delete . ("-" . diff-hl-delete))
+  ;;       (change . ("~" . diff-hl-change))))
+  ;; (setq diff-hl-show-hunk-numbers t)
+#+end_src
 
 ** Dired-mode
 *** Order to display files
