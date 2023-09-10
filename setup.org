@@ -571,7 +571,7 @@ details which I think doesn't look quite right. Fixing it here.
   (set-face-attribute 'default nil :background "gray21")
 
   ;; .. make the region a light gray
-  (set-face-attribute 'region nil :extend t :background "gray26")
+  (set-face-attribute 'region nil :extend t :background "gray28")
 
   ;; and the highlight face can also be black
   (set-face-attribute 'highlight nil :background "black")
