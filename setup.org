@@ -279,6 +279,7 @@ Download these packages if they aren't already downloaded.
       all-the-icons-ivy
                                           ; apache-mode
                                           ; auctex
+      blacken
       column-marker
       company
       counsel
@@ -1424,8 +1425,10 @@ For reading asciidoc files.
                             (insert "#!/usr/bin/env python\n")
                             (insert "# -*- tab-width: 4 -*-\n")
                             )))))
-
+  (add-hook 'python-mode-hook 'blacken-mode)
 #+END_SRC
+
+
 
 ** DNS-mode
 
