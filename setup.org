@@ -416,7 +416,7 @@ Configuration basics.
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (context-menu-mode 1)                   ; right-click to get menu
-  (fringe-mode '(12 . 0))                 ; set default fringe
+  (fringe-mode '(12 . 12))                 ; set default fringe
 
   (if (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
@@ -950,6 +950,7 @@ For some reason, these don't work very well at all.
         (change . ("~" . diff-hl-change))))
   (setq diff-hl-show-hunk-numbers t)
   (setq diff-hl-draw-borders t)
+  (setq diff-hl-fringe-side 'right)
 #+end_src
 
 ** Dired-mode
