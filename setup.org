@@ -1118,6 +1118,13 @@ Dependencies: =shellcheck= (homebrew, apt, etc)
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sh-mode-hook 'flycheck-mode)
+
+  (with-eval-after-load 'flycheck
+  ;; Disable sh-posix-dash
+  (setq-default flycheck-disabled-checkers '(sh-posix-dash))
+  ;; Ensure sh-bash is enabled
+  (add-to-list 'flycheck-checkers 'sh-bash))
+
 #+END_SRC
 
 ** Flyspell-mode
