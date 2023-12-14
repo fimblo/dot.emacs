@@ -1332,10 +1332,10 @@ focus in place.
      ((= me/sidebar-state 2)
       (if (get-buffer-window "*Ilist*")
           (delete-window (get-buffer-window "*Ilist*"))
-        (imenu-list-minor-mode 1)))
+        (imenu-list-minor-mode 1))
+      )
+     ;; else close everything
      (t
-
-      ;; else close everything
       (when (get-buffer-window "*Treemacs*")
         (delete-window (get-buffer-window "*Treemacs*")))
       (when (get-buffer-window "*Ilist*")
