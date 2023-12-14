@@ -297,6 +297,7 @@ Download these packages if they aren't already downloaded.
       graphviz-dot-mode
       htmlize
       iedit                               ; for renaming symbols
+      imenu-list                          ; for showing code symbols in sidebar
       json-mode
       js2-mode
       load-theme-buffer-local
@@ -1306,9 +1307,63 @@ focus in place.
       (select-window old-win)
       )
     )
+
+  (defvar me/sidebar-state 0
+    "Track the state of the sidebar.
+     0 - No sidebar, 1 - Treemacs, 2 - imenu-list.")
+
+  (defun me/toggle-sidebar ()
+    "Toggle between no sidebar, Treemacs, and imenu-list."
+    (interactive)
+
+    ;; increment and wrap around
+    (setq me/sidebar-state (mod (1+ me/sidebar-state) 3))
+
+    (cond
+     ;; if treemacs
+     ((= me/sidebar-state 1)
+      (let ((old-win (selected-window)))
+        (treemacs)
+        (select-window old-win)
+        )
+      )
+
+     ;; if imenu-list
+     ((= me/sidebar-state 2)
+      (if (get-buffer-window "*Ilist*")
+          (delete-window (get-buffer-window "*Ilist*"))
+        (imenu-list-minor-mode 1)))
+     (t
+
+      ;; else close everything
+      (when (get-buffer-window "*Treemacs*")
+        (delete-window (get-buffer-window "*Treemacs*")))
+      (when (get-buffer-window "*Ilist*")
+        (delete-window (get-buffer-window "*Ilist*"))))
+     )
+    )
+
+
+
+  ;; Optional: bind this function to a key
+  (global-set-key (kbd "<your-preferred-key>") 'me/toggle-sidebar)
 #+end_src
 
 Treemacs keybindings can be found here: [[#treemacs-keybindings][Treemacs keybindings]].
+
+** Imenu-list
+
+To show code symbols in the sidebar next to treemacs
+#+begin_src emacs-lisp
+  (require 'imenu-list)
+
+  (setq imenu-list-position 'left)
+
+  ;(setq imenu-list-size 30)
+
+  ;; Keybinding to toggle the imenu-list
+  ;(global-set-key (kbd "<f9>") 'imenu-list-smart-toggle)
+#+end_src
 
 ** Visual-line-mode
 
