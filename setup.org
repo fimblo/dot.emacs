@@ -1,4 +1,4 @@
-# -*- mode: org; -*-
+
 #+TITLE:      My Emacs setup
 #+AUTHOR:     Mattias Jansson (fimblo)
 #+EMAIL:      fimblo@yanson.org
@@ -2687,17 +2687,9 @@ of them should be local too.
 *** General keybindings
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key "\C-cc"               'compile)
-  (global-set-key "\C-cd"               'gdb)
-  (global-set-key "\C-cn"               'next-error)
   (global-set-key "\C-c\C-d"            'me/insert-date)
-  (global-set-key (kbd "M-0")           'add-separator)
-  (global-set-key [ \C-tab ]            'hippie-expand)
-  (global-set-key [ f6 ]                'me/toggle-selective-display)
   (global-set-key "\C-x\C-y"            'toggle-truncate-lines)
   (global-set-key [ f7 ]                'me/ansi-term)
-  (global-set-key [ f8 ]                'hl-line-mode)
-  (global-set-key [ M-f8 ]              'linum-mode)
   (global-set-key (kbd "M-%")           'query-replace-regexp)
   (global-set-key (kbd "C-x SPC")       'whitespace-mode)
 #+END_SRC
@@ -2831,17 +2823,32 @@ I use two different ways of assigning mode-local keybindings.
    mode's hook. (e.g. [[#javascript-keybindings][Javascript keybindings]]).
 
    I /think/ I like the second method more.
-*** Prog-mode
+
+*** Prog-mode keybindings
+
+Available in all prog-modes.
 
 #+begin_src emacs-lisp
+
   (defun me/revert-buffer-with-fine-grain ()
     (interactive)
     (revert-buffer-with-fine-grain nil t))
 
   (add-hook 'prog-mode-hook
             (lambda ()
-              (local-set-key (kbd "C-x x g") 'me/revert-buffer-with-fine-grain)))
-
+              (progn
+                (local-set-key "\C-cc"         'compile)
+                (local-set-key "\C-cd"         'gdb)
+                (local-set-key "\C-cn"         'next-error)
+                (local-set-key (kbd "M-0")     'add-separator)
+                (local-set-key [ \C-tab ]      'hippie-expand)
+                (local-set-key [ f6 ]          'me/toggle-selective-display)
+                (local-set-key [ f8 ]          'hl-line-mode)
+                (local-set-key [ M-f8 ]        'linum-mode)
+                (local-set-key (kbd "C-x x g") 'me/revert-buffer-with-fine-grain)
+                )
+              )
+            )
 #+end_src
 
 *** Javascript keybindings
