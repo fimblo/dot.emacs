@@ -10,4 +10,5 @@
 /projectile-bookmarks.eld
 /eshell/history
 /eshell/lastdir
-/.cache
+/.cache.DS_Store
+/projects
