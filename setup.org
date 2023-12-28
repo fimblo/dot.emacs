@@ -2838,9 +2838,14 @@ I use two different ways of assigning mode-local keybindings.
 *** Prog-mode
 
 #+begin_src emacs-lisp
+  (defun me/revert-buffer-with-fine-grain ()
+    (interactive)
+    (revert-buffer-with-fine-grain nil t))
+
   (add-hook 'prog-mode-hook
             (lambda ()
-              (local-set-key (kbd "C-x x g") 'revert-buffer-with-fine-grain)))
+              (local-set-key (kbd "C-x x g") 'me/revert-buffer-with-fine-grain)))
+
 #+end_src
 
 *** Javascript keybindings
