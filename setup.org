@@ -1593,6 +1593,17 @@ See [[#tide-mode-for-javascript][Tide-mode for Javascript]] or [[#tide-mode-for-
   (add-hook 'java-mode-hook 'me/java-mode-hook)
 #+END_SRC
 
+** C-mode
+#+begin_src emacs-lisp
+  (defun insert-c-function-doc-comment ()
+  "Insert a C function-style doc comment and position the cursor."
+  (interactive)
+  (insert "/**\n")
+  (insert " * \n")
+  (insert " */")
+  (forward-line -1)
+  (move-end-of-line nil))
+#+end_src
 ** Cperl-mode
 
 For keybindings, see [[#perl-keybindings][Perl keybindings]].
