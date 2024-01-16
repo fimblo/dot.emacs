@@ -255,18 +255,8 @@ Download these packages if they aren't already downloaded.
   (defvar elpa-packages
     '(
 
-      ;; Some themes first
+      ;; Emacs theme
       gruvbox-theme
-                                          ; ample-theme
-                                          ; arjen-grey-theme
-                                          ; atom-dark-theme
-                                          ; badger-theme
-                                          ; birds-of-paradise-plus-theme
-                                          ; darkburn-theme
-                                          ; darkmine-theme
-                                          ; darkokai-theme
-                                          ; darktooth-theme
-                                          ; dracula-theme
 
 
       ;; Other packages
