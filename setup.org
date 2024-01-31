@@ -1107,15 +1107,14 @@ Dependencies: None
 *** Flycheck for bash
 Dependencies: =shellcheck= (homebrew, apt, etc)
 
+To get shellcheck to correctly check sourced bash files, make sure to
+add the =#!/bin/bash= shebang.
+
 #+BEGIN_SRC emacs-lisp
   (add-hook 'sh-mode-hook 'flycheck-mode)
 
   (with-eval-after-load 'flycheck
-  ;; Disable sh-posix-dash
-  (setq-default flycheck-disabled-checkers '(sh-posix-dash))
-  ;; Ensure sh-bash is enabled
-  (add-to-list 'flycheck-checkers 'sh-bash))
-
+    (setq flycheck-checker 'sh-shellcheck))
 #+END_SRC
 
 ** Flyspell-mode
