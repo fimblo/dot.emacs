@@ -1,0 +1,26 @@
+name: Emacs Syntax Check
+
+on: [push, pull_request]
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add Emacs PPA
+      run: |
+        sudo add-apt-repository ppa:kelleyk/emacs -y
+        sudo apt-get update
+
+    - name: Install Emacs
+      run: sudo apt-get install emacs28
+
+    - name: set up environment
+      run: |
+        echo $PWD
+        find .
+
+    - name: Check emacs init.el for syntax errors
+      run: emacs --batch --eval '(check-parens)' --script init.el
