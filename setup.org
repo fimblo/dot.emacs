@@ -24,7 +24,7 @@ major mode with all bells and whistles you're used to.
 This document is my so-called dot-emacs file. Actually, it's not -
 not really. When my emacs instance starts up, it looks for and finds
 a file called =~/.emacs.d/init.el=, which it loads and applies. It
-currently looks like this:
+could look something like this:
 
 #+BEGIN_SRC 
   ;; Minimal config here. The rest will be in setup.org
