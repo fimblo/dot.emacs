@@ -97,7 +97,7 @@ running in.
 
 #+BEGIN_SRC emacs-lisp
   (defconst sys/emacs-root
-    (file-name-directory user-init-file))
+    (file-name-directory user-init-file)
   "Path to repo of this emacs configuration")
   
   (defconst sys/hostname
