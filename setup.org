@@ -90,6 +90,10 @@ Set some constants on the environment this instance of emacs is
 running in.
 
 #+BEGIN_SRC emacs-lisp
+  (defconst sys/emacs-root
+    (file-name-directory user-init-file))
+  "Path to repo of this emacs configuration")
+  
   (defconst sys/hostname
     (getenv "HOSTNAME")          "This machine's hostname")
   (defconst sys/home
@@ -119,9 +123,6 @@ constants since I might want to change them during runtime.
   ;; filename.el
   (defvar this-file (or load-file-name (buffer-file-name)))
   (defvar this-file-org (replace-regexp-in-string ".el" ".org" this-file))
-
-  (defvar emacs-root
-        (file-name-directory (or (file-symlink-p this-file) this-file)))
 
   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
   (setq exec-path (append exec-path '("/usr/local/bin")))
@@ -212,13 +213,44 @@ Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/m
 
 #+BEGIN_SRC emacs-lisp
   ;; mkdir these and add them to load path
-  (dolist (path '(  "~/.emacs.d/elpa/"     ;; emacs-lisp package archive
-                    "~/.emacs.d/el-get/"   ;; packages from el-get
-                    "~/.emacs.d/vendor/")) ;; stuff I downloaded myself
+  (dolist (path `(  ,(concat sys/emacs-root "elpa/")     ;; emacs-lisp package archive
+                    ,(concat sys/emacs-root "el-get/")   ;; packages from el-get
+                    ,(concat sys/emacs-root "vendor/"))) ;; stuff I downloaded myself
     (make-directory path t)
     (let ((default-directory path))
       (normal-top-level-add-subdirs-to-load-path)))
+#+END_SRC
 
+
+I made a lisp-learning today: In the code above, I need to use a
+backtick and comma in order to evaluate the functions in the list. It
+used to look like this:
+#+begin_example emacs-lisp
+  (dolist (path '(  "~/.emacs.d/elpa/"
+          ...
+#+end_example
+
+As you can see, it was a list (denoted by the single-quote before the
+left-paren) with strings in it. Earlier today, I replaced the full
+path to =elpa/= with a function =concat= which concatenated the path to
+the configuration directory with the string =elpa/=, like so:
+#+begin_example emacs-lisp
+  (dolist (path `(  ,(concat sys/emacs-root "elpa/")
+          ...
+#+end_example
+
+This would help me make the configuration agnostic to where in the
+filesystem it was installed - a necessary prerequisite to having a
+github action syntax check, where it will be installed in another
+place than =~/.emacs.d=.
+
+The backtick is a lispism to make the interpreter selectively evaluate
+any function prefixed with a comma symbol. Cool!
+
+Oh, and the practice is called /Quasi-quotation/.
+
+
+#+BEGIN_SRC emacs-lisp
   (require 'package)
 
   ;; add these sources
@@ -353,7 +385,7 @@ source file. When this happens, I place it in my =vendor/= folder. All
                      (load-file (concat (file-name-as-directory dir) f)))
                    ))
       (mapc load-it (directory-files dir nil "\\.el$"))))
-  (me/load-directory (concat emacs-root "/vendor/"))
+  (me/load-directory (concat sys/emacs-root "vendor/"))
 #+end_src
 
 ** Auto-customization
@@ -361,7 +393,7 @@ source file. When this happens, I place it in my =vendor/= folder. All
 Move all customization stuff to another file.
 
 #+BEGIN_SRC emacs-lisp
-  (setq custom-file "~/.emacs.d/custom.el")
+  (setq custom-file (concat sys/emacs-root "custom.el"))
   (load custom-file 'noerror)
 #+END_SRC
 
@@ -1848,7 +1880,7 @@ me of those other times. :)
   (defun me/open-dot-emacs ()
     "Opens my main emacs configuration file."
     (interactive)
-    (find-file emacs-root)
+    (find-file sys/emacs-root)
     (end-of-buffer)
     (search-backward (concat (file-name-base this-file-org)
                              (file-name-extension this-file-org t)))
