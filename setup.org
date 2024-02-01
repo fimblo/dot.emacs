@@ -1,4 +1,3 @@
-
 #+TITLE:      My Emacs setup
 #+AUTHOR:     Mattias Jansson (fimblo)
 #+EMAIL:      fimblo@yanson.org
@@ -18,6 +17,7 @@ specified a language after the text #+BEGIN_SRC, you will get that
 major mode with all bells and whistles you're used to.
 
 #+END_COMMENT
+[[https://github.com/fimblo/dot.emacs/actions/workflows/syntax-check.yml/badge.svg]]
 
 * Introduction
 
