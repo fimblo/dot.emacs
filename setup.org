@@ -84,6 +84,12 @@ set up some basics.
 #+BEGIN_SRC emacs-lisp
   (setq message-log-max
         (- (expt 2 15) 1))      ; Make message log big
+
+  ;; when running emacs in batch mode, user-init-file is not set.
+  (unless user-init-file
+    (setq user-init-file (concat default-directory "init.el"))
+  )
+
 #+END_SRC
 
 Set some constants on the environment this instance of emacs is
