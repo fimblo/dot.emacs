@@ -14,13 +14,13 @@ jobs:
         sudo add-apt-repository ppa:kelleyk/emacs -y
         sudo apt-get update
 
-    - name: Install Emacs
+    - name: Install Emacs28
       run: sudo apt-get install emacs28
 
-    - name: set up environment
+    - name: Set up environment
       run: |
         echo $PWD
         find .
 
-    - name: Check emacs init.el for syntax errors
+    - name: Check emacs configuration for syntax errors
       run: emacs --batch --eval '(check-parens)' --script init.el
