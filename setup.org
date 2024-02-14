@@ -36,6 +36,9 @@ could look something like this:
   ;; EOF
 #+END_SRC
 
+In reality it's slightly more convoluted, since we can't assume that
+=setup.org= resides in =~/.emacs.d=. But anyway.
+
 It starts by loading the emacs lisp packages, and activating
 them. After that, it loads =org-mode= and using babel, expands the
 document you're reading now.
@@ -84,22 +87,15 @@ set up some basics.
 #+BEGIN_SRC emacs-lisp
   (setq message-log-max
         (- (expt 2 15) 1))      ; Make message log big
-
-  ;; when running emacs in batch mode, user-init-file is not set.
-  (unless user-init-file
-    (setq user-init-file (concat default-directory "init.el"))
-  )
-
 #+END_SRC
 
 Set some constants on the environment this instance of emacs is
 running in.
 
 #+BEGIN_SRC emacs-lisp
-  (defconst sys/emacs-root
-    (file-name-directory user-init-file)
-  "Path to repo of this emacs configuration")
-  
+  ;; We also have a sys/emacs-root defined in init.el.
+  ;; This points at the directory this file is in.
+
   (defconst sys/hostname
     (getenv "HOSTNAME")          "This machine's hostname")
   (defconst sys/home
