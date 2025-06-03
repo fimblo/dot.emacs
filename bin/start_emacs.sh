@@ -40,4 +40,5 @@ fi
 client="${client} -n"
 
 # -a with empty string to auto-start emacs daemon
+export TERM=xterm
 ${client} -a '' "$@"
