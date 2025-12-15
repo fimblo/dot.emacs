@@ -272,6 +272,7 @@ If this is a clean install of emacs, then it will update the package
 list. This updating it from the various sources takes time, we skip it
 otherwise.
 
+
 Note to self: If this isn't a clean install but instead a major
 upgrade (like I just did from emacs26 to emacs28) you might need to
 call =package-refresh-contents= manually once. Or do a =M-x
@@ -302,7 +303,7 @@ Download these packages if they aren't already downloaded.
       all-the-icons-ibuffer
       all-the-icons-ivy
                                           ; apache-mode
-                                          ; auctex
+      auctex
       blacken
       column-marker
       company
@@ -875,6 +876,13 @@ there's another extension you could use for firefox too.
   ;; (setq atomic-chrome-extension-type-list '(atomic-chrome))
   ;;(setq atomic-chrome-default-major-mode 'markdown-mode)
 #+END_SRC
+
+** AUCTeX mode
+
+Enable support for creating pdf from tex files, highlighting etc.
+
+To build and display a tex file as pdf, hit =C-c C-a=, mapped to
+=TeX-command-run-all=.
 
 ** Comint-mode
 
