@@ -891,7 +891,7 @@ This text below modifies the syntax highlighting of the content of
 (defun my-latex-marginnote-font-lock ()
   (font-lock-add-keywords
    nil
-   '(("\\\\marginnote\\({\\([^}]*\\)}\\)"
+   '(("\\\\marginnote{\\(\\([^}]*\\)\\)}"
       (1 font-lock-function-name-face)
       (2 font-lock-string-face)))))
 
