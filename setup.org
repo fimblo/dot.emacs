@@ -887,7 +887,7 @@ To build and display a tex file as pdf, hit =C-c C-a=, mapped to
 This text below modifies the syntax highlighting of the content of
 =\marginnote{}= so that it stands out.
 
-#+BEGIN_SRC
+#+BEGIN_SRC emacs-lisp
 (defun my-latex-marginnote-font-lock ()
   (font-lock-add-keywords
    nil
