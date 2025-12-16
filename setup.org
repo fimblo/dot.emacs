@@ -884,6 +884,20 @@ Enable support for creating pdf from tex files, highlighting etc.
 To build and display a tex file as pdf, hit =C-c C-a=, mapped to
 =TeX-command-run-all=.
 
+This text below modifies the syntax highlighting of the content of
+=\marginnote{}= so that it stands out.
+
+#+BEGIN_SRC
+(defun my-latex-marginnote-font-lock ()
+  (font-lock-add-keywords
+   nil
+   '(("\\\\marginnote\\({\\([^}]*\\)}\\)"
+      (1 font-lock-function-name-face)
+      (2 font-lock-string-face)))))
+
+(add-hook 'LaTeX-mode-hook #'my-latex-marginnote-font-lock)
+#+END_SRC
+
 ** Comint-mode
 
 =Comint-mode= is essential for emacs to interact with another
