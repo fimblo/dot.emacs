@@ -799,22 +799,6 @@ Not only is this pretty, it saves some space on the screen :)
 #+END_SRC
 
 * Modes - Emacs behaviour
-
-** Atomic-chrome
-
-A nifty tool which enables me to edit text areas in google chrome
-inside of an emacs frame. To get this to work, make sure you
-install [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc][the Atomic-chrome extension]] for Google chrome. Apparently
-there's another extension you could use for firefox too.
-
-#+BEGIN_SRC emacs-lisp
-  ;; (require 'atomic-chrome)
-  ;; (atomic-chrome-start-server)
-  ;; (setq atomic-chrome-buffer-open-style 'frame)
-  ;; (setq atomic-chrome-extension-type-list '(atomic-chrome))
-  ;;(setq atomic-chrome-default-major-mode 'markdown-mode)
-#+END_SRC
-
 ** AUCTeX mode
 
 Enable support for creating pdf from tex files, highlighting etc.
