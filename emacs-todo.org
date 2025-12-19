@@ -22,13 +22,15 @@ replace the entire section with
     (set-language-environment "UTF-8")
     (set-default-coding-systems 'utf-8)
 #+end_src
-** TODO  normal-backup-enable-predicate doesn't exist.
+** DONE normal-backup-enable-predicate doesn't exist.
+CLOSED: [2025-12-19 Fri 16:55]
   consider replacing my function with:
   #+begin_src emacs-lisp
     (defun me/my-backup-enable-predicate (name)
       (not (or (string-prefix-p "~/gdrive/" name)
-	       (string-prefix-p "/some/other/directory/" name))))
+           (string-prefix-p "/some/other/directory/" name))))
     (setq backup-enable-predicate #'me/my-backup-enable-predicate)
+    
   #+end_src
 ** TODO consider replacing scroll-step 1 with pixel-scroll-precision-mode
 ** TODO consider replacing projectile in favour of project.el
