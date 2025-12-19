@@ -449,10 +449,9 @@ Configuration basics.
 
 
   ;; Look and feel for all programming modes
-  (require 'linum)                        ; necessary in newer emacsen
   (add-hook 'prog-mode-hook
             (lambda ()
-              (linum-mode 1)              ; show line number in margin
+              (display-line-numbers-mode 1) ; show line number in margin
               (hl-line-mode 1)            ; highlight the current line
               (show-paren-mode t)         ; show matching parens
               )
@@ -2889,7 +2888,7 @@ Available in all prog-modes.
                 (local-set-key [ \C-tab ]      'hippie-expand)
                 (local-set-key [ f6 ]          'me/toggle-selective-display)
                 (local-set-key [ f8 ]          'hl-line-mode)
-                (local-set-key [ M-f8 ]        'linum-mode)
+                (local-set-key [ M-f8 ]        'display-line-numbers-mode)
                 (local-set-key (kbd "C-x x g") 'me/revert-buffer-with-fine-grain)
                 )
               )

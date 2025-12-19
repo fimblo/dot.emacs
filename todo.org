@@ -1,14 +1,15 @@
 * Todo
-- [ ] fix the '<s' problem. (require 'org-tempo)
-- [ ] http://orgmode.org/elpa/ is discontinued.
-      It's distributed by GNU Elpa
-- [ ] linum-mode is slow.
+- [X] linum-mode is slow.
   replace (require 'linum) and (linum-mode 1) with (display-line-numbers-mode 1)
   and if I want globally:
 
   #+begin_src emacs-lisp
     (global-display-line-numbers-mode 1)
   #+end_src
+
+- [ ] fix the '<s' problem. (require 'org-tempo)
+- [ ] http://orgmode.org/elpa/ is discontinued.
+      It's distributed by GNU Elpa
 - [ ] spaceline is dead.
   replace with doom-modeline
   (add to elpa-packages, then '(doom-modeline-mode 1)'
