@@ -1,5 +1,5 @@
 ;; Minimal config here. The rest will be in setup.org
-(package-initialize)     ; This needs to be early in config
+;;(package-initialize)     ; This needs to be early in config
 (require 'org)           ; Load org so we can use babel
 
 ;; Then we're running emacs in interactive mode (the normal way) and

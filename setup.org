@@ -27,7 +27,6 @@ could look something like this:
 
 #+BEGIN_SRC 
   ;; Minimal config here. The rest will be in setup.org
-  (package-initialize)     ; This needs to be early in config
   (require 'org)           ; Load org so we can use babel
 
   (org-babel-load-file     ; Load my setup file
@@ -231,10 +230,9 @@ reasons, I call it 'vendor'.
     )
 #+END_SRC
 
-Initialise the package system, and refresh the local copy if it's old.
+Refresh the local copy of the package list if it's old.
 
 #+BEGIN_SRC emacs-lisp
-(package-initialize)
 (unless package-archive-contents (package-refresh-contents))
 #+END_SRC
 
