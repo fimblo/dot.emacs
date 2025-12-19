@@ -16,7 +16,8 @@ this feature has moved to org-temp
 ** TODO spaceline is not maintained. dead.
 replace with doom-modeline
 (doom-modeline-mode 1)
-** TODO encoding overkill
+** DONE encoding overkill
+CLOSED: [2025-12-19 Fri 17:36]
 replace the entire section with
 #+begin_src emacs-lisp
     (set-language-environment "UTF-8")

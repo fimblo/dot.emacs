@@ -144,9 +144,14 @@ I'm so glad I don't have to fool around with all those old
 character sets anymore - especially the Japanese ones...
 
 #+BEGIN_SRC emacs-lisp
-  (set-default-coding-systems     'utf-8)
-  (prefer-coding-system           'utf-8)
-  (set-language-environment       "UTF-8")
+  ;; sets a bunch of defaults to be consistent with UTF-8
+  (set-language-environment   "UTF-8")
+
+  ;; default to UTF-8 when creating new buffers and files
+  (set-default-coding-systems 'utf-8)
+
+  ;; When guessing a file's encoding, try UTF-8 first
+  (prefer-coding-system       'utf-8)
 #+END_SRC
 
 ** Auto-customization
