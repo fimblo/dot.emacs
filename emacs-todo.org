@@ -7,6 +7,48 @@
 
 Here's a list of stuff I want to add to my configuration:
 
+** DONE Linum-mode is slow
+replaced with (display-line-numbers-mode 1) or without the arg to toggle
+** DONE rewrite package sections and use use-package
+** TODO fix the '<s' problem
+this feature has moved to org-temp
+(require 'org-tempo)
+** TODO spaceline is not maintained. dead.
+replace with doom-modeline
+(doom-modeline-mode 1)
+** TODO encoding overkill
+replace the entire section with
+#+begin_src emacs-lisp
+    (set-language-environment "UTF-8")
+    (set-default-coding-systems 'utf-8)
+#+end_src
+** TODO  normal-backup-enable-predicate doesn't exist.
+  consider replacing my function with:
+  #+begin_src emacs-lisp
+    (defun me/my-backup-enable-predicate (name)
+      (not (or (string-prefix-p "~/gdrive/" name)
+	       (string-prefix-p "/some/other/directory/" name))))
+    (setq backup-enable-predicate #'me/my-backup-enable-predicate)
+  #+end_src
+** TODO consider replacing scroll-step 1 with pixel-scroll-precision-mode
+** TODO consider replacing projectile in favour of project.el
+** TODO consider using =repeat-mode=.
+  Instead of typing c-x o c-x o to switch windows twice, I can type c-x o o.
+** TODO compile native machine code
+  apparently I can compile to native machine code instead of just interpreting el files.
+** TODO move custom.el to top of the file
+  since emacs's variables are available to my code.
+** TODO consider vertico+consult+marginaila
+  inetad of counsel/swiper/ivy
+** TODO treemacs is slow
+  consdicer eaf-browser or the built-in projectile-find-file
+** TODO instead of tide/js2-mode use eglot
+  remove tide-js2-mode and add '(global-eglot-ensure)'
+** TODO mpg123 is unmaintained
+** TODO atomic-chrome is broken
+** TODO diff-hl is very very slow
+
+
 ** DONE omnisharp - completion
 was a little outdated, and people seem to be using lsp. But perhaps this is the best tool for csharp??
 ** DONE flycheck-mode
