@@ -208,172 +208,107 @@ the file pointed at by the environment variable
 
 ** Package.el configuration
 
-This needs to be in place before any configurations of installed
-packages.
+First let's set up the archives.
 
-Most of this was copied from @jeekl's [[https://github.com/jeekl/dotfiles/blob/master/emacs.d/emacs.org][emacs setup]]. Thanks @jeekl!
+Since GNU and Non-GNU are built-in defaults since 29.3, we only need
+to add MELPA.
 
-#+BEGIN_SRC emacs-lisp
-  ;; mkdir these and add them to load path
-  (dolist (path `(  ,(concat sys/emacs-root "elpa/")     ;; emacs-lisp package archive
-                    ,(concat sys/emacs-root "el-get/")   ;; packages from el-get
-                    ,(concat sys/emacs-root "vendor/"))) ;; stuff I downloaded myself
-    (make-directory path t)
-    (let ((default-directory path))
-      (normal-top-level-add-subdirs-to-load-path)))
-#+END_SRC
-
-
-I made a lisp-learning today: In the code above, I need to use a
-backtick and comma in order to evaluate the functions in the list. It
-used to look like this:
-#+begin_example emacs-lisp
-  (dolist (path '(  "~/.emacs.d/elpa/"
-          ...
-#+end_example
-
-As you can see, it was a list (denoted by the single-quote before the
-left-paren) with strings in it. Earlier today, I replaced the full
-path to =elpa/= with a function =concat= which concatenated the path to
-the configuration directory with the string =elpa/=, like so:
-#+begin_example emacs-lisp
-  (dolist (path `(  ,(concat sys/emacs-root "elpa/")
-          ...
-#+end_example
-
-This would help me make the configuration agnostic to where in the
-filesystem it was installed - a necessary prerequisite to having a
-github action syntax check, where it will be installed in another
-place than =~/.emacs.d=.
-
-The backtick is a lispism to make the interpreter selectively evaluate
-any function prefixed with a comma symbol. Cool!
-
-Oh, and the practice is called /Quasi-quotation/.
-
+I also want to have that place in the filesystem where I can put my
+own .el files which will be automatically loaded. For historical
+reasons, I call it 'vendor'.
 
 #+BEGIN_SRC emacs-lisp
   (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-  ;; add these sources
-  (eval-after-load "package"
-    '(progn
-       (add-to-list 'package-archives '("org"   . "http://orgmode.org/elpa/"))
-       (add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/"))
-       ))
+  ;; Setup 'vendor' directory and load paths
+  (let ((vendor-dir (expand-file-name "vendor" user-emacs-directory)))
+    (unless (file-exists-p vendor-dir)
+      (make-directory vendor-dir t))
+    (add-to-list 'load-path vendor-dir)
+    (let ((default-directory vendor-dir))
+      (normal-top-level-add-subdirs-to-load-path)
+      )
+    )
+#+END_SRC
 
-  (eval-after-load "url-http"
-    '(setq url-http-attempt-keepalives nil))  ; A package.el bug. Apparently.
+Initialise the package system, and refresh the local copy if it's old.
+
+#+BEGIN_SRC emacs-lisp
+(package-initialize)
+(unless package-archive-contents (package-refresh-contents))
+#+END_SRC
+
+I'd like to start using =use-package=, and it seems like I can have
+the old (package.el) and the new (use-package) side-by-side while I
+transition.
+
+#+BEGIN_SRC emacs-lisp
+(require 'use-package)
+(setq use-package-always-ensure t)
 #+END_SRC
 
 ** Packages to install
 
-If this is a clean install of emacs, then it will update the package
-list. This updating it from the various sources takes time, we skip it
-otherwise.
+Here's the list of packages I want to have installed.
 
-
-Note to self: If this isn't a clean install but instead a major
-upgrade (like I just did from emacs26 to emacs28) you might need to
-call =package-refresh-contents= manually once. Or do a =M-x
-package-list-packages= then push =U= to update.
-
-#+begin_src emacs-lisp
-  (if (not package-archive-contents)
-      (package-refresh-contents))
-#+end_src
-
-
-Download these packages if they aren't already downloaded.
+Warning: When starting emacs without the =elpa/= directory in place,
+it will take some time to start up, since it needs to download
+everything.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar elpa-packages
-    '(
-
-      ;; Emacs theme
-      gruvbox-theme
-
-
-      ;; Other packages
-                                          ; muttrc-mode
-                                          ; twittering-mode
-      adoc-mode
-      all-the-icons
-      all-the-icons-dired
-      all-the-icons-ibuffer
-      all-the-icons-ivy
-                                          ; apache-mode
-      auctex
-      blacken
-      column-marker
-      company
-      counsel
-      counsel-tramp
-      csv-mode
-                                          ; diff-hl ;; Much too slow
-      dired-subtree
-                                          ; docker
-                                          ; docker-compose-mode
-      dockerfile-mode
-                                          ; docker-tramp
-      dumb-jump
-      editorconfig
-      flycheck
-      graphviz-dot-mode
-      htmlize
-      ibuffer-projectile
-      iedit                               ; for renaming symbols
-      json-mode
-      js2-mode
-      load-theme-buffer-local
-      magit
-      mpg123
-      markdown-mode
-      olivetti
-      org-bullets
-      perl-doc
-      projectile
-      highlight-parentheses
-      rainbow-mode
-      spaceline
-      spaceline-all-the-icons
-      ssh-config-mode
-      swiper
-      tide
-      treemacs                       ; A tree style file explorer package
-      treemacs-all-the-icons         ; all-the-icons integration for treemacs
-      treemacs-magit                 ; Magit integration for treemacs
-      treemacs-projectile            ; Projectile integration for treemacs
-      typescript-mode
-      which-key
-      web-mode
-      yaml-mode
-
-      ;; Modes for editing chrome textboxes in emacs.
-                                          ; atomic-chrome
-                                          ; gmail-message-mode
-                                          ; edit-server
-
-
-      )
-    "These packages are installed if necessary."
+(defvar elpa-packages
+  '(gruvbox-theme
+    adoc-mode
+    all-the-icons
+    all-the-icons-dired
+    all-the-icons-ibuffer
+    all-the-icons-ivy
+    auctex
+    blacken
+    company
+    counsel
+    counsel-tramp
+    csv-mode
+    dockerfile-mode
+    dumb-jump
+    editorconfig
+    flycheck
+    graphviz-dot-mode
+    htmlize
+    ibuffer-projectile
+    iedit
+    json-mode
+    js2-mode
+    magit
+    markdown-mode
+    olivetti
+    org-bullets
+    perl-doc
+    projectile
+    highlight-parentheses
+    rainbow-mode
+    spaceline
+    spaceline-all-the-icons
+    swiper
+    tide
+    treemacs
+    treemacs-all-the-icons
+    treemacs-magit
+    treemacs-projectile
+    typescript-mode
+    which-key
+    web-mode
+    yaml-mode
     )
+  "List of packages to ensure are installed at startup."
+  )
 
-  (dolist (pkg elpa-packages)
-    (when (and (not (package-installed-p pkg))
-               (assoc pkg package-archive-contents))
-      (package-install pkg)))
+;; Install any package in the list that isn't already present
+(dolist (package elpa-packages)
+  (unless (package-installed-p package)
+    (package-install package)))
 
-  (defun me/package-list-unaccounted-packages ()
-    "Like `package-list-packages', but shows only the packages that
-    are installed and are not in `elpa-packages'.  Useful for
-    cleaning out unwanted packages."
-    (interactive)
-    (package-show-package-list
-     (remove-if-not (lambda (x) (and (not (memq x elpa-packages))
-                                     (not (package-built-in-p x))
-                                     (package-installed-p x)))
-                    (mapcar 'car package-archive-contents))))
 #+END_SRC
 
 ** Load code in vendor/

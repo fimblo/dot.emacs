@@ -13,11 +13,6 @@
 - [ ] spaceline is dead.
   replace with doom-modeline
   (add to elpa-packages, then '(doom-modeline-mode 1)'
-- [ ] loading "server" after require is redundant
-  simplify to:
-  #+begin_src emacs-lisp
-    (unless (server-running-p) (server-start))
-  #+end_src
 - [ ] defadvice is obsolete, use advice-add
   replace '(defadvice load-theme....' with
 
@@ -27,7 +22,13 @@
     (advice-add 'load-theme :before #'clear-existing-themes)
     (load-theme 'tsdh-dark t)  ; t forces replacement
   #+end_src
-- [ ] package.el is old.
+- [X] loading "server" after require is redundant
+  This turned out to be false. So skipped it.
+  simplify to:
+  #+begin_src emacs-lisp
+    (unless (server-running-p) (server-start))
+  #+end_src
+- [X] package.el is old.
   instead, use:
 
   #+begin_src 
