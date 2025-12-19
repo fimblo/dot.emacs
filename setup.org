@@ -207,9 +207,19 @@ the file pointed at by the environment variable
 
 #+END_SRC
 
-** Package.el configuration
+** Package configuration
+First let's set up native machine compilation of the emacs-lisp libs.
 
-First let's set up the archives.
+#+begin_src emacs-lisp
+  (setq native-comp-deferred-compilation t) ; enable async native compilation
+  (setq native-comp-async-jobs-number 4) ; # of cpu cores to use
+  (setq native-comp-async-report-warnings-errors 'silent) ; silent mode when compiling
+  (setq native-comp-eln-load-path ; where to store the compiled stuff
+        (list (expand-file-name "eln-cache/" user-emacs-directory)))
+#+end_src
+
+
+Now let's set up the archives.
 
 Since GNU and Non-GNU are built-in defaults since 29.3, we only need
 to add MELPA.
@@ -231,6 +241,15 @@ reasons, I call it 'vendor'.
       (normal-top-level-add-subdirs-to-load-path)
       )
     )
+
+  ;; Quietly byte-compile any vendor files that have changed
+  (let ((save-silently t))
+    (byte-recompile-directory (expand-file-name "vendor" user-emacs-directory) 0))
+
+  ;; Tell the native compiler to look at the vendor dir
+  (setq native-comp-async-cu-done-functions
+        (lambda (file) (message "Native compile finished: %s" file)))
+
 #+END_SRC
 
 Refresh the local copy of the package list if it's old.
@@ -440,11 +459,13 @@ Since emacs 29 (released in 2023), we now join all the other cool
 programs of the 1990s and we now can scroll pixel by pixel. Amazing.
 
 #+begin_src emacs-lisp
-  (setq scroll-step 1)                          ; scroll 1 line at a time
-  (setq scroll-conservatively 101)              ; never "jump" the cursor to center when scrolling 
-  (setq scroll-margin 3)                        ; start scrolling three lines from the edge
-  (setq pixel-scroll-precision-interpolation-total-time 0.2) ; lower = faster response
-  (setq pixel-scroll-precision-use-momentum t)  ; continue after wheel has stopped
+  (setq scroll-step 1)                   ; scroll 1 line at a time
+  (setq scroll-conservatively 101)       ; never "jump" the cursor to center
+                                         ; when scrolling
+  (setq scroll-margin 3)                 ; start scrolling three lines from the edge
+  (setq pixel-scroll-precision-interpolation-total-time 0.1) ; lower = faster response
+  (setq pixel-scroll-precision-use-momentum t) ; continue after wheel has stopped
+  (setq pixel-scroll-precision-momentum-seconds 0.1) ; continue for 0.1 seconds
 #+end_src
 
 ** Mouse behaviour

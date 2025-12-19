@@ -36,9 +36,10 @@ CLOSED: [2025-12-19 Fri 16:55]
 ** DONE consider replacing scroll-step 1 with pixel-scroll-precision-mode
 CLOSED: [2025-12-19 Fri 17:19]
 ** TODO consider replacing projectile in favour of project.el
+** DONE compile native machine code
+CLOSED: [2025-12-19 Fri 22:40]
 ** TODO consider using =repeat-mode=.
   Instead of typing c-x o c-x o to switch windows twice, I can type c-x o o.
-** TODO compile native machine code
 ** DONE move custom.el to top of the file
 CLOSED: [2025-12-19 Fri 17:20]
   apparently I can compile to native machine code instead of just interpreting el files.
