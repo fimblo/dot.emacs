@@ -90,6 +90,7 @@ set up some basics.
 Set some constants on the environment this instance of emacs is
 running in.
 
+
 #+BEGIN_SRC emacs-lisp
   ;; We also have a sys/emacs-root defined in init.el.
   ;; This points at the directory this file is in.
@@ -150,6 +151,21 @@ character sets anymore - especially the Japanese ones...
   (set-default-coding-systems     'utf-8)
   (prefer-coding-system           'utf-8)
   (set-language-environment       "UTF-8")
+#+END_SRC
+
+** Auto-customization
+
+Emacs has a bunch of point-and-click customization features.
+
+Move these configurations to a separate file which isn't version
+controlled. I rarely use them anyway.
+
+I want to do this early, since I might want to use some of the vars
+later in the code.
+
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (concat sys/emacs-root "custom.el"))
+  (load custom-file 'noerror)
 #+END_SRC
 
 ** Declare personal variables
@@ -308,15 +324,6 @@ source file. When this happens, I place it in my =vendor/= folder. All
       (mapc load-it (directory-files dir nil "\\.el$"))))
   (me/load-directory (concat sys/emacs-root "vendor/"))
 #+end_src
-
-** Auto-customization
-
-Move all customization stuff to another file.
-
-#+BEGIN_SRC emacs-lisp
-  (setq custom-file (concat sys/emacs-root "custom.el"))
-  (load custom-file 'noerror)
-#+END_SRC
 
 ** Emacs server
 
