@@ -32,7 +32,8 @@ CLOSED: [2025-12-19 Fri 16:55]
     (setq backup-enable-predicate #'me/my-backup-enable-predicate)
     
   #+end_src
-** TODO consider replacing scroll-step 1 with pixel-scroll-precision-mode
+** DONE consider replacing scroll-step 1 with pixel-scroll-precision-mode
+CLOSED: [2025-12-19 Fri 17:19]
 ** TODO consider replacing projectile in favour of project.el
 ** TODO consider using =repeat-mode=.
   Instead of typing c-x o c-x o to switch windows twice, I can type c-x o o.

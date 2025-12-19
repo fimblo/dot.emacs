@@ -389,8 +389,8 @@ section is how it reacts to some of my commands.
   (put 'upcase-region 'disabled nil)  ; allow downcase-region commands
 
   (setq next-line-add-newlines t)     ; C-n at eob opens new lines.
-  (setq scroll-step 1)                ; Moving cursor down at bottom
-                                      ; scrolls only a single line
+  (pixel-scroll-precision-mode 1)     ; scroll pixel by pixel instead of
+                                      ; line by line
   (setq sentence-end-double-space nil); I don't add two spaces after a
                                       ; period, this makes M-a and M-e
                                       ; work as intended.
@@ -424,6 +424,19 @@ Link X's primary selection and clipboard to interplay with emacs.
         (setq select-enable-primary t)
         )
     )
+#+end_src
+
+** Scrolling behaviour
+
+Since emacs 29 (released in 2023), we now join all the other cool
+programs of the 1990s and we now can scroll pixel by pixel. Amazing.
+
+#+begin_src emacs-lisp
+  (setq scroll-step 1)                          ; scroll 1 line at a time
+  (setq scroll-conservatively 101)              ; never "jump" the cursor to center when scrolling 
+  (setq scroll-margin 3)                        ; start scrolling three lines from the edge
+  (setq pixel-scroll-precision-interpolation-total-time 0.2) ; lower = faster response
+  (setq pixel-scroll-precision-use-momentum t)  ; continue after wheel has stopped
 #+end_src
 
 ** Mouse behaviour
