@@ -9,8 +9,7 @@ Not exported
 
 To create a code block structure, C-c C-, will create the following
 text and place the cursor after the first statement. Typing '<s'
-followed by <tab> should do the same thing, but for some reason it
-doesn't work right now.
+followed by <tab> will create an org codeblock.
 
 To narrow to the code block, go into it and hit C-c '. Given that you
 specified a language after the text #+BEGIN_SRC, you will get that
@@ -1488,6 +1487,10 @@ I love org-mode, even if I only use a fraction of its capabilities.
   ;; (setq org-fontify-whole-heading-line t)
   ;; (defun org-font-lock-ensure ()  ; This is apparently a bugfix. (?)
   ;;   (font-lock-fontify-buffer))
+
+  ;; re-introduce the '<s tab' macro
+  (require 'org-tempo)
+
 #+END_SRC
 
 *** Org-bullets

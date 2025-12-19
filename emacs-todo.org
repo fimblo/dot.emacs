@@ -10,7 +10,7 @@ Here's a list of stuff I want to add to my configuration:
 ** DONE Linum-mode is slow
 replaced with (display-line-numbers-mode 1) or without the arg to toggle
 ** DONE rewrite package sections and use use-package
-** TODO fix the '<s' problem
+** DONE fix the '<s' problem
 this feature has moved to org-temp
 (require 'org-tempo)
 ** TODO spaceline is not maintained. dead.
