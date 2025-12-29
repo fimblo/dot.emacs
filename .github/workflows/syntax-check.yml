@@ -9,13 +9,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Add Emacs PPA
+    - name: Install emacs
       run: |
-        sudo add-apt-repository ppa:kelleyk/emacs -y
         sudo apt-get update
-
-    - name: Install Emacs28
-      run: sudo apt-get install emacs28
+        sudo apt-get install emacs
 
     - name: Set up environment
       run: |
