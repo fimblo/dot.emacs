@@ -2257,7 +2257,7 @@ Here's a bunch of small functions which help me modify text in
 different ways.
 
 First off, some interactive functions to convert strings into
-camelCase. I bound it to =M-s-c= over in [[#buffer-manipulation][Buffer manipulation]].
+camelCase. I bound it to =M-S-c= over in [[#buffer-manipulation][Buffer manipulation]].
 
 
 #+begin_src emacs-lisp
