@@ -7,22 +7,8 @@
 
 Here's a list of stuff I want to add to my configuration:
 
-** TODO consider replacing projectile in favour of project.el      :package:
-** TODO consider using =repeat-mode=.                              :package:
-  Instead of typing c-x o c-x o to switch windows twice, I can type c-x o o.
-** TODO consider vertico+consult+marginaila                        :package:
-  inetad of counsel/swiper/ivy
-** TODO treemacs is slow                                               :bug:
-  consdicer eaf-browser or the built-in projectile-find-file
-** TODO instead of tide/js2-mode use eglot                         :package:
-  remove tide-js2-mode and add '(global-eglot-ensure)'
-** TODO spaceline is not maintained. dead.                    :package:nuke:
-replace with doom-modeline
-(doom-modeline-mode 1)
-** TODO mpg123 is unmaintained                                :package:nuke:
-** TODO atomic-chrome is broken                               :package:nuke:
-** TODO Make modeline date follow iso8601.                             :bug:
-** TODO Make emacs run icons command once when installed the first time :feat:
+** Looky-feely stuff [0/3]
+*** TODO Make emacs run icons command once when installed the first time :feat:
 In =setup.org=, I write this under the section 'Icons and modeline'.
 
 #+begin_example
@@ -33,8 +19,17 @@ It would be good if I could auto-detect this and run it manually. I
 think there was another section which also required me to run once
 after install.
 
-** TODO diff-hl is very very slow                                      :bug:
-
+*** TODO spaceline is not maintained. dead.                  :package:nuke:
+replace with doom-modeline
+(doom-modeline-mode 1)
+*** TODO Make modeline date follow iso8601.                           :bug:
+** TODO consider replacing projectile in favour of project.el     :lookinto:
+** TODO consider using =repeat-mode=.                             :lookinto:
+  Instead of typing c-x o c-x o to switch windows twice, I can type lookinto.
+** TODO consider vertico+consult+marginaila                       :lookinto:
+  inetad of counsel/swiper/ivy
+** TODO instead of tide/js2-mode use eglot                        :lookinto:
+  remove tide-js2-mode and add '(global-eglot-ensure)'
 ** TODO Tramp is laggy                                                 :bug:
 
 Something in the setup is making tramp terribly slow. Just noticed
@@ -57,7 +52,7 @@ emacs) -Q=, and the problem wasn't there.
 
 ** TODO flymakecursor - display message in minibuffer             :lookinto:
 ** TODO rfringe - display buffer-relative locations in fringe.    :lookinto:
-** TODO Update browser in emacs from chromium to chrome
+** TODO Update browser in emacs from chromium to chrome                :bug:
 Looks like system default is chromium. Can I change it locally in emacs to google chrome?
 
 #+begin_src emacs-lisp
@@ -68,13 +63,28 @@ Looks like system default is chromium. Can I change it locally in emacs to googl
 #+RESULTS:
 : browse-url-chrome
 
-** TODO configure Treemacs                                          :config:
+** DONE configure Treemacs                                          :config:
+CLOSED: [2025-12-29 Mon 11:59]
+Won't fix. I don't use this that much, and it works for basic usage
+
 - look into treemacs-commit-diff-mode to show if I'm ahead or behind origin
 - treemacs-indent-guide-mode to draw lines? The lines were ugly.
-** TODO write function which:                                         :feat:
+** DONE treemacs is slow                                               :bug:
+CLOSED: [2025-12-29 Mon 11:59]
+Won't fix. I don't use this that much, and it works for basic usage
+  consdicer eaf-browser or the built-in projectile-find-file
+** DONE diff-hl is very very slow                                      :bug:
+CLOSED: [2025-12-29 Mon 11:45]
+
+** DONE camelCase function:                                           :feat:
+CLOSED: [2025-12-29 Mon 11:16]
 - converts easily from words with whitespace separators
 - into lowerCamelCase or UpperCamelCase.
 - Something like set mark, then write, then run function
+** DONE mpg123 is unmaintained                                :package:nuke:
+CLOSED: [2025-12-29 Mon 11:12]
+** DONE atomic-chrome is broken                               :package:nuke:
+CLOSED: [2025-12-29 Mon 11:12]
 ** DONE encoding overkill
 CLOSED: [2025-12-19 Fri 17:36]
 replace the entire section with
