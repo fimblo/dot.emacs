@@ -7,16 +7,74 @@
 
 Here's a list of stuff I want to add to my configuration:
 
-** TODO Connect emacs to default-browser
-** DONE Linum-mode is slow
-replaced with (display-line-numbers-mode 1) or without the arg to toggle
-** DONE rewrite package sections and use use-package
-** DONE fix the '<s' problem
-this feature has moved to org-temp
-(require 'org-tempo)
-** TODO spaceline is not maintained. dead.
+** TODO consider replacing projectile in favour of project.el      :package:
+** TODO consider using =repeat-mode=.                              :package:
+  Instead of typing c-x o c-x o to switch windows twice, I can type c-x o o.
+** TODO consider vertico+consult+marginaila                        :package:
+  inetad of counsel/swiper/ivy
+** TODO treemacs is slow                                               :bug:
+  consdicer eaf-browser or the built-in projectile-find-file
+** TODO instead of tide/js2-mode use eglot                         :package:
+  remove tide-js2-mode and add '(global-eglot-ensure)'
+** TODO spaceline is not maintained. dead.                    :package:nuke:
 replace with doom-modeline
 (doom-modeline-mode 1)
+** TODO mpg123 is unmaintained                                :package:nuke:
+** TODO atomic-chrome is broken                               :package:nuke:
+** TODO Make modeline date follow iso8601.                             :bug:
+** TODO Make emacs run icons command once when installed the first time :feat:
+In =setup.org=, I write this under the section 'Icons and modeline'.
+
+#+begin_example
+M-x all-the-icons-install-fonts
+#+end_example
+
+It would be good if I could auto-detect this and run it manually. I
+think there was another section which also required me to run once
+after install.
+
+** TODO diff-hl is very very slow                                      :bug:
+
+** TODO Tramp is laggy                                                 :bug:
+
+Something in the setup is making tramp terribly slow. Just noticed
+today. Opening a file on a remote host, like =C-x C-f
+/ssh:hostname:foo.txt= causes emacs to slow down visibly.
+
+Maxing debug verbosity makes it even slower.
+#+begin_src
+(setq tramp-verbose 10)
+#+end_src
+
+I suspect it's some combination of =projectile=, =tramp= or
+something. I think it's constantly scanning the remote filesystem or
+something.
+
+Very frustrating.
+
+I tried starting emacs with no config with shell command =$(which
+emacs) -Q=, and the problem wasn't there.
+
+** TODO flymakecursor - display message in minibuffer             :lookinto:
+** TODO rfringe - display buffer-relative locations in fringe.    :lookinto:
+** TODO Update browser in emacs from chromium to chrome
+Looks like system default is chromium. Can I change it locally in emacs to google chrome?
+
+#+begin_src emacs-lisp
+  ;; http://www.sunet.se
+  (setq browse-url-browser-function 'browse-url-chrome) ; google's browser
+#+end_src
+
+#+RESULTS:
+: browse-url-chrome
+
+** TODO configure Treemacs                                          :config:
+- look into treemacs-commit-diff-mode to show if I'm ahead or behind origin
+- treemacs-indent-guide-mode to draw lines? The lines were ugly.
+** TODO write function which:                                         :feat:
+- converts easily from words with whitespace separators
+- into lowerCamelCase or UpperCamelCase.
+- Something like set mark, then write, then run function
 ** DONE encoding overkill
 CLOSED: [2025-12-19 Fri 17:36]
 replace the entire section with
@@ -36,30 +94,22 @@ CLOSED: [2025-12-19 Fri 16:55]
   #+end_src
 ** DONE consider replacing scroll-step 1 with pixel-scroll-precision-mode
 CLOSED: [2025-12-19 Fri 17:19]
-** TODO consider replacing projectile in favour of project.el
 ** DONE compile native machine code
 CLOSED: [2025-12-19 Fri 22:40]
-** TODO consider using =repeat-mode=.
-  Instead of typing c-x o c-x o to switch windows twice, I can type c-x o o.
 ** DONE move custom.el to top of the file
 CLOSED: [2025-12-19 Fri 17:20]
   apparently I can compile to native machine code instead of just interpreting el files.
   since emacs's variables are available to my code.
-** TODO consider vertico+consult+marginaila
-  inetad of counsel/swiper/ivy
-** TODO treemacs is slow
-  consdicer eaf-browser or the built-in projectile-find-file
-** TODO instead of tide/js2-mode use eglot
-  remove tide-js2-mode and add '(global-eglot-ensure)'
-** TODO mpg123 is unmaintained
-** TODO atomic-chrome is broken
-** TODO diff-hl is very very slow
-
-
+** DONE fix the '<s' problem
+this feature has moved to org-temp
+(require 'org-tempo)
+** DONE rewrite package sections and use use-package
 ** DONE omnisharp - completion
 was a little outdated, and people seem to be using lsp. But perhaps this is the best tool for csharp??
 ** DONE flycheck-mode
 CLOSED: [2022-08-26 Fri 22:53]
+** DONE Linum-mode is slow
+replaced with (display-line-numbers-mode 1) or without the arg to toggle
 ** DONE company-mode
 CLOSED: [2022-08-27 Sat 16:31]
 ** DONE lsp-mode
@@ -107,7 +157,6 @@ CLOSED: [2022-08-30 Tue 22:40]
   - treemacs-projectile (?)
 
   After looking at counsel-projectile, I don't think I need it just yet. But Ibuffer-projectile looked nice, so I installed it.
-** TODO Make modeline date follow iso8601.                             :bug:
 ** DONE treemacs                                                  :lookinto:
 CLOSED: [2023-01-25 Wed 15:47]
 Installed the following:
@@ -200,41 +249,6 @@ CLOSED: [2022-08-30 Tue 22:50]
   Yeah, looked around a bit and it seems this isn't possible. Perhaps
   I'll look around more at some other point in time. For now, =C-c
   <space>= does the trick.
-** TODO Make emacs run icons command once when installed the first time
-In =setup.org=, I write this under the section 'Icons and modeline'.
-
-#+begin_example
-M-x all-the-icons-install-fonts
-#+end_example
-
-It would be good if I could auto-detect this and run it manually. I
-think there was another section which also required me to run once
-after install.
-
-
-** TODO Tramp is laggy                                                 :bug:
-
-Something in the setup is making tramp terribly slow. Just noticed
-today. Opening a file on a remote host, like =C-x C-f
-/ssh:hostname:foo.txt= causes emacs to slow down visibly.
-
-Maxing debug verbosity makes it even slower.
-#+begin_src
-(setq tramp-verbose 10)
-#+end_src
-
-I suspect it's some combination of =projectile=, =tramp= or
-something. I think it's constantly scanning the remote filesystem or
-something.
-
-Very frustrating.
-
-I tried starting emacs with no config with shell command =$(which
-emacs) -Q=, and the problem wasn't there.
-
-
-** TODO flymakecursor - display message in minibuffer             :lookinto:
-** TODO rfringe - display buffer-relative locations in fringe.    :lookinto:
 ** DONE clean old modes out
 CLOSED: [2022-10-18 Tue 11:34]
 There's a few modes I don't use anymore, and they are cluttering the
@@ -246,31 +260,6 @@ rainbow-delimiters isn't working. Figure out.
 Found highlight-parentheses-mode, which is easier to configure than
 rainbow-delimiters. Swapped and configured. works nicely now.
 
-** TODO Update browser in emacs from chromium to chrome
-Looks like system default is chromium. Can I change it locally in emacs to google chrome?
-
-#+begin_src emacs-lisp
-  ;; http://www.sunet.se
-  (setq browse-url-browser-function 'browse-url-chrome) ; google's browser
-#+end_src
-
-#+RESULTS:
-: browse-url-chrome
-
-** TODO configure Treemacs
-- look into treemacs-commit-diff-mode to show if I'm ahead or behind origin
-- treemacs-indent-guide-mode to draw lines? The lines were ugly.
-** TODO set up for work
-*** DONE Tide
-CLOSED: [2023-02-14 Tue 22:51]
-https://www.youtube.com/watch?v=0zuYCEzrchk
-*** TODO Other modes
-- rjsx-mode (major mode for editing jsx files)
-- prettier-js (opinionated js formatter/linter)
-** TODO write function which:
-- converts easily from words with whitespace separators
-- into lowerCamelCase or UpperCamelCase.
-- Something like set mark, then write, then run function
 * Notes, experiments, and stuff
 ** Some notes on ivy
 
