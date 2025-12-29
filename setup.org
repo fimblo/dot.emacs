@@ -841,6 +841,25 @@ This text below modifies the syntax highlighting of the content of
 (add-hook 'LaTeX-mode-hook #'my-latex-marginnote-font-lock)
 #+END_SRC
 
+** Bookmark mode
+
+This mode enables me to bookmark positions in files, making jumping
+between them nice and quick.
+
+#+begin_src emacs-lisp
+    (use-package bm
+    :ensure t
+    :bind (("C-<f2>"    . bm-toggle)     ; Use C-SPC to toggle a fringe bookmark
+           ("M-<f2>"    . bm-next)       ; Jump between fringe marks
+           ("M-S-<f2>"  . bm-previous))
+    :init
+    ;;  This puts the marker in the fringe instead of highlighting the line
+    (setq bm-highlight-style 'bm-highlight-only-fringe)
+    (setq bm-marker 'bm-marker-right)
+    (add-hook 'bm-after-goto-hook 'org-bookmark-jump-unhide)
+    )
+ #+end_src
+
 ** Comint-mode
 
 =Comint-mode= is essential for emacs to interact with another
