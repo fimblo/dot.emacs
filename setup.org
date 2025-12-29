@@ -263,8 +263,10 @@ the old (package.el) and the new (use-package) side-by-side while I
 transition.
 
 #+BEGIN_SRC emacs-lisp
-(require 'use-package)
-(setq use-package-always-ensure t)
+  (require 'use-package)
+
+  ;; makes ":ensure t" the default for all use-package blocks
+  (setq use-package-always-ensure t)
 #+END_SRC
 
 ** Packages to install
@@ -274,6 +276,11 @@ Here's the list of packages I want to have installed.
 Warning: When starting emacs without the =elpa/= directory in place,
 it will take some time to start up, since it needs to download
 everything.
+
+Also: This list will over time become smaller, since =use-package=
+does not require a master list of packages to install. As I migrate
+package configuration to use =use-package=, this list should become
+shorter.
 
 #+BEGIN_SRC emacs-lisp
 (defvar elpa-packages
