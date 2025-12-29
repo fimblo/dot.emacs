@@ -277,10 +277,9 @@ Warning: When starting emacs without the =elpa/= directory in place,
 it will take some time to start up, since it needs to download
 everything.
 
-Also: This list will over time become smaller, since =use-package=
-does not require a master list of packages to install. As I migrate
-package configuration to use =use-package=, this list should become
-shorter.
+Also: This list will over time become smaller over time, since I'm
+migrating to use =use-package= - and it does not require a master list
+of packages to install.
 
 #+BEGIN_SRC emacs-lisp
 (defvar elpa-packages
