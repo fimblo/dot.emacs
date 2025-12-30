@@ -208,68 +208,41 @@ the file pointed at by the environment variable
 #+END_SRC
 
 ** Package configuration
-First let's set up native machine compilation of the emacs-lisp libs.
+
 
 #+begin_src emacs-lisp
-  (setq native-comp-deferred-compilation t) ; enable async native compilation
-  (setq native-comp-async-jobs-number 4) ; # of cpu cores to use
-  (setq native-comp-async-report-warnings-errors 'silent) ; silent mode when compiling
-  (setq native-comp-eln-load-path ; where to store the compiled stuff
-        (list (expand-file-name "eln-cache/" user-emacs-directory)))
-#+end_src
+
+;;;;;;;;; NATIVE COMPILATION ;;;;;;;;;
+
+(setq native-comp-deferred-compilation t)               ; enable async native compilation
+(setq native-comp-async-jobs-number 4)                  ; # of cpu cores to use
+(setq native-comp-async-report-warnings-errors 'silent) ; silent mode when compiling
+(setq native-comp-eln-load-path                         ; where to store the compiled stuff
+      (list (expand-file-name "eln-cache/" user-emacs-directory)))
+
+;; Tell the native compiler to look at the vendor dir and report when done
+(setq native-comp-async-cu-done-functions
+      (lambda (file) (message "Native compile finished: %s" file)))
 
 
-Now let's set up the archives.
+;;;;;;;;; PACKAGE SYSTEM SETUP ;;;;;;;;;
 
-Since GNU and Non-GNU are built-in defaults since 29.3, we only need
-to add MELPA.
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize) ; make package-installed-p and the archive cache available
 
-I also want to have that place in the filesystem where I can put my
-own .el files which will be automatically loaded. For historical
-reasons, I call it 'vendor'.
 
-#+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;;;;;;;;; CONDITIONAL REFRESH ;;;;;;;;;
 
-  ;; Setup 'vendor' directory and load paths
-  (let ((vendor-dir (expand-file-name "vendor" user-emacs-directory)))
-    (unless (file-exists-p vendor-dir)
-      (make-directory vendor-dir t))
-    (add-to-list 'load-path vendor-dir)
-    (let ((default-directory vendor-dir))
-      (normal-top-level-add-subdirs-to-load-path)
-      )
-    )
-
-  ;; Quietly byte-compile any vendor files that have changed
-  (let ((save-silently t))
-    (byte-recompile-directory (expand-file-name "vendor" user-emacs-directory) 0))
-
-  ;; Tell the native compiler to look at the vendor dir
-  (setq native-comp-async-cu-done-functions
-        (lambda (file) (message "Native compile finished: %s" file)))
-
-#+END_SRC
-
-Running =(package-refresh-contents)= feels quite expensive since emacs
-is (still!) single-threaded and each http call to melpa, elpa.gnu and
-elpa.nongnu takes a little time.
-
-The code below refreshes the local copy of the archives if it's more
-than 7 days old or if it doesn't exist.
-
-#+BEGIN_SRC emacs-lisp
 (let* ((my/archive-file (expand-file-name "elpa/archives/melpa/archive-contents" sys/emacs-root))
        (my/file-exists  (file-exists-p my/archive-file)))
-
   (cond
    ;; First run, force refresh
    ((not my/file-exists)
     (message "No package cache found. Initializing...")
     (package-refresh-contents))
 
-   ;; File exists and is old. refresh time!
+   ;; File exists and is old (older than 7 days). refresh time!
    ((> (time-to-number-of-days
         (time-subtract (current-time)
                        (file-attribute-modification-time (file-attributes my/archive-file))))
@@ -282,32 +255,9 @@ than 7 days old or if it doesn't exist.
    (t
     (message "Package cache is fresh. Skipping refresh."))))
 
-#+END_SRC
 
-I'd like to start using =use-package=, and it seems like I can have
-the old (package.el) and the new (use-package) side-by-side while I
-transition.
+;;;;;;;;; PACKAGE INSTALLATION ;;;;;;;;;
 
-#+BEGIN_SRC emacs-lisp
-  (require 'use-package)
-
-  ;; makes ":ensure t" the default for all use-package blocks
-  (setq use-package-always-ensure t)
-#+END_SRC
-
-** Packages to install
-
-Here's the list of packages I want to have installed.
-
-Warning: When starting emacs without the =elpa/= directory in place,
-it will take some time to start up, since it needs to download
-everything.
-
-Also: This list will over time become smaller over time, since I'm
-migrating to use =use-package= - and it does not require a master list
-of packages to install.
-
-#+BEGIN_SRC emacs-lisp
 (defvar elpa-packages
   '(gruvbox-theme
     adoc-mode
@@ -350,32 +300,47 @@ of packages to install.
     typescript-mode
     which-key
     web-mode
-    yaml-mode
-    )
-  "List of packages to ensure are installed at startup."
-  )
+    yaml-mode)
+  "List of packages to ensure are installed at startup.")
 
-;; Install any package in the list that isn't already present
+;; Install missing packages from the list above
 (dolist (package elpa-packages)
   (unless (package-installed-p package)
     (package-install package)))
 
+;; Setup use-package
+(require 'use-package)
+(setq use-package-always-ensure t) ; makes ":ensure t" the default
+
+
+;;;;;;;;; VENDOR DIRECTORY SETUP ;;;;;;;;;
+
+;; Add 'vendor' to load-path so we can 'require' files inside it
+(let ((vendor-dir (expand-file-name "vendor" user-emacs-directory)))
+  (unless (file-exists-p vendor-dir)
+    (make-directory vendor-dir t))
+  (add-to-list 'load-path vendor-dir)
+  ;; Add all subdirectories of vendor to load-path as well
+  (let ((default-directory vendor-dir))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+
+;;;;;;;;; LOADING & COMPILING VENDOR ;;;;;;;;;
+
+(defun me/load-directory (dir)
+  "Load all .el files in DIR."
+  (let ((load-it (lambda (f)
+                   (load-file (expand-file-name f dir)))))
+    (mapc load-it (directory-files dir nil "\\.el$"))))
+
+;; Load the vendor files
+(me/load-directory (expand-file-name "vendor/" sys/emacs-root))
+
+;; Quietly byte-compile any vendor files that have changed
+(let ((save-silently t))
+  (byte-recompile-directory (expand-file-name "vendor" user-emacs-directory) 0))
+
 #+END_SRC
-
-** Load code in vendor/
-
-Sometimes, the emacs modules aren't available on melpa, but I have the
-source file. When this happens, I place it in my =vendor/= folder. All
-=.el= files are loaded on startup.
-
-#+begin_src emacs-lisp
-  (defun me/load-directory (dir)
-    (let ((load-it (lambda (f)
-                     (load-file (concat (file-name-as-directory dir) f)))
-                   ))
-      (mapc load-it (directory-files dir nil "\\.el$"))))
-  (me/load-directory (concat sys/emacs-root "vendor/"))
-#+end_src
 
 ** Emacs server
 
