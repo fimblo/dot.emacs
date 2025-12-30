@@ -252,10 +252,36 @@ reasons, I call it 'vendor'.
 
 #+END_SRC
 
-Refresh the local copy of the package list if it's old.
+Running =(package-refresh-contents)= feels quite expensive since emacs
+is (still!) single-threaded and each http call to melpa, elpa.gnu and
+elpa.nongnu takes a little time.
+
+The code below refreshes the local copy of the archives if it's more
+than 7 days old or if it doesn't exist.
 
 #+BEGIN_SRC emacs-lisp
-(unless package-archive-contents (package-refresh-contents))
+(let* ((my/archive-file (expand-file-name "elpa/archives/melpa/archive-contents" sys/emacs-root))
+       (my/file-exists  (file-exists-p my/archive-file)))
+
+  (cond
+   ;; First run, force refresh
+   ((not my/file-exists)
+    (message "No package cache found. Initializing...")
+    (package-refresh-contents))
+
+   ;; File exists and is old. refresh time!
+   ((> (time-to-number-of-days
+        (time-subtract (current-time)
+                       (file-attribute-modification-time (file-attributes my/archive-file))))
+       7)
+    (progn
+      (message "Package cache is older than 7 days. Refreshing...")
+      (package-refresh-contents)))
+
+   ;; File exists and is recent. no refresh
+   (t
+    (message "Package cache is fresh. Skipping refresh."))))
+
 #+END_SRC
 
 I'd like to start using =use-package=, and it seems like I can have
