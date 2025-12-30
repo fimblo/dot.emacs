@@ -18,6 +18,19 @@
   "Points at the directory where the emacs configuration files reside."
   )
 
+;; temporary fix: map the built-in user-emacs-directory to the value
+;; of sys/emacs-root, and later (TODO) replace all mention of
+;; sys/emacs-root with user-emacs-directory. This needs testing too.
+(defconst user-emacs-directory
+  (file-name-directory
+   (or load-file-name (buffer-file-name))))
+
+(message "sys/emacs-root        %s" sys/emacs-root)
+(message "user-emacs-directory  %s" user-emacs-directory)
+
+
+
+
 (org-babel-load-file
  (concat sys/emacs-root "setup.org"))
 

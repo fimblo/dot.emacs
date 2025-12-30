@@ -23,6 +23,17 @@ after install.
 replace with doom-modeline
 (doom-modeline-mode 1)
 *** TODO Make modeline date follow iso8601.                           :bug:
+** TODO replace sys/emacs-root                                         :bug:
+I sometimes use sys/emacs-root and sometimes the built-in user-emacs-directory. It's inconsistent and will lead to bugs.
+Consider changing the code in init.el like so:
+
+#+begin_src emacs-lisp
+  ; override user-emacs-directory
+  (setq user-emacs-directory (file-name-directory (or load-file-name (buffer-file-name))))
+#+end_src
+
+then replace all instances of sys/emacs-root.
+
 ** TODO consider replacing projectile in favour of project.el     :lookinto:
 ** TODO consider using =repeat-mode=.                             :lookinto:
   Instead of typing c-x o c-x o to switch windows twice, I can type lookinto.
