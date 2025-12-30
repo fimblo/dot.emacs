@@ -92,9 +92,6 @@ running in.
 
 
 #+BEGIN_SRC emacs-lisp
-  ;; We also have a sys/emacs-root defined in init.el.
-  ;; This points at the directory this file is in.
-
   (defconst sys/hostname
     (getenv "HOSTNAME")          "This machine's hostname")
   (defconst sys/home
@@ -165,7 +162,7 @@ I want to do this early, since I might want to use some of the vars
 later in the code.
 
 #+BEGIN_SRC emacs-lisp
-  (setq custom-file (concat sys/emacs-root "custom.el"))
+  (setq custom-file (concat user-emacs-directory "custom.el"))
   (load custom-file 'noerror)
 #+END_SRC
 
@@ -220,7 +217,7 @@ the file pointed at by the environment variable
 (setq native-comp-eln-load-path                         ; where to store the compiled stuff
       (list (expand-file-name "eln-cache/" user-emacs-directory)))
 
-;; Tell the native compiler to look at the vendor dir and report when done
+;; Tell the native compiler to look at the vendor dirand report when done
 (setq native-comp-async-cu-done-functions
       (lambda (file) (message "Native compile finished: %s" file)))
 
@@ -234,7 +231,7 @@ the file pointed at by the environment variable
 
 ;;;;;;;;; CONDITIONAL REFRESH ;;;;;;;;;
 
-(let* ((my/archive-file (expand-file-name "elpa/archives/melpa/archive-contents" sys/emacs-root))
+(let* ((my/archive-file (expand-file-name "elpa/archives/melpa/archive-contents" user-emacs-directory))
        (my/file-exists  (file-exists-p my/archive-file)))
   (cond
    ;; First run, force refresh
@@ -334,7 +331,7 @@ the file pointed at by the environment variable
     (mapc load-it (directory-files dir nil "\\.el$"))))
 
 ;; Load the vendor files
-(me/load-directory (expand-file-name "vendor/" sys/emacs-root))
+(me/load-directory (expand-file-name "vendor/" user-emacs-directory))
 
 ;; Quietly byte-compile any vendor files that have changed
 (let ((save-silently t))
@@ -1867,7 +1864,7 @@ me of those other times. :)
   (defun me/open-dot-emacs ()
     "Opens my main emacs configuration file."
     (interactive)
-    (find-file sys/emacs-root)
+    (find-file user-emacs-directory)
     (end-of-buffer)
     (search-backward (concat (file-name-base this-file-org)
                              (file-name-extension this-file-org t)))

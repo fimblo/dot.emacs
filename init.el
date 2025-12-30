@@ -10,28 +10,14 @@
 ;; Then we use the variable `load-true-file-name` since that should
 ;; exist.
 
-(defconst sys/emacs-root
-  (expand-file-name
-    (file-name-directory
-     (if user-init-file user-init-file load-true-file-name))
-    )
-  "Points at the directory where the emacs configuration files reside."
-  )
-
-;; temporary fix: map the built-in user-emacs-directory to the value
-;; of sys/emacs-root, and later (TODO) replace all mention of
-;; sys/emacs-root with user-emacs-directory. This needs testing too.
+;; Update the built-in user-emacs-directory to match the real
+;; directory where the setup files are located.
 (defconst user-emacs-directory
   (file-name-directory
    (or load-file-name (buffer-file-name))))
 
-(message "sys/emacs-root        %s" sys/emacs-root)
-(message "user-emacs-directory  %s" user-emacs-directory)
-
-
-
 
 (org-babel-load-file
- (concat sys/emacs-root "setup.org"))
+ (concat user-emacs-directory "setup.org"))
 
 ;; EOF
