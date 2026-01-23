@@ -37,14 +37,15 @@ could look something like this:
 In reality it's slightly more convoluted, since we can't assume that
 =setup.org= resides in =~/.emacs.d=. But anyway.
 
-It starts by loading the emacs lisp packages, and activating
-them. After that, it loads =org-mode= and using babel, expands the
-document you're reading now.
+The important bit is that emacs loads =org-mode=, then removes all the
+text which is meant for humans, leaving the emacs-lisp code. This code
+is then evaluated at startup time resulting in a fully configured
+emacs instance.
 
-This makes it possible for me to write my emacs setup as an org
-file, interleaving comments like this sentence with actual code; in
-this case the emacs-lisp code used to set emacs up. Quite nifty,
-actually.
+This makes it possible for me to write my emacs setup as an org file,
+interleaving comments like this sentence with actual code. Since I
+configure emacs infrequently, these proper comments are really useful
+for me. Babel-mode is quite nifty, actually. 
 
 But I get ahead of myself. My emacs setup uses 5 files, all stored
 in the directory =~/.emacs.d=:
