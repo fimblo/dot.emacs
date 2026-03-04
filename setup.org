@@ -25,7 +25,7 @@ not really. When my emacs instance starts up, it looks for and finds
 a file called =~/.emacs.d/init.el=, which it loads and applies. It
 could look something like this:
 
-#+BEGIN_SRC 
+#+BEGIN_SRC
   ;; Minimal config here. The rest will be in setup.org
   (require 'org)           ; Load org so we can use babel
 
@@ -45,7 +45,7 @@ emacs instance.
 This makes it possible for me to write my emacs setup as an org file,
 interleaving comments like this sentence with actual code. Since I
 configure emacs infrequently, these proper comments are really useful
-for me. Babel-mode is quite nifty, actually. 
+for me. Babel-mode is quite nifty, actually.
 
 But I get ahead of myself. My emacs setup uses 5 files, all stored
 in the directory =~/.emacs.d=:
@@ -860,7 +860,7 @@ process - like the shell, or a database user interface (sqsh, isql,
 etc).
 
 #+BEGIN_SRC emacs-lisp
-  (ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes 
+  (ansi-color-for-comint-mode-on)         ; interpret and use ansi color codes
                                           ; in shell output windows
   (custom-set-variables
    '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
@@ -1574,7 +1574,7 @@ with =#RESULTS:=) will be placed immediately below the shell block.
 .#+RESULTS:
 .: PING ping.sunet.se (192.36.125.18): 56 data bytes
 .: 64 bytes from 192.36.125.18: icmp_seq=0 ttl=251 time=16.815 ms
-.: 
+.:
 .: --- ping.sunet.se ping statistics ---
 .: 1 packets transmitted, 1 packets received, 0.0% packet loss
 .: round-trip min/avg/max/stddev = 16.815/16.815/16.815/0.000 ms
@@ -1746,7 +1746,7 @@ configuration I want in the following sections.
               ;; I noticed that if I don't add editorconfig-apply after
               ;; setup-tide-mode, the editorconfig rules of the project
               ;; are overruled by what tide-mode thinks is good-looking
-              ;; code. Very annoying. 
+              ;; code. Very annoying.
 
               (editorconfig-apply)
               ))
@@ -1759,7 +1759,7 @@ configuration I want in the following sections.
 
 #+begin_src emacs-lisp
   (add-hook 'js-mode-hook #'setup-tide-mode)
-  
+
   ;; configure javascript-tide checker to run after your default javascript checker
   ;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
 #+end_src
@@ -2968,4 +2968,3 @@ point in the future.
   ;;  (insert "</p>\n"))
 
 #+END_SRC
-
