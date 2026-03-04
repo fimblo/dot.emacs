@@ -1133,6 +1133,8 @@ add the =#!/bin/bash= shebang.
 
 Spell-checker for emacs.
 
+On mac, install aspell using =brew install aspell=. On debian, =apt install aspell=
+
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "aspell")
   (setq flyspell-mark-duplications-flag nil)
