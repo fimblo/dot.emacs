@@ -296,7 +296,6 @@ the file pointed at by the environment variable
     treemacs-magit
     treemacs-projectile
     typescript-mode
-    which-key
     web-mode
     yaml-mode)
   "List of packages to ensure are installed at startup.")
@@ -637,17 +636,16 @@ incomplete key command in a pop-up.
 To page between options, hit =C-h=, then you can see options in the
 mini-buffer.
 
+As of emacs v30, it's a built-in module.
+
 #+begin_src emacs-lisp
-  (require 'which-key)
-
-  (setq which-key-idle-delay 1.5)
-
-  ;; With this option, I can hit ctrl-h to get which-key to activate
-  ;; earlier than the delay timer
-  (setq which-key-show-early-on-C-h t)
-
-  (which-key-mode)
-  (which-key-setup-side-window-right-bottom)
+  (use-package which-key
+    :ensure nil  ; "nil" because it is now built-in to Emacs 30
+    :config
+    (setq which-key-idle-delay 1.5)
+    (setq which-key-show-early-on-C-h t)
+    (which-key-mode)
+    (which-key-setup-side-window-right-bottom))
 #+end_src
 
 ** Icons and modeline
