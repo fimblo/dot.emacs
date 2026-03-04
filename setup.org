@@ -1110,10 +1110,11 @@ Dependencies: None
   ;; Use load-path's path for flycheck
   (setq-default flycheck-emacs-lisp-load-path 'inherit)
 
-  ;; Get rid of annoying checkdoc warnings
   (with-eval-after-load 'flycheck
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+    ;; Disable checkers that are either annoying (checkdoc) or currently buggy (org-lint)
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc org-lint)))
 #+END_SRC
+
 
 *** Flycheck for bash
 Dependencies: =shellcheck= (homebrew, apt, etc)
