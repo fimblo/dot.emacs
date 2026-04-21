@@ -9,7 +9,7 @@ Not exported
 
 To create a code block structure, C-c C-, will create the following
 text and place the cursor after the first statement. Typing '<s'
-followed by <tab> will create an org codeblock.
+followed by <tab> will create an org code block.
 
 To narrow to the code block, go into it and hit C-c '. Given that you
 specified a language after the text #+BEGIN_SRC, you will get that
@@ -257,8 +257,7 @@ the file pointed at by the environment variable
 ;;;;;;;;; PACKAGE INSTALLATION ;;;;;;;;;
 
 (defvar elpa-packages
-  '(gruvbox-theme
-    adoc-mode
+  '(adoc-mode
     all-the-icons
     all-the-icons-dired
     all-the-icons-ibuffer
@@ -527,6 +526,8 @@ spaces. Also - avoid inserting tabs.
 
 ** Colours, fonts and stuff
 
+The =tsdh-dark= theme handles colors and appearance.
+
 Apparently loading a theme using =load-theme= overlays the new
 theme onto whatever was there before. This might be useful at
 times, but I find it easier when I get exactly the theme I select.
@@ -540,41 +541,6 @@ like.
     (mapc #'disable-theme custom-enabled-themes))
 
   (load-theme 'tsdh-dark)
-#+END_SRC
-
-The default look and feel of the theme I use (=tsdh-dark=) has a few
-details which I think doesn't look quite right. Fixing it here.
-
-#+BEGIN_SRC emacs-lisp
-  ;; Make background color a bit lighter..
-  (set-face-attribute 'default nil :background "gray21")
-
-  ;; .. make the region a light gray
-  (set-face-attribute 'region nil :extend t :background "gray28")
-
-  ;; and the highlight face can also be black
-  (set-face-attribute 'highlight nil :background "black")
-
-  ;; The highlight color for isearch
-  (set-face-attribute 'isearch nil
-                      :background "saddle brown"
-                      :foreground "white smoke")
-  (set-face-attribute 'lazy-highlight nil :background "LightSalmon4")
-
-  ;; comments in italics
-  (set-face-attribute font-lock-comment-face nil :slant 'italic)
-
-  ;; Fringe in the same color as default.
-  (set-face-attribute 'fringe nil
-                      :foreground "white"
-                      :background "black")
-#+END_SRC
-
-Make the highlighted line a tad darker than the default background.
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "hl-line"
-    '(set-face-attribute 'hl-line nil :background "grey10"))
 #+END_SRC
 
 
@@ -693,9 +659,6 @@ In all programming modes, make parenthesis pairs stand out.
 
 
   (add-hook 'prog-mode-hook 'highlight-parentheses-mode)
-
-  (eval-after-load "highlight-parentheses-mode"
-    '(set-face-attribute 'highlight-parentheses-highlight nil :weight bold))
 
 #+end_src
 
@@ -884,20 +847,6 @@ auto-completion thing going when writing code.
     (setq company-minimum-prefix-length 2)     ; two characters before suggesting
     (setq company-selection-wrap-around t)     ; make suggestion list a ring
     (setq company-tooltip-align-annotations t) ; aligns annotation to the right hand side
-
-    (set-face-attribute 'company-scrollbar-bg nil :background "#000000")
-    (set-face-attribute 'company-scrollbar-fg nil :background "#332222")
-
-    (set-face-attribute 'company-tooltip nil
-                      :foreground (face-foreground 'default)
-                      :background "grey10")
-
-    (set-face-attribute 'company-tooltip-common nil ; the text I entered, common to all tips
-                        :inherit font-lock-constant-face
-                        )
-    (set-face-attribute 'company-tooltip-selection nil ; the part which is selected
-                        :inherit font-lock-function-name-face
-                        :foreground "light salmon")
     )
 
 
@@ -1206,28 +1155,9 @@ it a try for a while.
 For keybindings, see: [[#swiperivycounsel-keybindings][Swiper/Ivy/Counsel keybindings]]
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'ivy-mode-hook
-            (lambda()
-              (setq ivy-use-virtual-buffers t
-                    enable-recursive-minibuffers t
-                    ivy-count-format "%d/%d ")
-
-              (set-face-attribute 'ivy-current-match nil
-                                  :background "black")
-              (set-face-attribute 'ivy-minibuffer-match-face-1 nil
-                                  :background "black"
-                                  :foreground "#887733")
-              (set-face-attribute 'ivy-minibuffer-match-face-2 nil
-                                  :background "grey10"
-                                  :foreground "#887733")
-              (set-face-attribute 'ivy-minibuffer-match-face-3 nil
-                                  :background "grey18"
-                                  :foreground "#887733")
-              (set-face-attribute 'ivy-minibuffer-match-highlight nil
-                                  :background "black"
-                                  :slant 'italic)
-              )
-            )
+  (setq ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t
+        ivy-count-format "%d/%d ")
   (ivy-mode 1)
 #+END_SRC
 
@@ -1525,17 +1455,6 @@ Change how Org shows bullets - nice UTF-8 bullets instead of stars.
 #+BEGIN_SRC emacs-lisp
   (setq org-hide-leading-stars t)           ; remove leading stars in org-mode
   (setq org-bullets t)                      ; activate said pretty bullets
-#+END_SRC
-
-*** Look and feel of org-blocks
-
-Make the org-blocks (the code where the emacs-lisp is) a darker colour
-than the default.
-
-#+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'org-block-begin-line nil :background "grey10")
-  (set-face-attribute 'org-block nil :background "grey16")
-  (set-face-attribute 'org-block-end-line nil :background "grey10")
 #+END_SRC
 
 *** Executing code in shell blocks
