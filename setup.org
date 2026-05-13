@@ -2245,6 +2245,11 @@ Then the rest which I've written some time in the past.
         (insert (format-time-string "%Y%m%d"))
       (insert (format-time-string "%Y/%m/%d"))))
 
+  (defun me/insert-date-weekday ()
+    "Insert date and weekday at point in format %Y/%m/%d Weekday."
+    (interactive)
+    (insert (format-time-string "%Y/%m/%d %A")))
+
   (defun me/insert-datetime ()
     "Insert datetime at point in format %Y/%m/%d-%H:%M:%S. If
      universal-argument is set, use format %Y%m%d-%H%M%S instead."
