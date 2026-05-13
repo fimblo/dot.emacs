@@ -431,6 +431,14 @@ interaction to be as non-intrusive as possible.
               kill-buffer-query-functions))
   (put 'eval-expression 'disabled nil)          ; no confirm on eval-expression
 
+  (setq vc-follow-symlinks t)                   ; follow symlinks to vc files
+  (advice-add 'vc-follow-link :around           ; without asking; notify instead
+              (lambda (orig)
+                (let ((target (file-chase-links buffer-file-name)))
+                  (funcall orig)
+                  (message "Followed symlink → %s" target)
+                  (run-with-timer 3 nil (lambda () (message nil))))))
+
 #+END_SRC
 
 Link X's primary selection and clipboard to interplay with emacs.
