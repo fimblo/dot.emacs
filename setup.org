@@ -1507,7 +1507,7 @@ with =#RESULTS:=) will be placed immediately below the shell block.
 .: round-trip min/avg/max/stddev = 16.815/16.815/16.815/0.000 ms
 #+end_example
 
-*** Bullet journal checkbox cycling
+*** Bullet journal stuff
 
 I used to keep a bullet-journal for some years.
 
@@ -1515,7 +1515,8 @@ One thing I really liked about the bullet-journal system was the way
 it helped me organise and consolidate old incomplete tasks.
 
 
-Every so often, I would create a section under today's date called "Migrated".
+Every so often, I would create a section under today's date called
+"Migrated".
 
 Then, if there was a task from a previous page in the notebook which
 was still important, I would copy it to the Migrated section and mark
@@ -1560,6 +1561,59 @@ Pressing =C-c C-c= on a checkbox item cycles to the next state.
 
   (with-eval-after-load 'org
     (define-key org-mode-map (kbd "C-c C-c") #'my/org-ctrl-c-ctrl-c))
+#+END_SRC
+
+=C-c C-x >= helps me migrate tasks in org-mode. It copies the checkbox
+item at point (and any children) to the top of the =Migrated Todos=
+section, then stamps the original as =[>]=. If there's no such section
+yet, it'll ask whether to create one at the very top of the file.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/org-item-and-children ()
+    "Return text of the list item at point, including any child items."
+    (save-excursion
+      (beginning-of-line)
+      (unless (looking-at "\\([ \t]*\\)[-+*][ \t]")
+        (user-error "Not at a list item"))
+      (let ((beg (point))
+            (bullet-col (length (match-string 1))))
+        (forward-line 1)
+        (while (and (not (eobp))
+                    (or (looking-at "^[ \t]*$")
+                        (> (current-indentation) bullet-col)))
+          (forward-line 1))
+        (buffer-substring-no-properties beg (point)))))
+
+  (defun my/org-migrate-todo ()
+    "Copy current checkbox item and children to the Migrated Todos section.
+  Marks the original item as [>] (migrated)."
+    (interactive)
+    (unless (my/org-at-any-checkbox-p)
+      (user-error "Not on a checkbox item"))
+    (let* ((item-text (my/org-item-and-children))
+           (section-pos (save-excursion
+                          (let ((case-fold-search t))
+                            (goto-char (point-min))
+                            (when (re-search-forward "Migrated Todos" nil t)
+                              (line-beginning-position))))))
+      (when (null section-pos)
+        (unless (yes-or-no-p "No 'Migrated Todos' section found. Create at top of file? ")
+          (user-error "Aborted"))
+        (save-excursion
+          (goto-char (point-min))
+          (insert "Migrated Todos\n\n"))
+        (setq section-pos 1))
+      (save-excursion
+        (goto-char section-pos)
+        (forward-line 1)
+        (insert item-text))
+      (save-excursion
+        (beginning-of-line)
+        (when (re-search-forward "\\[\\([X> -]\\)\\]" (line-end-position) t)
+          (replace-match ">" nil nil nil 1)))))
+
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "C-c C-x >") #'my/org-migrate-todo))
 #+END_SRC
 
 ** Javascript-mode
