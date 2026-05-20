@@ -1507,6 +1507,61 @@ with =#RESULTS:=) will be placed immediately below the shell block.
 .: round-trip min/avg/max/stddev = 16.815/16.815/16.815/0.000 ms
 #+end_example
 
+*** Bullet journal checkbox cycling
+
+I used to keep a bullet-journal for some years.
+
+One thing I really liked about the bullet-journal system was the way
+it helped me organise and consolidate old incomplete tasks.
+
+
+Every so often, I would create a section under today's date called "Migrated".
+
+Then, if there was a task from a previous page in the notebook which
+was still important, I would copy it to the Migrated section and mark
+the old todo box with a =>= symbol.
+
+Stuff which wasn't important I would mark with a hyphen =-=.
+
+The code below emulates this, by cycling through the following four
+states instead of just the default two:
+
+- =[ ]= to-do
+- =[X]= done
+- =[-]= skipped / irrelevant
+- =[>]= migrated to a future date
+
+Pressing =C-c C-c= on a checkbox item cycles to the next state.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/org-at-any-checkbox-p ()
+    "Return t if point is at a list item with any checkbox, including [>]."
+    (save-excursion
+      (beginning-of-line)
+      (looking-at "[ \t]*[-+*][ \t]+\\[[X> -]\\]")))
+
+  (defun my/org-checkbox-cycle ()
+    "Cycle checkbox through [ ], [X], [-], [>] states."
+    (interactive)
+    (save-excursion
+      (beginning-of-line)
+      (when (re-search-forward "\\[\\([X> -]\\)\\]" (line-end-position) t)
+        (let* ((current (match-string 1))
+               (next (cdr (assoc current '((" " . "X") ("X" . "-") ("-" . ">") (">" . " "))))))
+          (when next
+            (replace-match next nil nil nil 1))))))
+
+  (defun my/org-ctrl-c-ctrl-c ()
+    "Like `org-ctrl-c-ctrl-c' but uses extended checkbox cycling."
+    (interactive)
+    (if (my/org-at-any-checkbox-p)
+        (my/org-checkbox-cycle)
+      (org-ctrl-c-ctrl-c)))
+
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "C-c C-c") #'my/org-ctrl-c-ctrl-c))
+#+END_SRC
+
 ** Javascript-mode
 
 See [[#tide-mode-for-javascript][Tide-mode for Javascript]] or [[#tide-mode-for-jsx][Tide-mode for JSX]] for more configuration stuff.
