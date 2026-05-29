@@ -1550,7 +1550,52 @@ Pressing =C-c C-c= on a checkbox item cycles to the next state.
         (let* ((current (match-string 1))
                (next (cdr (assoc current '((" " . "X") ("X" . "-") ("-" . ">") (">" . " "))))))
           (when next
-            (replace-match next nil nil nil 1))))))
+            (replace-match next nil nil nil 1)))))
+    (my/org-update-parent-stats))
+
+  (defun my/org-update-parent-stats ()
+    "Update parent [n/m] or [n%] cookie, counting [X], [>], [-] as done."
+    (save-excursion
+      (beginning-of-line)
+      (let ((child-indent (current-indentation)))
+        (when (> child-indent 0)
+          (let ((parent-bol nil))
+            (save-excursion
+              (while (and (> (point) (point-min)) (null parent-bol))
+                (forward-line -1)
+                (unless (looking-at "^[ \t]*$")
+                  (if (< (current-indentation) child-indent)
+                      (setq parent-bol (point))))))
+            (when (and parent-bol
+                       (save-excursion
+                         (goto-char parent-bol)
+                         (looking-at "[ \t]*[-+*][ \t]")))
+              (save-excursion
+                (goto-char parent-bol)
+                (when (re-search-forward "\\[\\([0-9]+/[0-9]+\\|[0-9]+%\\)\\]"
+                                         (line-end-position) t)
+                  (let* ((cookie-beg (match-beginning 0))
+                         (cookie-end (match-end 0))
+                         (is-percent (string-match "%" (match-string 1)))
+                         (done 0) (total 0))
+                    (forward-line 1)
+                    (while (not (eobp))
+                      (cond
+                       ((looking-at "^[ \t]*$") (forward-line 1))
+                       ((< (current-indentation) child-indent) (goto-char (point-max)))
+                       ((= (current-indentation) child-indent)
+                        (when (looking-at "[ \t]*[-+*][ \t]+\\[.\\]")
+                          (setq total (1+ total))
+                          (when (looking-at "[ \t]*[-+*][ \t]+\\[[X>-]\\]")
+                            (setq done (1+ done))))
+                        (forward-line 1))
+                       (t (forward-line 1))))
+                    (goto-char cookie-beg)
+                    (delete-region (point) cookie-end)
+                    (insert (if is-percent
+                                (format "[%d%%]" (if (zerop total) 0
+                                                   (/ (* 100 done) total)))
+                              (format "[%d/%d]" done total))))))))))))
 
   (defun my/org-ctrl-c-ctrl-c ()
     "Like `org-ctrl-c-ctrl-c' but uses extended checkbox cycling."
