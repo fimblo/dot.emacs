@@ -187,28 +187,30 @@ the file pointed at by the environment variable
   (defvar me/erc/port              nil "Irc server port")
   (defvar me/erc/nick              nil "My nick")
   (defvar me/erc/pass              nil "My password")
-  (defvar me/erc/autojoin-alist    nil "Association list of channels to join.
-    				For example:
-    				((\"chat.freenode.net\" \"#emacs\" \"#cooking\")
-    				 (\"another.server.org\" \"#foo\" \"#bar\" \"#baz\"))
-    				")
-  (defvar me/erc/pass-query-string nil "How should ERC ask for the password?
-    				Useful if you have multiple servers to connect to.")
+  (defvar me/erc/autojoin-alist    nil
+                           "Association list of channels to join.
+                            For example:
+                            ((\"chat.freenode.net\" \"#emacs\" \"#cooking\")
+                             (\"another.server.org\" \"#foo\" \"#bar\" \"#baz\"))
+                            ")
+  (defvar me/erc/pass-query-string nil
+                           "How should ERC ask for the password?
+                            Useful if you have multiple servers to connect to.")
 
   (defvar me/vterm-clients
-    '(("acme"   . "~/.bash_history_acme")
+    '(("acme"    . "~/.bash_history_acme")
       ("globex"  . "~/.bash_history_globex"))
-    "Alist of vterm client sessions: (NAME . HISTFILE).
-    				NAME labels the buffer and is exported as EMACS_VTERM_CLIENT.
-    				HISTFILE is the bash history path.
-    				Override this with setq in EMACS_PERSONAL_DATA.")
+                           "Alist of vterm client sessions: (NAME . HISTFILE).
+                            NAME labels the buffer and is exported as EMACS_VTERM_CLIENT.
+                            HISTFILE is the bash history path.
+                            Override this with setq in EMACS_PERSONAL_DATA.")
 
   ;; If me/emacs/personal-data has a value, check if it points at a file. If
   ;; it exists, then load it.
   (when me/emacs/personal-data
       (when (file-exists-p me/emacs/personal-data)
-    (load me/emacs/personal-data)
-    )
+        (load me/emacs/personal-data)
+        )
       )
 
 #+END_SRC
