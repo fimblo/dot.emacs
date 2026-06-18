@@ -195,7 +195,7 @@ the file pointed at by the environment variable
   (defvar me/erc/pass-query-string nil "How should ERC ask for the password?
     				Useful if you have multiple servers to connect to.")
 
-  (defvar my/vterm-clients
+  (defvar me/vterm-clients
     '(("acme"   . "~/.bash_history_acme")
       ("globex"  . "~/.bash_history_globex"))
     "Alist of vterm client sessions: (NAME . HISTFILE).
@@ -1543,13 +1543,13 @@ states instead of just the default two:
 Pressing =C-c C-c= on a checkbox item cycles to the next state.
 
 #+BEGIN_SRC emacs-lisp
-  (defun my/org-at-any-checkbox-p ()
+  (defun me/org-at-any-checkbox-p ()
     "Return t if point is at a list item with any checkbox, including [>]."
     (save-excursion
       (beginning-of-line)
       (looking-at "[ \t]*[-+*][ \t]+\\[[X> -]\\]")))
 
-  (defun my/org-checkbox-cycle ()
+  (defun me/org-checkbox-cycle ()
     "Cycle checkbox through [ ], [X], [-], [>] states."
     (interactive)
     (save-excursion
@@ -1559,9 +1559,9 @@ Pressing =C-c C-c= on a checkbox item cycles to the next state.
                (next (cdr (assoc current '((" " . "X") ("X" . "-") ("-" . ">") (">" . " "))))))
           (when next
             (replace-match next nil nil nil 1)))))
-    (my/org-update-parent-stats))
+    (me/org-update-parent-stats))
 
-  (defun my/org-update-parent-stats ()
+  (defun me/org-update-parent-stats ()
     "Update parent [n/m] or [n%] cookie, counting [X], [>], [-] as done."
     (save-excursion
       (beginning-of-line)
@@ -1605,15 +1605,15 @@ Pressing =C-c C-c= on a checkbox item cycles to the next state.
                                                    (/ (* 100 done) total)))
                               (format "[%d/%d]" done total))))))))))))
 
-  (defun my/org-ctrl-c-ctrl-c ()
+  (defun me/org-ctrl-c-ctrl-c ()
     "Like `org-ctrl-c-ctrl-c' but uses extended checkbox cycling."
     (interactive)
-    (if (my/org-at-any-checkbox-p)
-        (my/org-checkbox-cycle)
+    (if (me/org-at-any-checkbox-p)
+        (me/org-checkbox-cycle)
       (org-ctrl-c-ctrl-c)))
 
   (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-c C-c") #'my/org-ctrl-c-ctrl-c))
+    (define-key org-mode-map (kbd "C-c C-c") #'me/org-ctrl-c-ctrl-c))
 #+END_SRC
 
 =C-c C-x >= helps me migrate tasks in org-mode. It copies the checkbox
@@ -1622,7 +1622,7 @@ section, then stamps the original as =[>]=. If there's no such section
 yet, it'll ask whether to create one at the very top of the file.
 
 #+BEGIN_SRC emacs-lisp
-  (defun my/org-item-and-children ()
+  (defun me/org-item-and-children ()
     "Return text of the list item at point, including any child items."
     (save-excursion
       (beginning-of-line)
@@ -1637,13 +1637,13 @@ yet, it'll ask whether to create one at the very top of the file.
           (forward-line 1))
         (buffer-substring-no-properties beg (point)))))
 
-  (defun my/org-migrate-todo ()
+  (defun me/org-migrate-todo ()
     "Copy current checkbox item and children to the Migrated Todos section.
   Marks the original item as [>] (migrated)."
     (interactive)
-    (unless (my/org-at-any-checkbox-p)
+    (unless (me/org-at-any-checkbox-p)
       (user-error "Not on a checkbox item"))
-    (let* ((item-text (my/org-item-and-children))
+    (let* ((item-text (me/org-item-and-children))
            (section-pos (save-excursion
                           (let ((case-fold-search t))
                             (goto-char (point-min))
@@ -1666,7 +1666,7 @@ yet, it'll ask whether to create one at the very top of the file.
           (replace-match ">" nil nil nil 1)))))
 
   (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-c C-x >") #'my/org-migrate-todo))
+    (define-key org-mode-map (kbd "C-c C-x >") #'me/org-migrate-todo))
 #+END_SRC
 
 ** Javascript-mode
@@ -2750,26 +2750,26 @@ different clients, I want separate bash histories for each one.
 
 The client list lives in =EMACS_PERSONAL_DATA= (see
 [[#declare-personal-variables][Declare personal variables]]) as
-=my/vterm-clients=, an alist of =(name . histfile)= pairs.
+=me/vterm-clients=, an alist of =(name . histfile)= pairs.
 
-=M-x my/vterm-open= prompts for a client name and opens a fresh
+=M-x me/vterm-open= prompts for a client name and opens a fresh
 terminal with =HISTFILE= set accordingly. Picking =default= just opens
 a plain vterm.
 
 #+BEGIN_SRC emacs-lisp
-  (defun my/vterm-open (client)
+  (defun me/vterm-open (client)
     "Open a new vterm session for CLIENT with a dedicated bash history file.
-  Prompts with completion over `my/vterm-clients' plus \"default\".
+  Prompts with completion over `me/vterm-clients' plus \"default\".
   Always opens a fresh buffer; existing sessions are left untouched.
   Client buffers are named *vterm-<client>*, *vterm-<client><2>*, etc.
-  HISTFILE is set to the path specified in `my/vterm-clients'."
+  HISTFILE is set to the path specified in `me/vterm-clients'."
     (interactive
      (list (completing-read "Client: "
-                            (cons "default" (mapcar #'car my/vterm-clients))
+                            (cons "default" (mapcar #'car me/vterm-clients))
                             nil t)))
     (if (string= client "default")
         (vterm (generate-new-buffer-name vterm-buffer-name))
-      (let* ((entry    (assoc client my/vterm-clients))
+      (let* ((entry    (assoc client me/vterm-clients))
              (histfile (expand-file-name (cdr entry)))
              (buf-name (generate-new-buffer-name (concat "*vterm-" client "*")))
              (vterm-environment (cons (concat "HISTFILE=" histfile)
