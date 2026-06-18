@@ -188,19 +188,27 @@ the file pointed at by the environment variable
   (defvar me/erc/nick              nil "My nick")
   (defvar me/erc/pass              nil "My password")
   (defvar me/erc/autojoin-alist    nil "Association list of channels to join.
-					For example:
-					((\"chat.freenode.net\" \"#emacs\" \"#cooking\")
-					 (\"another.server.org\" \"#foo\" \"#bar\" \"#baz\"))
-					")
+    				For example:
+    				((\"chat.freenode.net\" \"#emacs\" \"#cooking\")
+    				 (\"another.server.org\" \"#foo\" \"#bar\" \"#baz\"))
+    				")
   (defvar me/erc/pass-query-string nil "How should ERC ask for the password?
-					Useful if you have multiple servers to connect to.")
+    				Useful if you have multiple servers to connect to.")
+
+  (defvar my/vterm-clients
+    '(("acme"   . "~/.bash_history_acme")
+      ("globex"  . "~/.bash_history_globex"))
+    "Alist of vterm client sessions: (NAME . HISTFILE).
+    				NAME labels the buffer and is exported as EMACS_VTERM_CLIENT.
+    				HISTFILE is the bash history path.
+    				Override this with setq in EMACS_PERSONAL_DATA.")
 
   ;; If me/emacs/personal-data has a value, check if it points at a file. If
   ;; it exists, then load it.
   (when me/emacs/personal-data
       (when (file-exists-p me/emacs/personal-data)
-	(load me/emacs/personal-data)
-	)
+    (load me/emacs/personal-data)
+    )
       )
 
 #+END_SRC
@@ -2733,6 +2741,41 @@ turn off my modem to exit emacs.
     (interactive)
     (message "Function disabled. Use delete-trailing-whitespace instead.")
     )
+#+END_SRC
+
+** Vterm
+
+I've started using vterm for terminals inside emacs. Since I work with
+different clients, I want separate bash histories for each one.
+
+The client list lives in =EMACS_PERSONAL_DATA= (see
+[[#declare-personal-variables][Declare personal variables]]) as
+=my/vterm-clients=, an alist of =(name . histfile)= pairs.
+
+=M-x my/vterm-open= prompts for a client name and opens a fresh
+terminal with =HISTFILE= set accordingly. Picking =default= just opens
+a plain vterm.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/vterm-open (client)
+    "Open a new vterm session for CLIENT with a dedicated bash history file.
+  Prompts with completion over `my/vterm-clients' plus \"default\".
+  Always opens a fresh buffer; existing sessions are left untouched.
+  Client buffers are named *vterm-<client>*, *vterm-<client><2>*, etc.
+  HISTFILE is set to the path specified in `my/vterm-clients'."
+    (interactive
+     (list (completing-read "Client: "
+                            (cons "default" (mapcar #'car my/vterm-clients))
+                            nil t)))
+    (if (string= client "default")
+        (vterm (generate-new-buffer-name vterm-buffer-name))
+      (let* ((entry    (assoc client my/vterm-clients))
+             (histfile (expand-file-name (cdr entry)))
+             (buf-name (generate-new-buffer-name (concat "*vterm-" client "*")))
+             (vterm-environment (cons (concat "HISTFILE=" histfile)
+                                      (cons (concat "EMACS_VTERM_CLIENT=" client)
+                                            (bound-and-true-p vterm-environment)))))
+        (vterm buf-name))))
 #+END_SRC
 
 * Helper functions
