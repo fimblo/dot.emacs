@@ -1132,6 +1132,7 @@ A nice list-buffer replacement.
 
   (add-hook 'ibuffer-hook
             (lambda ()
+              (hl-line-mode 1)             ; highlight current line, same as prog-modes
               (me/ibuffer-set-filter-groups)
               (unless (eq ibuffer-sorting-mode 'alphabetic)
                 (ibuffer-do-sort-by-alphabetic))))
