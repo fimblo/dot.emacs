@@ -2846,7 +2846,7 @@ of them should be local too.
 #+BEGIN_SRC emacs-lisp
   (global-set-key "\C-c\C-d"            'me/insert-date)
   (global-set-key "\C-x\C-y"            'toggle-truncate-lines)
-  (global-set-key [ f7 ]                'me/ansi-term)
+  (global-set-key [ f7 ]                'me/vterm-open)
   (global-set-key (kbd "M-%")           'query-replace-regexp)
   (global-set-key (kbd "C-x SPC")       'whitespace-mode)
 #+END_SRC
