@@ -2770,28 +2770,33 @@ The client list lives in =EMACS_PERSONAL_DATA= (see
 
 =M-x me/vterm-open= prompts for a client name and opens a fresh
 terminal with =HISTFILE= set accordingly. Picking =default= just opens
-a plain vterm.
+a plain vterm. It starts in =~= by default; with a prefix argument
+(=C-u=), it starts in the current buffer's directory instead.
 
 #+BEGIN_SRC emacs-lisp
-  (defun me/vterm-open (client)
+  (defun me/vterm-open (client &optional use-cwd)
     "Open a new vterm session for CLIENT with a dedicated bash history file.
   Prompts with completion over `me/vterm-clients' plus \"default\".
   Always opens a fresh buffer; existing sessions are left untouched.
   Client buffers are named *vterm-<client>*, *vterm-<client><2>*, etc.
-  HISTFILE is set to the path specified in `me/vterm-clients'."
+  HISTFILE is set to the path specified in `me/vterm-clients'.
+  Starts in the home directory, unless USE-CWD (the prefix argument)
+  is non-nil, in which case it starts in the current buffer's directory."
     (interactive
      (list (completing-read "Client: "
                             (cons "default" (mapcar #'car me/vterm-clients))
-                            nil t)))
-    (if (string= client "default")
-        (vterm (generate-new-buffer-name vterm-buffer-name))
-      (let* ((entry    (assoc client me/vterm-clients))
-             (histfile (expand-file-name (cdr entry)))
-             (buf-name (generate-new-buffer-name (concat "*vterm-" client "*")))
-             (vterm-environment (cons (concat "HISTFILE=" histfile)
-                                      (cons (concat "EMACS_VTERM_CLIENT=" client)
-                                            (bound-and-true-p vterm-environment)))))
-        (vterm buf-name))))
+                            nil t)
+           current-prefix-arg))
+    (let ((default-directory (if use-cwd default-directory (expand-file-name "~"))))
+      (if (string= client "default")
+          (vterm (generate-new-buffer-name vterm-buffer-name))
+        (let* ((entry    (assoc client me/vterm-clients))
+               (histfile (expand-file-name (cdr entry)))
+               (buf-name (generate-new-buffer-name (concat "*vterm-" client "*")))
+               (vterm-environment (cons (concat "HISTFILE=" histfile)
+                                        (cons (concat "EMACS_VTERM_CLIENT=" client)
+                                              (bound-and-true-p vterm-environment)))))
+          (vterm buf-name)))))
 #+END_SRC
 
 * Helper functions
