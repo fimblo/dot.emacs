@@ -1578,7 +1578,9 @@ Pressing =C-c C-c= on a checkbox item cycles to the next state.
     (me/org-update-parent-stats))
 
   (defun me/org-update-parent-stats ()
-    "Update parent [n/m] or [n%] cookie, counting [X], [>], [-] as done."
+    "Update parent [n/m] or [n%] cookie when cycling a child checkbox.
+  [X] counts toward both done and total; [ ] toward total only;
+  [-] (skip) and [>] (defer) are excluded from both."
     (save-excursion
       (beginning-of-line)
       (let ((child-indent (current-indentation)))
@@ -1608,10 +1610,16 @@ Pressing =C-c C-c= on a checkbox item cycles to the next state.
                        ((looking-at "^[ \t]*$") (forward-line 1))
                        ((< (current-indentation) child-indent) (goto-char (point-max)))
                        ((= (current-indentation) child-indent)
-                        (when (looking-at "[ \t]*[-+*][ \t]+\\[.\\]")
-                          (setq total (1+ total))
-                          (when (looking-at "[ \t]*[-+*][ \t]+\\[[X>-]\\]")
-                            (setq done (1+ done))))
+                        (cond
+                         ;; done: counts toward both numerator and denominator
+                         ((looking-at "[ \t]*[-+*][ \t]+\\[X\\]")
+                          (setq done (1+ done))
+                          (setq total (1+ total)))
+                         ;; skip [-] and defer [>]: removed from consideration
+                         ((looking-at "[ \t]*[-+*][ \t]+\\[[->]\\]"))
+                         ;; todo [ ]: counts toward denominator only
+                         ((looking-at "[ \t]*[-+*][ \t]+\\[ \\]")
+                          (setq total (1+ total))))
                         (forward-line 1))
                        (t (forward-line 1))))
                     (goto-char cookie-beg)
