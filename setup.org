@@ -1,3 +1,4 @@
+
 #+TITLE:      My Emacs setup
 #+AUTHOR:     Mattias Jansson (fimblo)
 #+EMAIL:      fimblo@yanson.org
@@ -1544,7 +1545,7 @@ Every so often, I would create a section under today's date called
 
 Then, if there was a task from a previous page in the notebook which
 was still important, I would copy it to the Migrated section and mark
-the old todo box with a =>= symbol.
+the old task box with a =>= symbol.
 
 Stuff which wasn't important I would mark with a hyphen =-=.
 
@@ -1641,7 +1642,7 @@ Pressing =C-c C-c= on a checkbox item cycles to the next state.
 #+END_SRC
 
 =C-c C-x >= helps me migrate tasks in org-mode. It copies the checkbox
-item at point (and any children) to the top of the =Migrated Todos=
+item at point (and any children) to the top of the =Migrated Tasks=
 section, then stamps the original as =[>]=. If there's no such section
 yet, it'll ask whether to create one at the very top of the file.
 
@@ -1661,8 +1662,8 @@ yet, it'll ask whether to create one at the very top of the file.
           (forward-line 1))
         (buffer-substring-no-properties beg (point)))))
 
-  (defun me/org-migrate-todo ()
-    "Copy current checkbox item and children to the Migrated Todos section.
+  (defun me/org-migrate-task ()
+    "Copy current checkbox item and children to the Migrated Tasks section.
   Marks the original item as [>] (migrated)."
     (interactive)
     (unless (me/org-at-any-checkbox-p)
@@ -1671,14 +1672,14 @@ yet, it'll ask whether to create one at the very top of the file.
            (section-pos (save-excursion
                           (let ((case-fold-search t))
                             (goto-char (point-min))
-                            (when (re-search-forward "Migrated Todos" nil t)
+                            (when (re-search-forward "Migrated Tasks" nil t)
                               (line-beginning-position))))))
       (when (null section-pos)
-        (unless (yes-or-no-p "No 'Migrated Todos' section found. Create at top of file? ")
+        (unless (yes-or-no-p "No 'Migrated Tasks' section found. Create at top of file? ")
           (user-error "Aborted"))
         (save-excursion
           (goto-char (point-min))
-          (insert "Migrated Todos\n\n"))
+          (insert "Migrated Tasks\n\n"))
         (setq section-pos 1))
       (save-excursion
         (goto-char section-pos)
@@ -1690,7 +1691,7 @@ yet, it'll ask whether to create one at the very top of the file.
           (replace-match ">" nil nil nil 1)))))
 
   (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-c C-x >") #'me/org-migrate-todo))
+    (define-key org-mode-map (kbd "C-c C-x >") #'me/org-migrate-task))
 #+END_SRC
 
 ** Javascript-mode
