@@ -295,8 +295,6 @@ the file pointed at by the environment variable
 (setq native-comp-deferred-compilation t)               ; enable async native compilation
 (setq native-comp-async-jobs-number 4)                  ; # of cpu cores to use
 (setq native-comp-async-report-warnings-errors 'silent) ; silent mode when compiling
-(setq native-comp-eln-load-path                         ; where to store the compiled stuff
-      (list (expand-file-name "eln-cache/" user-emacs-directory)))
 
 ;; Tell the native compiler to look at the vendor dirand report when done
 (setq native-comp-async-cu-done-functions
