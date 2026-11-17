@@ -1,4 +1,4 @@
-;; Minimal config here. The rest will be in setup.org
+;;; init.el --- Minimal config here. The rest will be in setup.org  -*- lexical-binding: t -*-
 
 (require 'org)           ; Load org so we can use babel
 

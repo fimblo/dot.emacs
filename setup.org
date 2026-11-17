@@ -4,6 +4,7 @@
 #+EMAIL:      fimblo@yanson.org
 #+OPTIONS:    toc:nil
 #+STARTUP:    fold
+#+PROPERTY:   header-args:emacs-lisp :lexical t
 
 #+BEGIN_COMMENT
 Not exported
@@ -77,6 +78,73 @@ in the directory =~/.emacs.d=:
   This environment variable points at the file where I put all
   personal info. The variables are declared in section
   [[#declare-personal-variables][Declare personal variables]].
+
+** Lexical binding
+
+Emacs lisp comes in two dialects. The old one uses /dynamic/
+binding, where a function can see the local variables of whoever
+called it. The newer one uses /lexical/ binding, where a variable is
+only visible in the code where it's written (like in pretty much
+every other language). Lexical binding has been around since Emacs 24,
+and nearly all packages use it by now.
+
+Each elisp file picks its dialect with a magic cookie on the first
+line. If there's no cookie, emacs falls back to dynamic binding.
+
+That fallback is on its way out. The emacs developers have been
+talking about flipping the default to lexical for years now. Now with
+Emacs 31, it still defaults to dynamic binding, but it nags about
+every file without a cookie:
+
+#+BEGIN_EXAMPLE
+  Warning (files): Missing ‘lexical-binding’ cookie in "~/github/dot.emacs/setup.el".
+#+END_EXAMPLE
+
+Very irritating.
+
+So I don't really NEED to do anything yet. Dynamic binding will keep
+working for at least another release or so.
+
+But I got that warning for =init.el=, =setup.el=, my personal data
+file and all the files in =vendor/=, and making it go away without
+fixing anything was really an exercise in ugly hackiness. I'd have to
+suppress the warning in a new =early-init.el=, a file which is loaded
+before =init.el=, which loads =setup.org=, which gets tangled into
+=setup.el=. One more layer of indirection just to hide a warning? heh
+no thanks.
+
+Also, when the default /does/ flip, I will have forgotten all about
+this and I'd be hunting weird bugs without a clue as to why. As usual
+after upgrading. So this time around, I'd rather do the switch now
+and be responsible for a change.
+
+So this config uses lexical binding. The block below is the first
+emacs-lisp block in this file, so it ends up on the very first line
+of =setup.el=, where emacs looks for it.
+
+#+BEGIN_SRC emacs-lisp
+  ;;; setup.el --- tangled from setup.org, don't edit  -*- lexical-binding: t -*-
+#+END_SRC
+
+There's also a =#+PROPERTY= line at the top of this file which
+evaluates blocks lexically when I hit =C-c C-c= on them, so the code
+behaves the same way as when it's loaded at startup.
+
+Some things to keep in mind when writing elisp in this file:
+
+- Variables from a package must be declared before I =let=-bind
+  them. If emacs hasn't seen a =defvar= for a variable yet, =let=
+  creates a new local variable instead, and the package never sees
+  the value. Add a =(defvar the-variable)= above the =let= to fix
+  that.
+
+- Don't =setq= variables which haven't been declared with =defvar=
+  or bound with =let=. It works, but it creates a global variable as
+  a side-effect.
+
+- A function can't peek into its caller's local variables anymore.
+  Pass them as arguments.
+
 
 * Initial setup
 ** Set up basic environment
@@ -275,11 +343,13 @@ the file pointed at by the environment variable
     all-the-icons-ibuffer
     all-the-icons-ivy
     auctex
+    bats-mode
     blacken
     company
     counsel
     counsel-tramp
     csv-mode
+    dired-subtree
     dockerfile-mode
     dumb-jump
     editorconfig
@@ -529,12 +599,7 @@ spaces. Also - avoid inserting tabs.
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
   (setq tab-width 4)
-  (setq-default tab-stop-list
-                (mapcar #'(lambda (x) (* x 4))
-                        (cdr (reverse
-                              (let (value)
-                                (dotimes (number 32 value)
-                                  (setq value (cons number value))))))))
+  (setq-default tab-stop-list (number-sequence 4 124 4)) ; 4, 8, ..., 124
 
   (setq perl-continued-brace-offset -2)
   (setq perl-continued-statement-offset 2)
@@ -1395,8 +1460,7 @@ For reading asciidoc files.
   (add-hook 'python-mode-hook
             (lambda()
               (cond ((eq buffer-file-number nil)
-                     (progn (interactive)
-                            (goto-line 1)
+                     (progn (goto-line 1)
                             (insert "#!/usr/bin/env python\n")
                             (insert "# -*- tab-width: 4 -*-\n")
                             )))))
@@ -2012,54 +2076,74 @@ with a name for the ansi-term buffer.
 I found this function at emacswiki.org, helping me jump to important
 symbols in my buffer.
 
+The original version relied on dynamic binding: it called itself
+recursively, and the inner call filled up =symbol-names= and
+=name-and-pos= - local variables belonging to the outer call. That
+doesn't work with lexical binding, so now the walking of the imenu
+tree is done by a local helper function which can see those
+variables properly.
+
 #+begin_src emacs-lisp
-  (defun ido-goto-symbol (&optional symbol-list)
+  (require 'cl-lib)
+
+  ;; Variables and functions from imenu and ido. The defvars make sure
+  ;; the let below binds the real ido variable rather than a local one.
+  (defvar ido-enable-flex-matching)
+  (defvar imenu--rescan-item)
+  (defvar imenu--index-alist)
+  (declare-function imenu--cleanup "imenu")
+  (declare-function imenu--make-index-alist "imenu")
+  (declare-function imenu--subalist-p "imenu")
+
+  (defun ido-goto-symbol ()
     "Refresh imenu and jump to a place in the buffer using Ido."
     (interactive)
-    (unless (featurep 'imenu)
-      (require 'imenu nil t))
-    (cond
-     ((not symbol-list)
-      (let ((ido-mode ido-mode)
-            (ido-enable-flex-matching
-             (if (boundp 'ido-enable-flex-matching)
-                 ido-enable-flex-matching t))
-            name-and-pos symbol-names position)
+    (require 'imenu)
+    (require 'ido)
+    (let ((ido-mode ido-mode)
+          (ido-enable-flex-matching
+           (if (boundp 'ido-enable-flex-matching)
+               ido-enable-flex-matching t))
+          symbol-names name-and-pos selected-symbol position)
+      (cl-labels
+          ((collect (symbol-list)
+             ;; Walk an imenu index, collecting names and positions
+             (dolist (symbol symbol-list)
+               (let (name pos)
+                 (cond
+                  ((and (listp symbol) (imenu--subalist-p symbol))
+                   (collect symbol))
+                  ((listp symbol)
+                   (setq name (car symbol))
+                   (setq pos (cdr symbol)))
+                  ((stringp symbol)
+                   (setq name symbol)
+                   (setq pos (get-text-property 1 'org-imenu-marker symbol))))
+                 (unless (or (null pos) (null name)
+                             (string= (car imenu--rescan-item) name))
+                   (unless (member name symbol-names)
+                     (push name symbol-names))
+                   (unless (member (cons name pos) name-and-pos)
+                     (push (cons name pos) name-and-pos)))))))
         (unless ido-mode
           (ido-mode 1)
           (setq ido-enable-flex-matching t))
+        ;; Loop until something other than *Rescan* is picked
         (while (progn
                  (imenu--cleanup)
                  (setq imenu--index-alist nil)
-                 (ido-goto-symbol (imenu--make-index-alist))
+                 (setq symbol-names nil
+                       name-and-pos nil)
+                 (collect (imenu--make-index-alist))
                  (setq selected-symbol
                        (ido-completing-read "Symbol? " symbol-names))
                  (string= (car imenu--rescan-item) selected-symbol)))
         (unless (and (boundp 'mark-active) mark-active)
           (push-mark nil t nil))
         (setq position (cdr (assoc selected-symbol name-and-pos)))
-        (cond
-         ((overlayp position)
-          (goto-char (overlay-start position)))
-         (t
+        (if (overlayp position)
+            (goto-char (overlay-start position))
           (goto-char position)))))
-     ((listp symbol-list)
-      (dolist (symbol symbol-list)
-        (let (name position)
-          (cond
-           ((and (listp symbol) (imenu--subalist-p symbol))
-            (ido-goto-symbol symbol))
-           ((listp symbol)
-            (setq name (car symbol))
-            (setq position (cdr symbol)))
-           ((stringp symbol)
-            (setq name symbol)
-            (setq position
-                  (get-text-property 1 'org-imenu-marker symbol))))
-          (unless (or (null position) (null name)
-                      (string= (car imenu--rescan-item) name))
-            (add-to-list 'symbol-names name)
-            (add-to-list 'name-and-pos (cons name position))))))))
 #+end_src
 
 ** DNS-related functions
@@ -2286,6 +2370,8 @@ These functions are from before 2009, and I'm not 100% sure that
 bitrot hasn't set in.
 
 #+BEGIN_SRC emacs-lisp
+  (defvar fimblo-quotes)                ; defined in fimblo-quotes.el
+
   (defun me/random-quote ()
     "Gets a random quote"
     (load "fimblo-quotes" nil t)
@@ -2314,7 +2400,7 @@ bitrot hasn't set in.
     (interactive)
     (end-of-buffer)
     (if (search-backward-regexp "^-- $" nil t )
-        (progn
+        (let (start)
           (beginning-of-line)
           (setq start (point))
           (end-of-buffer)
@@ -2333,15 +2419,16 @@ bitrot hasn't set in.
   (defun me/kill-to-signature ()
     "Delete all text between text and signature."
     (interactive)
-    (setq start (point))
-    (end-of-buffer)
-    (search-backward-regexp "^-- $" nil 1)
-    (previous-line)
-    (setq end (point))
-    (delete-region start end)
-    (recenter-top-bottom)
-    (insert "\n\n\n")
-    (previous-line 2)
+    (let ((start (point))
+          end)
+      (end-of-buffer)
+      (search-backward-regexp "^-- $" nil 1)
+      (previous-line)
+      (setq end (point))
+      (delete-region start end)
+      (recenter-top-bottom)
+      (insert "\n\n\n")
+      (previous-line 2))
     )
 
   (defun me/mail-snip (b e summ)
@@ -2388,8 +2475,8 @@ camelCase. I bound it to =M-S-c= over in [[#buffer-manipulation][Buffer manipula
 
     If the universal argument is given, transform words instead
     to upperCamelCase."
-    (interactive "rP")
-    (if (equal current-prefix-arg '(4))
+    (interactive "r\nP")
+    (if (equal upperCamelCase '(4))
         (me/upper-camelcase-region beg end)
       (me/lower-camelcase-region beg end)))
 #+end_src
@@ -2758,7 +2845,8 @@ turn off my modem to exit emacs.
     (interactive)
     (save-excursion
       (goto-char (point-min))
-      (while (search-forward "" nil t)
+      (while (search-forward "
+" nil t)
         (replace-match "" nil t)))
     )
 
@@ -2784,6 +2872,11 @@ a plain vterm. It starts in =~= by default; with a prefix argument
 (=C-u=), it starts in the current buffer's directory instead.
 
 #+BEGIN_SRC emacs-lisp
+  ;; From vterm.el. Without these defvars, the let* below would create
+  ;; a local vterm-environment which vterm never sees.
+  (defvar vterm-environment)
+  (defvar vterm-buffer-name)
+
   (defun me/vterm-open (client &optional use-cwd)
     "Open a new vterm session for CLIENT with a dedicated bash history file.
   Prompts with completion over `me/vterm-clients' plus \"default\".
