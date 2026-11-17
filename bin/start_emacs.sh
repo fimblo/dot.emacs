@@ -20,6 +20,14 @@ if ! which emacsclient > /dev/null 2>&1 ; then
 fi
 
 client=$(realpath "$(which emacsclient)")
+emacsclient_bin=$client
+
+# If there's no server running, this run will start one. That's when
+# I want to see the command usage report (see setup.org).
+fresh_start=
+if ! $client -a false -e t > /dev/null 2>&1 ; then
+  fresh_start=1
+fi
 
 if [[ $ME == "emt" ]] ; then
   # run in terminal if called as emt
@@ -42,3 +50,8 @@ client="${client} -n"
 # -a with empty string to auto-start emacs daemon
 export TERM=xterm
 ${client} -a '' "$@"
+
+# Show the usage report next to whatever was just opened
+if [[ -n $fresh_start ]] ; then
+  $emacsclient_bin -n -e '(me/usage-report t)' > /dev/null
+fi

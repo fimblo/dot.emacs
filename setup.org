@@ -3162,6 +3162,202 @@ you've moved your cursor into the contents of the dir, then
     )
 #+END_SRC
 
+* Command usage statistics
+
+My setup is long, and I know I've written quite a few commands which I
+never use. It's just that I'm not sure _which_ are least used. Instead
+of guessing which ones, I got some help from Claude to write this bit
+of code which registers calls to my own functions.
+
+Every one of my =me/= commands gets a small piece of advice which
+counts each call. It keeps two counts:
+
+- *direct* - The ones I ran myself, from a key binding or =M-x=.
+- *indirect* - some other code called it. For example, =me/move-line=
+  is only called by =me/move-line-up= and =me/move-line-down=, so it
+  would look unused if I only counted the direct calls.
+
+The counts are saved in =command-usage.eld= (gitignored) when emacs
+has been idle for ten minutes, and when emacs exits. Saving merges
+into what's already in the file, so running two emacsen at the same
+time should work.
+
+=M-x me/usage-report= shows a table with the number of calls, when
+each command was last used, which key it's bound to, and a bar for
+good measure. Commands which haven't been called at all are listed
+at the bottom - these are the candidates for removal. Hit =g= to
+refresh it, and =q= to close it.
+
+I also get the report whenever emacs starts from scratch. Since I
+start emacs with =bin/start_emacs.sh=, which starts a daemon if
+there's no server running, that script is what asks for the report.
+It calls =(me/usage-report t)=, which shows the report in a new
+window without moving focus away from the file I opened.
+
+The non-interactive =me/= functions aren't tracked. They're hook
+functions and the like, and they're there for a reason.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'cl-lib)
+
+  (defvar me/usage-file
+    (expand-file-name "command-usage.eld" user-emacs-directory)
+    "Where the command usage statistics are stored.")
+
+  (defvar me/usage--pending (make-hash-table :test #'eq)
+    "Calls not yet saved to `me/usage-file'.
+  Maps a command symbol to a list (DIRECT INDIRECT LAST-USED).")
+
+  (defun me/usage--tracked-commands ()
+    "Return all my me/ commands, except the ones in this section."
+    (let (cmds)
+      (mapatoms
+       (lambda (sym)
+         (let ((name (symbol-name sym)))
+           (when (and (string-prefix-p "me/" name)
+                      (not (string-prefix-p "me/usage" name))
+                      (commandp sym))
+             (push sym cmds)))))
+      cmds))
+
+  (defun me/usage--record (sym)
+    "Count one call to SYM."
+    (let ((entry (or (gethash sym me/usage--pending) (list 0 0 nil))))
+      (if (eq this-command sym)
+          (cl-incf (nth 0 entry))
+        (cl-incf (nth 1 entry)))
+      (setf (nth 2 entry) (format-time-string "%F"))
+      (puthash sym entry me/usage--pending)))
+
+  (defun me/usage--read ()
+    "Read the statistics file.
+  Returns a plist (:since DATE :data ((SYM DIRECT INDIRECT LAST-USED) ...)).
+  Signals an error if the file exists but can't be read, so we never
+  overwrite it by mistake."
+    (if (file-exists-p me/usage-file)
+        (with-temp-buffer
+          (insert-file-contents me/usage-file)
+          (read (current-buffer)))
+      (list :since (format-time-string "%F") :data nil)))
+
+  (defun me/usage-save ()
+    "Merge the pending calls into `me/usage-file'."
+    (when (> (hash-table-count me/usage--pending) 0)
+      (condition-case err
+          (let* ((db   (me/usage--read))
+                 (data (plist-get db :data)))
+            (maphash
+             (lambda (sym new)
+               (let ((old (assq sym data)))
+                 (if old
+                     (setcdr old (list (+ (nth 1 old) (nth 0 new))
+                                       (+ (nth 2 old) (nth 1 new))
+                                       (nth 2 new)))
+                   (push (cons sym new) data))))
+             me/usage--pending)
+            (setq db (plist-put db :data data))
+            (let ((print-length nil)
+                  (print-level nil))
+              (with-temp-file me/usage-file
+                (insert ";; Command usage statistics. See setup.org.\n")
+                (prin1 db (current-buffer))
+                (insert "\n")))
+            (clrhash me/usage--pending))
+        (error (message "Couldn't save command usage: %s"
+                        (error-message-string err))))))
+
+  (defun me/usage--key (sym)
+    "Return a key binding for SYM as a string, or an empty string.
+  Looks in the global map first, then in all the mode maps."
+    (let ((key (where-is-internal sym (list global-map) t)))
+      (if key
+          (key-description key)
+        (catch 'found
+          (mapatoms
+           (lambda (map-sym)
+             (when (and (boundp map-sym)
+                        (string-suffix-p "-map" (symbol-name map-sym))
+                        (keymapp (symbol-value map-sym)))
+               (let ((key (where-is-internal
+                           sym (list (symbol-value map-sym)) t)))
+                 (when key
+                   (throw 'found (format "%s (%s)"
+                                         (key-description key)
+                                         map-sym)))))))
+          ""))))
+
+  (define-derived-mode me/usage-report-mode special-mode "Usage"
+    "Major mode for the command usage report."
+    (setq-local revert-buffer-function
+                (lambda (&rest _) (me/usage-report))))
+
+  (defun me/usage-report (&optional no-select)
+    "Show how often each of my me/ commands has been used.
+  With NO-SELECT, show it in another window but don't select it."
+    (interactive)
+    (me/usage-save)
+    (let* ((db    (condition-case nil (me/usage--read) (error nil)))
+           (data  (plist-get db :data))
+           (since (or (plist-get db :since) (format-time-string "%F")))
+           (days  (round (/ (float-time
+                             (time-subtract nil (date-to-time
+                                                 (concat since " 00:00"))))
+                            86400)))
+           (rows  (mapcar (lambda (sym)
+                            (let ((e (assq sym data)))
+                              (list sym
+                                    (if e (nth 1 e) 0)
+                                    (if e (nth 2 e) 0)
+                                    (and e (nth 3 e)))))
+                          (me/usage--tracked-commands)))
+           (total (lambda (row) (+ (nth 1 row) (nth 2 row))))
+           (top   (apply #'max 1 (mapcar total rows)))
+           (used   (cl-remove-if (lambda (r) (zerop (funcall total r))) rows))
+           (unused (cl-remove-if-not (lambda (r) (zerop (funcall total r))) rows))
+           (width 30))
+      (setq used (sort used (lambda (a b) (> (funcall total a)
+                                             (funcall total b)))))
+      (setq unused (sort unused (lambda (a b) (string< (car a) (car b)))))
+      (with-current-buffer (get-buffer-create "*Command usage*")
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          (insert (format "Usage of my me/ commands, tracked since %s (%d days)\n\n"
+                          since days))
+          (insert (format "%-36s %7s %8s  %-10s  %s\n"
+                          "Command" "Direct" "Indirect" "Last used" "Calls"))
+          (insert (make-string 100 ?-) "\n")
+          (dolist (row used)
+            (insert (format "%-36s %7d %8d  %-10s  %s %s\n"
+                            (nth 0 row) (nth 1 row) (nth 2 row)
+                            (or (nth 3 row) "")
+                            (make-string
+                             (max 1 (round (* width (/ (float (funcall total row))
+                                                       top))))
+                             ?█)
+                            (me/usage--key (nth 0 row)))))
+          (insert (format "\nNever used (%d of %d):\n\n"
+                          (length unused) (length rows)))
+          (dolist (row unused)
+            (insert (format "  %-36s %s\n" (nth 0 row)
+                            (me/usage--key (nth 0 row)))))
+          (goto-char (point-min)))
+        (me/usage-report-mode)
+        (if no-select
+            (display-buffer (current-buffer))
+          (pop-to-buffer (current-buffer))))))
+
+  ;; Install the counting advice on all my commands. This has to
+  ;; happen after they've all been defined, which is why this section
+  ;; is near the end of the file.
+  (dolist (sym (me/usage--tracked-commands))
+    (advice-add sym :before
+                (lambda (&rest _) (me/usage--record sym))
+                '((name . me/usage))))
+
+  (run-with-idle-timer 600 t #'me/usage-save)
+  (add-hook 'kill-emacs-hook #'me/usage-save)
+#+END_SRC
+
 * Other stuff
 ** On Etags
 
