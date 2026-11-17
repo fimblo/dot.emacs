@@ -923,6 +923,7 @@ For more keybindings, see [[#dired-keybindings][Dired keybindings]].
   (setq dired-listing-switches "-aFhlv --group-directories-first")
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (add-hook 'dired-mode-hook 'toggle-truncate-lines)
+  (add-hook 'dired-mode-hook 'hl-line-mode)
 #+END_SRC
 
 This function makes it easy to toggle between showing dotfiles and
@@ -2856,6 +2857,8 @@ of them should be local too.
   (global-set-key "\C-c\C-d"            'me/insert-date)
   (global-set-key "\C-x\C-y"            'toggle-truncate-lines)
   (global-set-key [ f7 ]                'me/vterm-open)
+  (global-set-key [ f8 ]                'hl-line-mode)
+  (global-set-key [ M-f8 ]              'display-line-numbers-mode)
   (global-set-key (kbd "M-%")           'query-replace-regexp)
   (global-set-key (kbd "C-x SPC")       'whitespace-mode)
 #+END_SRC
@@ -3009,8 +3012,6 @@ Available in all prog-modes.
                 (local-set-key (kbd "M-0")     'add-separator)
                 (local-set-key [ \C-tab ]      'hippie-expand)
                 (local-set-key [ f6 ]          'me/toggle-selective-display)
-                (local-set-key [ f8 ]          'hl-line-mode)
-                (local-set-key [ M-f8 ]        'display-line-numbers-mode)
                 (local-set-key (kbd "C-x x g") 'me/revert-buffer-with-fine-grain)
                 )
               )
