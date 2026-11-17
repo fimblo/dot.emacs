@@ -789,7 +789,7 @@ Auto-set mode for these file suffixes.
           '("\\.html"               . html-mode            )
           '("\\.xsl"                . xml-mode             )
           '("\\.cmd"                . cmd-mode             )
-          '("\\.bat"                . cmd-mode             )
+          '("\\.bat\\'"             . cmd-mode             )
           '("\\.wiki"               . wikipedia-mode       )
           '("\\.org.txt"            . org-mode             )
           '("\\.txt"                . indented-text-mode   )
